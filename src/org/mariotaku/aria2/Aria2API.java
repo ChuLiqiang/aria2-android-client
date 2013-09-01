@@ -13,7 +13,7 @@ public class Aria2API {
 	private XMLRPCClient mClient;
 
 	public Aria2API() {
-		init("localhost", 6800);
+		init("192.168.1.1", 6800);
 	}
 
 	public Aria2API(String host) {

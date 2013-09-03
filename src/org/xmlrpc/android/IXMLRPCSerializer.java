@@ -7,12 +7,11 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
 
 public interface IXMLRPCSerializer {
-
 	String TAG_NAME = "name";
 	String TAG_MEMBER = "member";
 	String TAG_VALUE = "value";
 	String TAG_DATA = "data";
-
+	
 	String TYPE_INT = "int";
 	String TYPE_I4 = "i4";
 	String TYPE_I8 = "i8";
@@ -23,10 +22,11 @@ public interface IXMLRPCSerializer {
 	String TYPE_BASE64 = "base64";
 	String TYPE_ARRAY = "array";
 	String TYPE_STRUCT = "struct";
-
+	// This added by mattias.ellback as part of issue #19
+	String TYPE_NULL = "nil";
+	
 	String DATETIME_FORMAT = "yyyyMMdd'T'HH:mm:ss";
 
 	void serialize(XmlSerializer serializer, Object object) throws IOException;
-
 	Object deserialize(XmlPullParser parser) throws XmlPullParserException, IOException;
 }

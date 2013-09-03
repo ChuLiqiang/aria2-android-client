@@ -305,10 +305,6 @@ public class Aria2API {
 			e.printStackTrace();
 		} catch (XMLRPCException e) {
 			e.printStackTrace();
-		} catch (XmlPullParserException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		} finally {
 			lock.unlock();
 		}

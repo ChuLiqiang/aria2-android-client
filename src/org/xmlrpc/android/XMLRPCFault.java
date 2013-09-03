@@ -1,7 +1,6 @@
 package org.xmlrpc.android;
 
 public class XMLRPCFault extends XMLRPCException {
-
 	/**
 	 * 
 	 */
@@ -14,11 +13,11 @@ public class XMLRPCFault extends XMLRPCException {
 		this.faultString = faultString;
 		this.faultCode = faultCode;
 	}
-
+	
 	public String getFaultString() {
 		return faultString;
 	}
-
+	
 	public int getFaultCode() {
 		return faultCode;
 	}

@@ -13,7 +13,7 @@ public class Aria2API {
 	private XMLRPCClient mClient;
 
 	public Aria2API() {
-		init("192.168.1.1", 6800);
+		init("localhost", 6800);
 	}
 
 	public Aria2API(String host) {
@@ -170,7 +170,9 @@ public class Aria2API {
 	 */
 	public Version getVersion() {
 
-		return new Version((HashMap<String, Object>) callMethod("aria2.getVersion"));
+		HashMap<String, Object> versionInfo = (HashMap<String, Object>) callMethod("aria2.getVersion");
+		
+		return new Version(versionInfo);
 	}
 
 	/**
@@ -286,6 +288,7 @@ public class Aria2API {
 	}
 
 	private Object callMethod(String method, Object... args) {
+		
 		try {
 			return mClient.call(method, args);
 		} catch (IllegalArgumentException e) {
@@ -299,6 +302,7 @@ public class Aria2API {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		return null;
 	}
 

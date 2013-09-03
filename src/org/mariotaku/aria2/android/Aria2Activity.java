@@ -9,14 +9,10 @@ import org.mariotaku.aria2.DownloadUris;
 import org.mariotaku.aria2.GlobalStat;
 import org.mariotaku.aria2.Options;
 import org.mariotaku.aria2.android.utils.CommonUtils;
-import org.mariotaku.aria2.android.utils.ServiceToken;
-import org.mariotaku.aria2.android.utils.ServiceUtils;
 
-import android.content.ComponentName;
-import android.content.ServiceConnection;
+
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,17 +20,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-public class Aria2Activity extends ActionBarActivity implements Constants, ServiceConnection,
+public class Aria2Activity extends ActionBarActivity implements Constants,
 		OnClickListener {
 
 	private final static int GLOBAL_STAT_REFRESHED = 0;
 
-	private IAria2Service mService = null;
-	private ServiceToken mToken = null;
 	private Timer mGlobalStatRefreshTimer;
 
 	private Aria2API aria2;
 
+	private String aria2Ip = "10.16.131.12";
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +38,7 @@ public class Aria2Activity extends ActionBarActivity implements Constants, Servi
 		setContentView(R.layout.main);
 		getActionBarCompat().setIcon(R.drawable.ic_launcher);
 
-		aria2 = new Aria2API();
+		aria2 = new Aria2API(aria2Ip);
 
 		findViewById(R.id.version).setOnClickListener(this);
 		findViewById(R.id.session_info).setOnClickListener(this);
@@ -68,14 +64,12 @@ public class Aria2Activity extends ActionBarActivity implements Constants, Servi
 
 		}, 0, 1000);
 
-		mToken = ServiceUtils.bindToService(this, this);
 	}
 
 	@Override
 	public void onStop() {
 		mGlobalStatRefreshTimer.cancel();
 		mGlobalStatRefreshTimer = null;
-		ServiceUtils.unbindFromService(mToken);
 		super.onStop();
 	}
 
@@ -149,13 +143,4 @@ public class Aria2Activity extends ActionBarActivity implements Constants, Servi
 		}
 	};
 
-	@Override
-	public void onServiceConnected(ComponentName name, IBinder service) {
-		mService = IAria2Service.Stub.asInterface(service);
-	}
-
-	@Override
-	public void onServiceDisconnected(ComponentName name) {
-
-	}
 }

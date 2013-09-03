@@ -288,14 +288,10 @@ public class Aria2API {
 	public String unpauseAll() {
 		return (String) callMethod("aria2.unpauseAll");
 	}
-
-	private Lock lock = new ReentrantLock();
 	
 	private Object callMethod(String method, Object... args) {
 		
 		Object response = null;
-		
-		lock.lock();
 		
 		try {
 			response = mClient.call(method, args);
@@ -306,7 +302,7 @@ public class Aria2API {
 		} catch (XMLRPCException e) {
 			e.printStackTrace();
 		} finally {
-			lock.unlock();
+
 		}
 		
 		return response;

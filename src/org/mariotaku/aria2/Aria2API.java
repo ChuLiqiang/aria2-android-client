@@ -6,6 +6,8 @@ import java.util.HashMap;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlrpc.android.XMLRPCClient;
 import org.xmlrpc.android.XMLRPCException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @SuppressWarnings("unchecked")
 public class Aria2API {
@@ -287,10 +289,16 @@ public class Aria2API {
 		return (String) callMethod("aria2.unpauseAll");
 	}
 
+	private Lock lock = new ReentrantLock();
+	
 	private Object callMethod(String method, Object... args) {
 		
+		Object response = null;
+		
+		lock.lock();
+		
 		try {
-			return mClient.call(method, args);
+			response = mClient.call(method, args);
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
@@ -301,9 +309,11 @@ public class Aria2API {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			lock.unlock();
 		}
 		
-		return null;
+		return response;
 	}
 
 	private void init(String host, int port) {

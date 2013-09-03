@@ -51,6 +51,7 @@ public class Aria2Activity extends ActionBarActivity implements Constants,
 	public void onStart() {
 		super.onStart();
 		mGlobalStatRefreshTimer = new Timer();
+		
 		mGlobalStatRefreshTimer.scheduleAtFixedRate(new TimerTask() {
 
 			@Override
@@ -63,7 +64,7 @@ public class Aria2Activity extends ActionBarActivity implements Constants,
 			}
 
 		}, 0, 1000);
-
+		
 	}
 
 	@Override

@@ -6,6 +6,9 @@ import java.util.HashMap;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlrpc.android.XMLRPCClient;
 import org.xmlrpc.android.XMLRPCException;
+
+import android.util.Log;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -289,18 +292,21 @@ public class Aria2API {
 		return (String) callMethod("aria2.unpauseAll");
 	}
 	
-	private Object callMethod(String method, Object... args) {
+	private Object callMethod(String method, Object... args){
 		
 		Object response = null;
 		
 		try {
 			response = mClient.call(method, args);
 		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
+			Log.e("aria2", "IllegalArgumentException", e);
+			throw new Aria2Exception("xml prc illegal argument!");
 		} catch (IllegalStateException e) {
-			e.printStackTrace();
+			Log.e("aria2", "IllegalStateException", e);
+			throw new Aria2Exception("xml prc illegal State!");
 		} catch (XMLRPCException e) {
-			e.printStackTrace();
+			Log.e("aria2", "XMLRPCException", e);
+			throw new Aria2Exception("xml prc State!");
 		} finally {
 
 		}

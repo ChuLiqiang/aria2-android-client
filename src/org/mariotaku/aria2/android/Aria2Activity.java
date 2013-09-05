@@ -8,17 +8,20 @@ import org.mariotaku.aria2.Aria2API;
 import org.mariotaku.aria2.DownloadUris;
 import org.mariotaku.aria2.GlobalStat;
 import org.mariotaku.aria2.Options;
+import org.mariotaku.aria2.Version;
 import org.mariotaku.aria2.android.utils.CommonUtils;
 
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Aria2Activity extends ActionBarActivity implements Constants,
 		OnClickListener {
@@ -29,7 +32,7 @@ public class Aria2Activity extends ActionBarActivity implements Constants,
 
 	private Aria2API aria2;
 
-	private String aria2Ip = "10.16.131.12";
+	private String aria2Ip = "192.168.1.1";
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -58,7 +61,14 @@ public class Aria2Activity extends ActionBarActivity implements Constants,
 			public void run() {
 				Message globalstat_msg = new Message();
 				globalstat_msg.what = GLOBAL_STAT_REFRESHED;
-				globalstat_msg.obj = aria2.getGlobalStat();
+				try
+				{
+					globalstat_msg.obj = aria2.getGlobalStat();
+				}
+				catch (Exception e)
+				{
+					
+				}
 				mStatusRefreshHandler.sendMessage(globalstat_msg);
 
 			}
@@ -84,6 +94,7 @@ public class Aria2Activity extends ActionBarActivity implements Constants,
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.new_download:
+				Toast.makeText(Aria2Activity.this,"click download", Toast.LENGTH_LONG).show();
 				break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -91,39 +102,46 @@ public class Aria2Activity extends ActionBarActivity implements Constants,
 
 	@Override
 	public void onClick(View v) {
-
-		switch (v.getId()) {
-			case R.id.version:
-				StringBuilder version = new StringBuilder();
-				version.append("Version : " + aria2.getVersion().version + "\n");
-				Object[] values = aria2.getVersion().enabledFeatures;
-				StringBuilder features = new StringBuilder();
-				for (Object value : values) {
-					features.append(value + "\n");
-				}
-				features.delete(features.length() - 1, features.length());
-				version.append("Enabled features : \n" + features.toString());
-
-				((TextView) v).setText(version.toString());
-				break;
-			case R.id.session_info:
-				StringBuilder session_info = new StringBuilder();
-				session_info.append("Session ID : " + aria2.getSessionInfo().sessionId);
-				((TextView) v).setText(session_info.toString());
-				break;
-			case R.id.status:
-				aria2.tellStatus(7, "gid");
-				//((TextView) v).setText(String.valueOf(aria2.tellStatus(7, "gid").gid));
-				break;
-			case R.id.run:
-				((TextView) v)
-						.setText("Return value : "
-								+ aria2.addUri(
-										new DownloadUris(
-												"http://releases.ubuntu.com/11.10/ubuntu-11.10-desktop-i386.iso.torrent"),
-										new Options()));
-				break;
+		
+		try 
+		{
+			switch (v.getId()) {
+				case R.id.version:
+					StringBuilder version = new StringBuilder();
+					Version versionInfo = aria2.getVersion();
+					version.append("Version : " + versionInfo.version + "\n");
+					Object[] values = versionInfo.enabledFeatures;
+					StringBuilder features = new StringBuilder();
+					for (Object value : values) {
+						features.append(value + "\n");
+					}
+					features.delete(features.length() - 1, features.length());
+					version.append("Enabled features : \n" + features.toString());
+					((TextView) v).setText(version.toString());
+					break;
+				case R.id.session_info:
+					StringBuilder session_info = new StringBuilder();
+					session_info.append("Session ID : " + aria2.getSessionInfo().sessionId);
+					((TextView) v).setText(session_info.toString());
+					break;
+				case R.id.status:
+					aria2.tellStatus(7, "gid");
+					//((TextView) v).setText(String.valueOf(aria2.tellStatus(7, "gid").gid));
+					break;
+				case R.id.run:
+					((TextView) v)
+							.setText("Return value : "
+									+ aria2.addUri(
+											new DownloadUris(
+													"http://releases.ubuntu.com/11.10/ubuntu-11.10-desktop-i386.iso.torrent"),
+											new Options()));
+					break;
+			}
+		}catch (Exception e) {
+			Toast.makeText(Aria2Activity.this,"InterNet error!", Toast.LENGTH_LONG).show();
 		}
+
+		
 
 	}
 

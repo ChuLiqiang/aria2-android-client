@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2012 The MusicMod Project
+     Copyright (C) 2010 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
      limitations under the License.
 -->
 
-<resources>
+<transition xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<dimen name="actionbar_height">42dp</dimen>
+	<item android:drawable="@drawable/list_pressed_holo_dark"/>
+	<item android:drawable="@drawable/list_longpressed_holo"/>
 
-</resources>
+</transition>

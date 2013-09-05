@@ -15,23 +15,39 @@
  limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@id/actionbarcompat"
+	android:id="@id/actionbar"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
+	android:baselineAligned="false"
 	android:gravity="center_vertical"
 	android:orientation="horizontal">
 
-	<ImageButton
-		android:id="@id/actionbarcompat_home"
-		android:layout_width="@dimen/actionbarcompat_button_width"
-		android:layout_height="fill_parent"
+	<LinearLayout
+		android:id="@id/actionbar_home"
+		style="?actionBarItemHomeStyle"
 		android:layout_weight="0"
-		android:background="@drawable/actionbarcompat_menu_button"
 		android:gravity="center_vertical|left"
-		android:src="@drawable/ic_menu_actionbarcompat_home"/>
+		android:padding="4dip"
+		android:scaleType="fitCenter">
+
+		<ImageView
+			android:id="@id/actionbar_home_as_up_indicator"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent"
+			android:gravity="center_vertical|left"
+			android:scaleType="fitCenter"
+			android:src="?actionBarHomeAsUpIndicator"/>
+
+		<ImageView
+			android:id="@id/actionbar_icon"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent"
+			android:gravity="center_vertical|left"
+			android:scaleType="fitCenter"/>
+	</LinearLayout>
 
 	<LinearLayout
-		android:id="@id/actionbarcompat_title_view"
+		android:id="@id/actionbar_title_view"
 		android:layout_width="wrap_content"
 		android:layout_height="fill_parent"
 		android:layout_weight="1"
@@ -39,7 +55,8 @@
 		android:orientation="vertical">
 
 		<TextView
-			android:id="@id/actionbarcompat_title"
+			android:id="@id/actionbar_title"
+			style="?attr/actionBarTitleStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:ellipsize="marquee"
@@ -48,7 +65,7 @@
 			android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 		<TextView
-			android:id="@id/actionbarcompat_subtitle"
+			android:id="@id/actionbar_subtitle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:ellipsize="marquee"
@@ -58,8 +75,8 @@
 			android:visibility="gone"/>
 	</LinearLayout>
 
-	<LinearLayout
-		android:id="@id/actionbarcompat_custom_view_container"
+	<FrameLayout
+		android:id="@id/actionbar_custom_view_container"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:layout_weight="1"
@@ -68,7 +85,7 @@
 		android:visibility="gone"/>
 
 	<LinearLayout
-		android:id="@id/actionbarcompat_menu_buttons"
+		android:id="@id/actionbar_menu_buttons"
 		android:layout_width="wrap_content"
 		android:layout_height="fill_parent"
 		android:layout_weight="0"

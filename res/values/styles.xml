@@ -3,37 +3,67 @@
 
 <resources>
 
-	<style name="Theme" parent="android:style/Theme"/>
-
-	<style name="Theme.ActionBarCompat">
-		<item name="android:windowTitleSize">@dimen/actionbarcompat_height</item>
-		<item name="android:windowTitleBackgroundStyle">@style/ActionBarCompat</item>
-		<item name="android:windowContentOverlay">@drawable/actionbarcompat_shadow</item>
+	<style name="Theme.ActionBar" parent="android:Theme">
+		<item name="android:windowTitleSize">@dimen/actionbar_height</item>
+		<item name="android:windowTitleBackgroundStyle">@style/Widget.ActionBar</item>
+		<item name="android:windowContentOverlay">@drawable/actionbar_shadow</item>
+		<item name="android:colorBackgroundCacheHint">#00000000</item>
 
 		<!-- for programmatic instantiation -->
-		<item name="actionbarCompatTitleStyle">@style/ActionBarCompatTitle</item>
-		<item name="actionbarCompatItemStyle">@style/ActionBarCompatItem</item>
-		<item name="actionbarCompatItemHomeStyle">@style/ActionBarCompatHomeItem</item>
-		<item name="actionbarCompatProgressIndicatorStyle">@style/ActionBarCompatProgressIndicator</item>
+		<item name="actionBarTitleStyle">@style/Widget.ActionBarTitle</item>
+		<item name="actionBarItemStyle">@style/Widget.ActionBarItem</item>
+		<item name="actionBarItemHomeStyle">@style/Widget.ActionBarHomeItem</item>
+		<item name="actionBarHomeAsUpIndicator">@drawable/actionbar_back_dark</item>
+		<item name="actionBarBackground">@drawable/actionbar_bg_dark_holo</item>
+		<item name="android:popupBackground">@drawable/popup_holo_dark</item>
 	</style>
 
-	<style name="ActionBarCompat">
-		<item name="android:background">#000000</item>
+	<style name="Theme.ActionBar.Light" parent="android:Theme.Light">
+		<item name="android:windowTitleSize">@dimen/actionbar_height</item>
+		<item name="android:windowTitleBackgroundStyle">@style/Widget.ActionBar</item>
+		<item name="android:windowContentOverlay">@drawable/actionbar_shadow</item>
+		<item name="android:colorBackgroundCacheHint">#00000000</item>
+
+		<!-- for programmatic instantiation -->
+		<item name="actionBarTitleStyle">@style/Widget.ActionBarTitle</item>
+		<item name="actionBarItemStyle">@style/Widget.ActionBarItem.Light</item>
+		<item name="actionBarItemHomeStyle">@style/Widget.ActionBarHomeItem.Light</item>
+		<item name="actionBarHomeAsUpIndicator">@drawable/actionbar_back_light</item>
+		<item name="actionBarBackground">@drawable/actionbar_bg_light_holo</item>
+		<item name="android:popupBackground">@drawable/popup_holo_light</item>
 	</style>
 
-	<style name="ActionBarCompatItemBase">
+	<style name="Theme.ActionBar.Light.DarkActionBar">
+		<item name="android:windowTitleBackgroundStyle">@style/Widget.ActionBar</item>
+		<!-- for programmatic instantiation -->
+		<item name="actionBarTitleStyle">@style/Widget.ActionBarTitle.Inverse</item>
+		<item name="actionBarHomeAsUpIndicator">@drawable/actionbar_back_dark</item>
+		<item name="actionBarBackground">@drawable/actionbar_bg_light_darkactionbar_holo</item>
+	</style>
+
+	<style name="Widget"/>
+
+	<style name="Widget.ActionBar">
+		<item name="android:background">?actionBarBackground</item>
+	</style>
+
+	<style name="Widget.ActionBarItemBase">
 
 		<!-- layout_width/height must be set in code -->
 		<item name="android:scaleType">center</item>
-		<item name="android:background">@drawable/actionbarcompat_menu_button</item>
+		<item name="android:layout_width">@dimen/actionbar_button_width</item>
+		<item name="android:layout_height">fill_parent</item>
+		<item name="android:background">@drawable/actionbar_item_background_holo_dark</item>
 	</style>
 
-	<style name="ActionBarCompatProgressIndicator" parent="android:style/Widget.ProgressBar.Large">
-		<item name="android:indeterminate">true</item>
+	<style name="Widget.ActionBarItemBase.Light">
+
+		<!-- layout_width/height must be set in code -->
+		<item name="android:background">@drawable/actionbar_item_background_holo_light</item>
 	</style>
 
-	<style name="ActionBarCompatTitleBase">
-		<item name="android:id">@id/actionbarcompat_title</item>
+	<style name="Widget.ActionBarTitleBase">
+		<item name="android:id">@id/actionbar_title</item>
 		<!-- layout_width/height/weight must be set in code -->
 		<item name="android:gravity">center_vertical</item>
 		<item name="android:textSize">18sp</item>
@@ -43,12 +73,22 @@
 		<item name="android:ellipsize">marquee</item>
 	</style>
 
-	<style name="ActionBarCompatTitle" parent="style/ActionBarCompatTitleBase">
-		<item name="android:textColor">#ffffff</item>
+	<style name="Widget.ActionBarTitle" parent="@style/Widget.ActionBarTitleBase">
+		<item name="android:textColor">?android:attr/textColorPrimary</item>
 	</style>
 
-	<style name="ActionBarCompatItem" parent="style/ActionBarCompatItemBase"></style>
+	<style name="Widget.ActionBarTitle.Inverse" parent="@style/Widget.ActionBarTitleBase">
+		<item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+	</style>
 
-	<style name="ActionBarCompatHomeItem" parent="style/ActionBarCompatItemBase"></style>
+	<style name="Widget.ActionBarItem.Light" parent="@style/Widget.ActionBarItemBase.Light"></style>
+
+	<style name="Widget.ActionBarHomeItem.Light" parent="@style/Widget.ActionBarItemBase.Light"></style>
+
+	<style name="Widget.ActionBarItem" parent="@style/Widget.ActionBarItemBase"></style>
+
+	<style name="Widget.ActionBarHomeItem" parent="@style/Widget.ActionBarItemBase">
+		<item name="android:layout_width">@dimen/actionbar_button_home_width</item>
+	</style>
 
 </resources>

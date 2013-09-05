@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<item name="menu_refresh" type="id"/>
-	<item name="menu_star" type="id"/>
-	<item name="actionbarcompat" type="id"/>
-	<item name="actionbarcompat_home" type="id"/>
-	<item name="actionbarcompat_menu_refresh" type="id"/>
-	<item name="actionbarcompat_menu_star" type="id"/>
-	<item name="actionbarcompat_menu_refresh_progress" type="id"/>
-	<item name="actionbarcompat_title_view" type="id"/>
-	<item name="actionbarcompat_title" type="id"/>
-	<item name="actionbarcompat_subtitle" type="id"/>
-	<item name="actionbarcompat_custom_view_container" type="id"/>
-	<item name="actionbarcompat_menu_buttons" type="id"/>
+	<item name="actionbar" type="id"/>
+	<item name="actionbar_home" type="id"/>
+	<item name="actionbar_icon" type="id"/>
+	<item name="actionbar_home_as_up_indicator" type="id"/>
+	<item name="actionbar_title_view" type="id"/>
+	<item name="actionbar_title" type="id"/>
+	<item name="actionbar_subtitle" type="id"/>
+	<item name="actionbar_custom_view_container" type="id"/>
+	<item name="actionbar_menu_buttons" type="id"/>
 
 </resources>

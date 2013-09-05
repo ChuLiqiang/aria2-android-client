@@ -7,11 +7,20 @@ public class ActionBarPreferenceActivity extends PreferenceActivity {
 
 	ActionBarCompat mActionBarCompat = ActionBarCompat.getInstance(this);
 
+	public ActionBar getSupportActionBar() {
+		return mActionBarCompat;
+	}
+
+	@Override
+	public void invalidateOptionsMenu() {
+		// super.invalidateOptionsMenu();
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		mActionBarCompat.initCompat();
+		mActionBarCompat.requestCustomTitleView();
 		super.onCreate(savedInstanceState);
-		mActionBarCompat.initActionBar();
+		mActionBarCompat.setCustomTitleView();
 	}
 
 	@Override
@@ -30,10 +39,6 @@ public class ActionBarPreferenceActivity extends PreferenceActivity {
 	public void setTitle(int titleId) {
 		mActionBarCompat.setTitle(titleId);
 		super.setTitle(titleId);
-	}
-
-	public ActionBarCompat getActionBarCompat() {
-		return mActionBarCompat;
 	}
 
 }

@@ -3,7 +3,8 @@ package org.mariotaku.aria2.android;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.mariotaku.actionbarcompat.app.ActionBarActivity;
+
+import org.mariotaku.actionbarcompat.app.ActionBarFragmentActivity;
 import org.mariotaku.aria2.Aria2API;
 import org.mariotaku.aria2.DownloadUris;
 import org.mariotaku.aria2.GlobalStat;
@@ -23,7 +24,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Aria2Activity extends ActionBarActivity implements Constants,
+public class Aria2Activity extends ActionBarFragmentActivity implements Constants,
 		OnClickListener {
 
 	private final static int GLOBAL_STAT_REFRESHED = 0;
@@ -39,7 +40,7 @@ public class Aria2Activity extends ActionBarActivity implements Constants,
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		getActionBarCompat().setIcon(R.drawable.ic_launcher);
+		getSupportActionBar().setIcon(R.drawable.ic_launcher);
 
 		aria2 = new Aria2API(aria2Ip);
 
@@ -156,7 +157,7 @@ public class Aria2Activity extends ActionBarActivity implements Constants,
 					String subtitle = getString(R.string.global_speed_format,
 							CommonUtils.formatSpeedString(stat.downloadSpeed),
 							CommonUtils.formatSpeedString(stat.uploadSpeed));
-					getActionBarCompat().setSubtitle(subtitle);
+					getSupportActionBar().setSubtitle(subtitle);
 					break;
 			}
 		}

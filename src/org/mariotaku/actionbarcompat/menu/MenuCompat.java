@@ -16,6 +16,8 @@
 
 package org.mariotaku.actionbarcompat.menu;
 
+import java.util.ArrayList;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -24,8 +26,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
-
-import java.util.ArrayList;
 
 /**
  * A <em>really</em> dumb implementation of the {@link android.view.Menu}
@@ -46,14 +46,7 @@ public class MenuCompat implements Menu {
 		mItems = new ArrayList<MenuItemCompat>();
 	}
 
-	public Context getContext() {
-		return mContext;
-	}
-
-	public Resources getResources() {
-		return mResources;
-	}
-
+	@Override
 	public MenuItem add(CharSequence title) {
 		return addInternal(0, 0, title);
 	}
@@ -63,12 +56,142 @@ public class MenuCompat implements Menu {
 		return addInternal(0, 0, mResources.getString(titleRes));
 	}
 
+	@Override
 	public MenuItem add(int groupId, int itemId, int order, CharSequence title) {
 		return addInternal(itemId, order, title);
 	}
 
+	@Override
 	public MenuItem add(int groupId, int itemId, int order, int titleRes) {
 		return addInternal(itemId, order, mResources.getString(titleRes));
+	}
+
+	@Override
+	public int addIntentOptions(int i, int i1, int i2, ComponentName componentName, Intent[] intents, Intent intent,
+			int i3, MenuItem[] menuItems) {
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public SubMenu addSubMenu(CharSequence charSequence) {
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public SubMenu addSubMenu(int titleRes) {
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public SubMenu addSubMenu(int groupId, int itemId, int order, CharSequence title) {
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public SubMenu addSubMenu(int groupId, int itemId, int order, int titleRes) {
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public void clear() {
+		mItems.clear();
+	}
+
+	@Override
+	public void close() {
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public MenuItem findItem(int id) {
+		final int size = size();
+		for (int i = 0; i < size; i++) {
+			MenuItemCompat item = mItems.get(i);
+			if (item.getItemId() == id) return item;
+		}
+
+		return null;
+	}
+
+	public int findItemIndex(int id) {
+		final int size = size();
+
+		for (int i = 0; i < size; i++) {
+			MenuItemCompat item = mItems.get(i);
+			if (item.getItemId() == id) return i;
+		}
+
+		return -1;
+	}
+
+	public Context getContext() {
+		return mContext;
+	}
+
+	@Override
+	public MenuItem getItem(int index) {
+		return mItems.get(index);
+	}
+
+	// Unsupported operations.
+
+	public Resources getResources() {
+		return mResources;
+	}
+
+	@Override
+	public boolean hasVisibleItems() {
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public boolean isShortcutKey(int i, KeyEvent keyEvent) {
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public boolean performIdentifierAction(int i, int i1) {
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public boolean performShortcut(int i, KeyEvent keyEvent, int i1) {
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public void removeGroup(int i) {
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public void removeItem(int itemId) {
+		removeItemAtInt(findItemIndex(itemId));
+	}
+
+	@Override
+	public void setGroupCheckable(int i, boolean b, boolean b1) {
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public void setGroupEnabled(int i, boolean b) {
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public void setGroupVisible(int i, boolean b) {
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public void setQwertyMode(boolean b) {
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public int size() {
+		return mItems.size();
 	}
 
 	/**
@@ -80,125 +203,17 @@ public class MenuCompat implements Menu {
 		return item;
 	}
 
-	private static int findInsertIndex(ArrayList<? extends MenuItem> items, int order) {
-		for (int i = items.size() - 1; i >= 0; i--) {
-			MenuItem item = items.get(i);
-			if (item.getOrder() <= order) {
-				return i + 1;
-			}
-		}
-
-		return 0;
-	}
-
-	public int findItemIndex(int id) {
-		final int size = size();
-
-		for (int i = 0; i < size; i++) {
-			MenuItemCompat item = mItems.get(i);
-			if (item.getItemId() == id) {
-				return i;
-			}
-		}
-
-		return -1;
-	}
-
-	public void removeItem(int itemId) {
-		removeItemAtInt(findItemIndex(itemId));
-	}
-
 	private void removeItemAtInt(int index) {
-		if ((index < 0) || (index >= mItems.size())) {
-			return;
-		}
+		if (index < 0 || index >= mItems.size()) return;
 		mItems.remove(index);
 	}
 
-	public void clear() {
-		mItems.clear();
-	}
-
-	public MenuItem findItem(int id) {
-		final int size = size();
-		for (int i = 0; i < size; i++) {
-			MenuItemCompat item = mItems.get(i);
-			if (item.getItemId() == id) {
-				return item;
-			}
+	private static int findInsertIndex(ArrayList<? extends MenuItem> items, int order) {
+		for (int i = items.size() - 1; i >= 0; i--) {
+			MenuItem item = items.get(i);
+			if (item.getOrder() <= order) return i + 1;
 		}
 
-		return null;
-	}
-
-	public int size() {
-		return mItems.size();
-	}
-
-	public MenuItem getItem(int index) {
-		return mItems.get(index);
-	}
-
-	// Unsupported operations.
-
-	public SubMenu addSubMenu(CharSequence charSequence) {
-		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-	}
-
-	public SubMenu addSubMenu(int titleRes) {
-		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-	}
-
-	public SubMenu addSubMenu(int groupId, int itemId, int order, CharSequence title) {
-		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-	}
-
-	public SubMenu addSubMenu(int groupId, int itemId, int order, int titleRes) {
-		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-	}
-
-	public int addIntentOptions(int i, int i1, int i2, ComponentName componentName,
-			Intent[] intents, Intent intent, int i3, MenuItem[] menuItems) {
-		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-	}
-
-	public void removeGroup(int i) {
-		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-	}
-
-	public void setGroupCheckable(int i, boolean b, boolean b1) {
-		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-	}
-
-	public void setGroupVisible(int i, boolean b) {
-		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-	}
-
-	public void setGroupEnabled(int i, boolean b) {
-		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-	}
-
-	public boolean hasVisibleItems() {
-		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-	}
-
-	public void close() {
-		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-	}
-
-	public boolean performShortcut(int i, KeyEvent keyEvent, int i1) {
-		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-	}
-
-	public boolean isShortcutKey(int i, KeyEvent keyEvent) {
-		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-	}
-
-	public boolean performIdentifierAction(int i, int i1) {
-		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-	}
-
-	public void setQwertyMode(boolean b) {
-		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+		return 0;
 	}
 }

@@ -49,104 +49,198 @@ public class MenuItemCompat implements MenuItem {
 		mTitle = title;
 	}
 
+	@Override
+	public boolean collapseActionView() {
+		// Noop
+		return false;
+	}
+
+	@Override
+	public boolean expandActionView() {
+		// Noop
+		return false;
+	}
+
+	@Override
+	public ActionProvider getActionProvider() {
+		// Noop
+		return null;
+	}
+
+	@Override
+	public View getActionView() {
+		// Noop
+		return null;
+	}
+
+	@Override
+	public char getAlphabeticShortcut() {
+		// Noop
+		return 0;
+	}
+
+	@Override
+	public int getGroupId() {
+		// Noop
+		return 0;
+	}
+
+	@Override
+	public Drawable getIcon() {
+		if (mIconDrawable != null) return mIconDrawable;
+
+		if (mIconResId != 0) return mMenu.getResources().getDrawable(mIconResId);
+
+		return null;
+	}
+
+	@Override
+	public Intent getIntent() {
+		// Noop
+		return null;
+	}
+
+	@Override
 	public int getItemId() {
 		return mId;
 	}
 
+	@Override
+	public ContextMenu.ContextMenuInfo getMenuInfo() {
+		// Noop
+		return null;
+	}
+
+	@Override
+	public char getNumericShortcut() {
+		// Noop
+		return 0;
+	}
+
+	@Override
 	public int getOrder() {
 		return mOrder;
 	}
 
-	public MenuItem setTitle(CharSequence title) {
-		mTitle = title;
-		return this;
+	// No-op operations. We use no-ops to allow inflation from menu XML.
+
+	@Override
+	public SubMenu getSubMenu() {
+		// Noop
+		return null;
 	}
 
-	public MenuItem setTitle(int titleRes) {
-		return setTitle(mMenu.getContext().getString(titleRes));
-	}
-
+	@Override
 	public CharSequence getTitle() {
 		return mTitle;
 	}
 
-	public MenuItem setTitleCondensed(CharSequence title) {
-		mTitleCondensed = title;
-		return this;
-	}
-
+	@Override
 	public CharSequence getTitleCondensed() {
 		return mTitleCondensed != null ? mTitleCondensed : mTitle;
 	}
 
+	@Override
+	public boolean hasSubMenu() {
+		// Noop
+		return false;
+	}
+
+	@Override
+	public boolean isActionViewExpanded() {
+		// Noop
+		return false;
+	}
+
+	@Override
+	public boolean isCheckable() {
+		// Noop
+		return false;
+	}
+
+	@Override
+	public boolean isChecked() {
+		// Noop
+		return false;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return mEnabled;
+	}
+
+	@Override
+	public boolean isVisible() {
+		// Noop
+		return true;
+	}
+
+	@Override
+	public MenuItem setActionProvider(ActionProvider actionProvider) {
+		// Noop
+		return this;
+	}
+
+	@Override
+	public MenuItem setActionView(int i) {
+		// Noop
+		return this;
+	}
+
+	@Override
+	public MenuItem setActionView(View view) {
+		// Noop
+		return this;
+	}
+
+	@Override
+	public MenuItem setAlphabeticShortcut(char c) {
+		// Noop
+		return this;
+	}
+
+	@Override
+	public MenuItem setCheckable(boolean b) {
+		// Noop
+		return this;
+	}
+
+	@Override
+	public MenuItem setChecked(boolean b) {
+		// Noop
+		return this;
+	}
+
+	@Override
+	public MenuItem setEnabled(boolean enabled) {
+		mEnabled = enabled;
+		return this;
+	}
+
+	@Override
 	public MenuItem setIcon(Drawable icon) {
 		mIconResId = 0;
 		mIconDrawable = icon;
 		return this;
 	}
 
+	@Override
 	public MenuItem setIcon(int iconResId) {
 		mIconDrawable = null;
 		mIconResId = iconResId;
 		return this;
 	}
 
-	public Drawable getIcon() {
-		if (mIconDrawable != null) {
-			return mIconDrawable;
-		}
-
-		if (mIconResId != 0) {
-			return mMenu.getResources().getDrawable(mIconResId);
-		}
-
-		return null;
-	}
-
-	public MenuItem setEnabled(boolean enabled) {
-		mEnabled = enabled;
-		return this;
-	}
-
-	public boolean isEnabled() {
-		return mEnabled;
-	}
-
-	// No-op operations. We use no-ops to allow inflation from menu XML.
-
-	public int getGroupId() {
-		// Noop
-		return 0;
-	}
-
-	public View getActionView() {
-		// Noop
-		return null;
-	}
-
-	public MenuItem setActionProvider(ActionProvider actionProvider) {
+	@Override
+	public MenuItem setIntent(Intent intent) {
 		// Noop
 		return this;
 	}
 
-	public ActionProvider getActionProvider() {
+	@Override
+	public MenuItem setNumericShortcut(char c) {
 		// Noop
-		return null;
-	}
-
-	public boolean expandActionView() {
-		// Noop
-		return false;
-	}
-
-	public boolean collapseActionView() {
-		// Noop
-		return false;
-	}
-
-	public boolean isActionViewExpanded() {
-		// Noop
-		return false;
+		return this;
 	}
 
 	@Override
@@ -155,106 +249,48 @@ public class MenuItemCompat implements MenuItem {
 		return this;
 	}
 
-	public MenuItem setIntent(Intent intent) {
-		// Noop
-		return this;
-	}
-
-	public Intent getIntent() {
-		// Noop
-		return null;
-	}
-
-	public MenuItem setShortcut(char c, char c1) {
-		// Noop
-		return this;
-	}
-
-	public MenuItem setNumericShortcut(char c) {
-		// Noop
-		return this;
-	}
-
-	public char getNumericShortcut() {
-		// Noop
-		return 0;
-	}
-
-	public MenuItem setAlphabeticShortcut(char c) {
-		// Noop
-		return this;
-	}
-
-	public char getAlphabeticShortcut() {
-		// Noop
-		return 0;
-	}
-
-	public MenuItem setCheckable(boolean b) {
-		// Noop
-		return this;
-	}
-
-	public boolean isCheckable() {
-		// Noop
-		return false;
-	}
-
-	public MenuItem setChecked(boolean b) {
-		// Noop
-		return this;
-	}
-
-	public boolean isChecked() {
-		// Noop
-		return false;
-	}
-
-	public MenuItem setVisible(boolean b) {
-		// Noop
-		return this;
-	}
-
-	public boolean isVisible() {
-		// Noop
-		return true;
-	}
-
-	public boolean hasSubMenu() {
-		// Noop
-		return false;
-	}
-
-	public SubMenu getSubMenu() {
-		// Noop
-		return null;
-	}
-
+	@Override
 	public MenuItem setOnMenuItemClickListener(OnMenuItemClickListener onMenuItemClickListener) {
 		// Noop
 		return this;
 	}
 
-	public ContextMenu.ContextMenuInfo getMenuInfo() {
+	@Override
+	public MenuItem setShortcut(char c, char c1) {
 		// Noop
-		return null;
+		return this;
 	}
 
+	@Override
 	public void setShowAsAction(int i) {
 		// Noop
 	}
 
+	@Override
 	public MenuItem setShowAsActionFlags(int i) {
 		// Noop
 		return null;
 	}
 
-	public MenuItem setActionView(View view) {
-		// Noop
+	@Override
+	public MenuItem setTitle(CharSequence title) {
+		mTitle = title;
 		return this;
 	}
 
-	public MenuItem setActionView(int i) {
+	@Override
+	public MenuItem setTitle(int titleRes) {
+		return setTitle(mMenu.getContext().getString(titleRes));
+	}
+
+	@Override
+	public MenuItem setTitleCondensed(CharSequence title) {
+		mTitleCondensed = title;
+		return this;
+	}
+
+	@Override
+	public MenuItem setVisible(boolean b) {
 		// Noop
 		return this;
 	}

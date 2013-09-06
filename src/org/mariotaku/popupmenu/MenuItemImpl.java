@@ -9,17 +9,17 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 
-final class MenuItemImpl implements MenuItem {
+public class MenuItemImpl implements MenuItem {
 
 	private CharSequence title;
 	private int groupId, itemId, order;
 	private Drawable icon;
 	private SubMenu subMenu;
-	private final Context mContext;
-	private boolean visible, enabled, checkable, checked;
+	private final Context context;
+	private boolean visible = true, enabled = true, checkable, checked;
 
 	public MenuItemImpl(Context context) {
-		mContext = context;
+		this.context = context;
 	}
 
 	@Override
@@ -107,7 +107,6 @@ final class MenuItemImpl implements MenuItem {
 
 	@Override
 	public boolean hasSubMenu() {
-		// TODO Auto-generated method stub
 		return subMenu != null;
 	}
 
@@ -119,25 +118,21 @@ final class MenuItemImpl implements MenuItem {
 
 	@Override
 	public boolean isCheckable() {
-		// TODO Auto-generated method stub
 		return checkable;
 	}
 
 	@Override
 	public boolean isChecked() {
-		// TODO Auto-generated method stub
 		return checked;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
 		return enabled;
 	}
 
 	@Override
 	public boolean isVisible() {
-		// TODO Auto-generated method stub
 		return visible;
 	}
 
@@ -191,7 +186,7 @@ final class MenuItemImpl implements MenuItem {
 
 	@Override
 	public MenuItem setIcon(int iconRes) {
-		icon = iconRes == 0 ? null : mContext.getResources().getDrawable(iconRes);
+		icon = iconRes == 0 ? null : context.getResources().getDrawable(iconRes);
 		return this;
 	}
 
@@ -245,7 +240,7 @@ final class MenuItemImpl implements MenuItem {
 
 	@Override
 	public MenuItem setTitle(int titleRes) {
-		title = mContext.getString(titleRes);
+		title = context.getString(titleRes);
 		return this;
 	}
 
@@ -285,6 +280,10 @@ final class MenuItemImpl implements MenuItem {
 		this.subMenu = subMenu;
 		this.subMenu.setHeaderTitle(getTitle());
 		return this;
+	}
+
+	public static MenuItem createItem(Context context, int id) {
+		return new MenuItemImpl(context).setItemId(id);
 	}
 
 }

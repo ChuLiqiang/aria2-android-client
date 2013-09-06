@@ -16,16 +16,7 @@
 
 <resources>
 
-	<style name="Theme.ActionBar" parent="android:Theme.Holo">
-		<item name="actionBarBackground">@drawable/actionbar_bg_dark_holo</item>
-	</style>
-
-	<style name="Theme.ActionBar.Light" parent="android:Theme.Holo.Light">
-		<item name="actionBarBackground">@drawable/actionbar_bg_light_holo</item>
-	</style>
-
-	<style name="Theme.ActionBar.Light.DarkActionBar" parent="android:Theme.Holo.Light.DarkActionBar">
-		<item name="actionBarBackground">@drawable/actionbar_bg_light_darkactionbar_holo</item>
-	</style>
+	<attr name="menuBarBackground" format="reference"/>
+	<attr name="popupBackground" format="reference"/>
 
 </resources>

@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 
-public class SubMenuImpl extends MenuImpl implements SubMenu {
+public final class SubMenuImpl extends MenuImpl implements SubMenu {
 
 	private final List<MenuItem> mMenuItems;
 	private final MenuAdapter mAdapter;
@@ -138,6 +138,11 @@ public class SubMenuImpl extends MenuImpl implements SubMenu {
 	}
 
 	@Override
+	public List<MenuItem> getMenuItems() {
+		return mMenuItems;
+	}
+
+	@Override
 	public boolean hasVisibleItems() {
 		for (MenuItem item : mMenuItems) {
 			if (item.isVisible()) return true;
@@ -245,11 +250,6 @@ public class SubMenuImpl extends MenuImpl implements SubMenu {
 	public int size() {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	List<MenuItem> getMenuItems() {
-		return mMenuItems;
 	}
 
 }

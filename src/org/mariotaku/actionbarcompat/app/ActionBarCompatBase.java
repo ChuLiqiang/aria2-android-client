@@ -1,13 +1,13 @@
 package org.mariotaku.actionbarcompat.app;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 
-import org.mariotaku.actionbarcompat.menu.MenuCompat;
-import org.mariotaku.actionbarcompat.menu.MenuItemCompat;
 import org.mariotaku.aria2.android.R;
+import org.mariotaku.popupmenu.MenuImpl;
+import org.mariotaku.popupmenu.MenuItemImpl;
+import org.mariotaku.popupmenu.PopupMenu;
+import org.mariotaku.popupmenu.PopupMenu.OnMenuItemClickListener;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -24,17 +24,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 import android.widget.ImageView.ScaleType;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 class ActionBarCompatBase extends ActionBarCompat {
 
@@ -42,12 +39,20 @@ class ActionBarCompatBase extends ActionBarCompat {
 	private static final String MENU_ATTR_ID = "id";
 	private static final String MENU_ATTR_SHOW_AS_ACTION = "showAsAction";
 
-	private Activity mActivity;
+	private final Activity mActivity;
 	private View mActionBarView, mCustomView;
-	private ViewGroup mCustomViewContainer;
+	private ViewGroup mCustomViewContainer, mActionMenuView;
+	private final Menu mRealMenu, mActionBarMenu;
 
 	public ActionBarCompatBase(Activity activity) {
 		mActivity = activity;
+		mActionBarMenu = new MenuImpl(activity);
+		mRealMenu = new MenuImpl(mActivity);
+	}
+
+	public void createActionBarMenu() {
+		mActivity.onCreatePanelMenu(Window.FEATURE_OPTIONS_PANEL, mRealMenu);
+		mActivity.onPrepareOptionsMenu(mRealMenu);
 	}
 
 	@Override
@@ -71,7 +76,7 @@ class ActionBarCompatBase extends ActionBarCompat {
 	 */
 	@Override
 	public MenuInflater getMenuInflater(MenuInflater superMenuInflater) {
-		return new MenuInflaterCompat(mActivity, superMenuInflater);
+		return new MenuInflaterWrapper(mActivity, superMenuInflater);
 	}
 
 	@Override
@@ -112,25 +117,27 @@ class ActionBarCompatBase extends ActionBarCompat {
 	 */
 	@Override
 	public boolean hideMenuInActionBar(Menu menu) {
-		// Hides on-screen action items from the options menu.
 		return true;
 	}
 
-	public boolean hideInRealMenu(MenuItem item) {
-		// Hides on-screen action items from the options menu.
-		item.setVisible(false);
-		return true;
-	}
-	
 	@Override
-	public boolean requestCustomTitleView() {
-		mActivity.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-		return true;
+	public void invalidateOptionsMenu() {
+		clearMenuButtons();
+		for (MenuItem item : ((MenuImpl) mActionBarMenu).getMenuItems()) {
+			addActionItemCompatFromMenuItem(item);
+		}
+		mActivity.onPrepareOptionsMenu(new SupportMenu(mActivity));
 	}
 
 	@Override
 	public boolean isShowing() {
 		return mActionBarView.getVisibility() == View.VISIBLE;
+	}
+
+	@Override
+	public boolean requestCustomTitleView() {
+		mActivity.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+		return true;
 	}
 
 	@Override
@@ -142,15 +149,14 @@ class ActionBarCompatBase extends ActionBarCompat {
 		mActivity.getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.actionbar);
 		mActionBarView = mActivity.findViewById(R.id.actionbar);
 
+		mActionMenuView = (ViewGroup) mActionBarView.findViewById(R.id.actionbar_menu_buttons);
 		mCustomViewContainer = (ViewGroup) mActivity.findViewById(R.id.actionbar_custom_view_container);
 		setTitle(mActivity.getTitle());
 
 		// Add Home button
 		setHomeButton();
 
-		MenuCompat menu = new MenuCompat(mActivity);
-		mActivity.onCreatePanelMenu(Window.FEATURE_OPTIONS_PANEL, menu);
-		mActivity.onCreateOptionsMenu(menu);
+		createActionBarMenu();
 		return true;
 	}
 
@@ -159,6 +165,7 @@ class ActionBarCompatBase extends ActionBarCompat {
 		setCustomView(mActivity.getLayoutInflater().inflate(resId, null));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void setCustomView(View view) {
 		setCustomView(view, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
@@ -279,15 +286,16 @@ class ActionBarCompatBase extends ActionBarCompat {
 	 */
 	@SuppressWarnings("deprecation")
 	private View addActionItemCompatFromMenuItem(final MenuItem item) {
-		final LinearLayout actionMenu = (LinearLayout) mActionBarView.findViewById(R.id.actionbar_menu_buttons);
 
-		if (actionMenu == null) return null;
+		if (mActionMenuView == null || item == null) return null;
 
 		// Create the button
 		ImageButton actionButton = new ImageButton(mActivity, null, R.attr.actionBarItemStyle);
+		// actionButton.setVisibility(item.isVisible() ? View.VISIBLE :
+		// View.GONE);
 		actionButton.setLayoutParams(new ViewGroup.LayoutParams((int) mActivity.getResources().getDimension(
 				R.dimen.actionbar_button_width), ViewGroup.LayoutParams.FILL_PARENT));
-
+		actionButton.setId(item.getItemId());
 		actionButton.setImageDrawable(item.getIcon());
 		actionButton.setScaleType(ScaleType.CENTER);
 		actionButton.setContentDescription(item.getTitle());
@@ -296,15 +304,29 @@ class ActionBarCompatBase extends ActionBarCompat {
 
 			@Override
 			public void onClick(View view) {
+				if (!item.isEnabled()) return;
+				if (item.hasSubMenu()) {
+					PopupMenu popup = new PopupMenu(mActivity, view);
+					popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+						@Override
+						public boolean onMenuItemClick(MenuItem item) {
+							return mActivity.onMenuItemSelected(Window.FEATURE_OPTIONS_PANEL, item);
+						}
+
+					});
+					popup.setMenu(item.getSubMenu());
+					popup.show();
+				}
 				mActivity.onMenuItemSelected(Window.FEATURE_OPTIONS_PANEL, item);
 			}
 		});
 		actionButton.setOnLongClickListener(new View.OnLongClickListener() {
-			
+
 			@Override
 			public boolean onLongClick(View v) {
 				if (item.getItemId() == android.R.id.home) return false;
-				
+
 				Toast t = Toast.makeText(mActivity, item.getTitle(), Toast.LENGTH_SHORT);
 
 				final int[] screenPos = new int[2];
@@ -328,21 +350,18 @@ class ActionBarCompatBase extends ActionBarCompat {
 				return true;
 			}
 		});
-		
 
-		actionMenu.addView(actionButton);
+		mActionMenuView.addView(actionButton);
 		return actionButton;
 	}
-	
+
 	private void clearMenuButtons() {
-		final LinearLayout actionMenu = (LinearLayout) mActionBarView.findViewById(R.id.actionbar_menu_buttons);
-		actionMenu.removeAllViews();
+		mActionMenuView.removeAllViews();
 	}
 
 	private void setHomeButton() {
 		// Add Home button
-		MenuCompat tempMenu = new MenuCompat(mActivity);
-		final MenuItem homeItem = new MenuItemCompat(tempMenu, android.R.id.home, 0, "Home");
+		final MenuItem homeItem = MenuItemImpl.createItem(mActivity, android.R.id.home);
 		View homeButton = mActionBarView.findViewById(R.id.actionbar_home);
 		PackageManager pm = mActivity.getPackageManager();
 		try {
@@ -360,14 +379,25 @@ class ActionBarCompatBase extends ActionBarCompat {
 		});
 	}
 
+	@Override
+	void hideInRealMenu(Menu menu) {
+		if (menu instanceof MenuImpl) return;
+		for (MenuItem item : ((MenuImpl) mActionBarMenu).getMenuItems()) {
+			MenuItem realItem = menu.findItem(item.getItemId());
+			if (realItem != null) {
+				realItem.setVisible(false);
+			}
+		}
+	}
+
 	/**
 	 * A {@link android.view.MenuInflater} that reads action bar metadata.
 	 */
-	private class MenuInflaterCompat extends MenuInflater {
+	private class MenuInflaterWrapper extends MenuInflater {
 
 		MenuInflater mInflater;
 
-		public MenuInflaterCompat(Context context, MenuInflater inflater) {
+		public MenuInflaterWrapper(Context context, MenuInflater inflater) {
 			super(context);
 			mInflater = inflater;
 		}
@@ -387,6 +417,7 @@ class ActionBarCompatBase extends ActionBarCompat {
 		 */
 		private void loadActionBarMetadata(Menu menu, int menuResId) {
 			clearMenuButtons();
+			mActionBarMenu.clear();
 			XmlResourceParser parser = null;
 			try {
 				parser = mActivity.getResources().getXml(menuResId);
@@ -410,11 +441,16 @@ class ActionBarCompatBase extends ActionBarCompat {
 
 							showAsAction = parser
 									.getAttributeIntValue(MENU_RES_NAMESPACE, MENU_ATTR_SHOW_AS_ACTION, -1);
-							if (showAsAction == MenuItem.SHOW_AS_ACTION_ALWAYS
-									|| showAsAction == MenuItem.SHOW_AS_ACTION_IF_ROOM) {
-								addActionItemCompatFromMenuItem(menu.findItem(itemId));
-								hideInRealMenu(menu.findItem(itemId));
+
+							MenuItem item = menu.findItem(itemId);
+							boolean isShowAsAction = showAsAction == MenuItem.SHOW_AS_ACTION_ALWAYS
+									|| showAsAction == MenuItem.SHOW_AS_ACTION_IF_ROOM
+									|| showAsAction == MenuItem.SHOW_AS_ACTION_WITH_TEXT;
+							if (isShowAsAction) {
+								mActionBarMenu.add(item.getGroupId(), item.getItemId(), item.getOrder(),
+										item.getTitle()).setIcon(item.getIcon());
 							}
+							item.setVisible(!isShowAsAction);
 							break;
 
 						case XmlPullParser.END_DOCUMENT:
@@ -433,6 +469,111 @@ class ActionBarCompatBase extends ActionBarCompat {
 					parser.close();
 				}
 			}
+			invalidateOptionsMenu();
 		}
+	}
+
+	private class SupportMenu extends MenuImpl {
+
+		private final Context context;
+
+		public SupportMenu(Context context) {
+			super(context);
+			this.context = context;
+		}
+
+		@Override
+		public MenuItem findItem(int id) {
+			for (MenuItem item : ((MenuImpl) mRealMenu).getMenuItems()) {
+				if (item.getItemId() == id) return new SupportMenuItem(context, id);
+			}
+			return null;
+		}
+
+	}
+
+	private class SupportMenuItem extends MenuItemImpl {
+
+		private final int itemId;
+
+		public SupportMenuItem(Context context, int itemId) {
+			super(context);
+			this.itemId = itemId;
+		}
+
+		@Override
+		public MenuItem setEnabled(boolean enabled) {
+			final MenuItem item = mActionBarMenu.findItem(itemId);
+			final MenuItem realItem = mRealMenu.findItem(itemId);
+			if (item != null) {
+				item.setEnabled(enabled);
+			}
+			if (realItem != null) {
+				realItem.setEnabled(enabled);
+			}
+			return this;
+		}
+
+		@Override
+		public MenuItem setIcon(int iconRes) {
+			final MenuItem item = mActionBarMenu.findItem(itemId);
+			final MenuItem realItem = mRealMenu.findItem(itemId);
+			if (item != null) {
+				item.setIcon(iconRes);
+			}
+			if (realItem != null) {
+				realItem.setIcon(iconRes);
+			}
+			return this;
+		}
+
+		@Override
+		public MenuItem setTitle(int titleRes) {
+			final MenuItem item = mActionBarMenu.findItem(itemId);
+			final MenuItem realItem = mRealMenu.findItem(itemId);
+			if (item != null) {
+				item.setTitle(titleRes);
+			}
+			if (realItem != null) {
+				realItem.setTitle(titleRes);
+			}
+			return this;
+		}
+
+		@Override
+		public MenuItem setVisible(boolean visible) {
+			final MenuItem item = mActionBarMenu.findItem(itemId);
+			final MenuItem realItem = mRealMenu.findItem(itemId);
+			if (item != null) {
+				item.setVisible(visible);
+				View view = mActionMenuView.findViewById(itemId);
+				if (view != null) {
+					view.setVisibility(visible ? View.VISIBLE : View.GONE);
+				}
+				if (realItem != null) {
+					realItem.setVisible(false);
+				}
+				return this;
+			}
+			if (realItem != null) {
+				realItem.setVisible(visible);
+			}
+			return this;
+		}
+
+	}
+
+	@Override
+	void setProgressBarIndeterminateVisibility(boolean visible) {
+		if(mProgressBarIndeterminateEnabled )mActionBarView.findViewById(R.id.actionbar_progress_indeterminate).setVisibility(visible ? View.VISIBLE : View.GONE);
+		
+	}
+
+	private boolean mProgressBarIndeterminateEnabled = false;
+	
+	@Override
+	void setProgressBarIndeterminateEnabled(boolean enabled) {
+		mProgressBarIndeterminateEnabled = enabled;
+		
 	}
 }

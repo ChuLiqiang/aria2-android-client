@@ -1,11 +1,13 @@
 package org.mariotaku.actionbarcompat.app;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.ViewGroup.LayoutParams;
 
 public class ActionBarFragmentActivity extends FragmentActivity {
@@ -23,12 +25,27 @@ public class ActionBarFragmentActivity extends FragmentActivity {
 			mActionBarInitialized = mActionBarCompat.setCustomTitleView();
 		}
 		return mActionBarCompat;
-		
+
+	}
+	
+	public void requestSupportWindowFeature(int featureId) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			requestWindowFeature(featureId);
+		} else {
+			switch (featureId) {
+				case Window.FEATURE_INDETERMINATE_PROGRESS:{
+					mActionBarCompat.setProgressBarIndeterminateEnabled(true);
+				}
+			}
+		}
 	}
 
-	@Override
-	public void invalidateOptionsMenu() {
-		//super.invalidateOptionsMenu();
+	public void invalidateSupportOptionsMenu() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			new MethodsCompat().invalidateOptionsMenu(this);
+		} else {
+			mActionBarCompat.invalidateOptionsMenu();
+		}
 	}
 
 	@Override
@@ -37,10 +54,6 @@ public class ActionBarFragmentActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 	}
 
-	public void setSupportProgressBarIndeterminateVisibility(boolean visible) {
-
-	}
-	
 	/**
 	 * Base action bar-aware implementation for
 	 * {@link Activity#onCreateOptionsMenu(android.view.Menu)}.
@@ -61,6 +74,13 @@ public class ActionBarFragmentActivity extends FragmentActivity {
 			mActionBarInitialized = mActionBarCompat.setCustomTitleView();
 		}
 		super.onPostCreate(savedInstanceState);
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		mActionBarCompat.hideInRealMenu(menu);
+		return true;
 	}
 
 	@Override
@@ -91,6 +111,10 @@ public class ActionBarFragmentActivity extends FragmentActivity {
 		if (!mActionBarInitialized) {
 			mActionBarInitialized = mActionBarCompat.setCustomTitleView();
 		}
+	}
+
+	public void setSupportProgressBarIndeterminateVisibility(boolean visible) {
+		mActionBarCompat.setProgressBarIndeterminateVisibility(visible);
 	}
 
 	@Override

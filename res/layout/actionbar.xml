@@ -36,7 +36,8 @@
 			android:layout_height="fill_parent"
 			android:gravity="center_vertical|left"
 			android:scaleType="fitCenter"
-			android:src="?actionBarHomeAsUpIndicator"/>
+			android:src="?actionBarHomeAsUpIndicator"
+			android:visibility="gone"/>
 
 		<ImageView
 			android:id="@id/actionbar_icon"
@@ -82,6 +83,16 @@
 		android:layout_weight="1"
 		android:gravity="center_vertical"
 		android:orientation="horizontal"
+		android:visibility="gone"/>
+
+	<ProgressBar
+		android:id="@id/actionbar_progress_indeterminate"
+		style="?actionBarIndeterminateProgressStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_vertical"
+		android:layout_weight="0"
+		android:indeterminateOnly="true"
 		android:visibility="gone"/>
 
 	<LinearLayout

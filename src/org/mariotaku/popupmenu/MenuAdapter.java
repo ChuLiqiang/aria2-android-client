@@ -1,10 +1,8 @@
 package org.mariotaku.popupmenu;
 
-import java.util.Comparator;
 import java.util.List;
 
 import org.mariotaku.aria2.android.R;
-
 
 
 import android.content.Context;
@@ -19,16 +17,8 @@ final class MenuAdapter extends ArrayAdapter<MenuItem> {
 
 	private Menu mMenu;
 
-	private static final Comparator<MenuItem> ORDER_COMPARATOR = new Comparator<MenuItem>() {
-
-		@Override
-		public int compare(MenuItem lhs, MenuItem rhs) {
-			return rhs.getOrder() - lhs.getOrder();
-		}
-	};
-
 	public MenuAdapter(Context context) {
-		super(context, R.layout.menu_item);
+		super(context, R.layout.menu_list_item);
 	}
 
 	@Override
@@ -60,7 +50,6 @@ final class MenuAdapter extends ArrayAdapter<MenuItem> {
 				add(item);
 			}
 		}
-		sort(ORDER_COMPARATOR);
 	}
 
 }

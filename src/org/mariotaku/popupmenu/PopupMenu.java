@@ -1,7 +1,6 @@
 package org.mariotaku.popupmenu;
 
 
-
 import org.mariotaku.aria2.android.R;
 
 import android.content.Context;
@@ -15,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
@@ -36,13 +34,14 @@ import android.widget.PopupWindow.OnDismissListener;
  */
 public class PopupMenu implements OnDismissListener, OnItemClickListener, OnTouchListener {
 	private ListView mListView;
-	private View mRootView, mAnchorView;
+	private View mRootView;
 
 	private OnMenuItemClickListener mItemClickListener;
 	private OnDismissListener mDismissListener;
 
 	private Menu mMenu;
-	private Context mContext;
+	private final Context mContext;
+	private final View mView;
 	private PopupWindow mWindow;
 	private WindowManager mWindowManager;
 
@@ -52,15 +51,19 @@ public class PopupMenu implements OnDismissListener, OnItemClickListener, OnTouc
 
 	private MenuAdapter mAdapter;
 
+	private boolean mIsShowing;
+
 	/**
 	 * Constructor for default vertical layout
 	 * 
 	 * @param context Context
 	 */
-	public PopupMenu(Context context) {
+	public PopupMenu(Context context, View view) {
 		mContext = context;
+		mView = view;
 		mWindow = new PopupWindow(context);
 		mWindow.setTouchInterceptor(this);
+		mWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NOT_NEEDED);
 		mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 
 		mAdapter = new MenuAdapter(context);
@@ -68,12 +71,28 @@ public class PopupMenu implements OnDismissListener, OnItemClickListener, OnTouc
 		setView();
 
 	}
+	
+	public void setAnchorByTouch(boolean enabled) {
+		mView.setOnTouchListener(enabled ? mViewTouchListener : null);
+	}
 
+	private OnTouchListener mViewTouchListener = new OnTouchListener() {
+
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			return true;
+		}
+		
+	};
+	
 	/**
 	 * Dismiss the popup window.
 	 */
 	public void dismiss() {
-		mWindow.dismiss();
+		if (mIsShowing) {
+			mWindow.dismiss();
+		}
+		mIsShowing = false;
 	}
 
 	public Menu getMenu() {
@@ -98,7 +117,7 @@ public class PopupMenu implements OnDismissListener, OnItemClickListener, OnTouc
 		MenuItem item = mAdapter.getItem(position);
 		if (item.hasSubMenu()) {
 			dismiss();
-			showSubMenu(mAnchorView, item.getSubMenu());
+			showMenu(item.getSubMenu(), false, false);
 		} else {
 			if (mItemClickListener != null) {
 				mItemClickListener.onMenuItemClick(item);
@@ -116,6 +135,10 @@ public class PopupMenu implements OnDismissListener, OnItemClickListener, OnTouc
 		}
 
 		return false;
+	}
+
+	public void setMenu(Menu menu) {
+		mMenu = menu;
 	}
 
 	/**
@@ -147,38 +170,16 @@ public class PopupMenu implements OnDismissListener, OnItemClickListener, OnTouc
 		mItemClickListener = listener;
 	}
 
-	/**
-	 * Set root view.
-	 * 
-	 */
-	public void setView() {
-		mRootView = LayoutInflater.from(mContext).inflate(R.layout.popup_list, null);
-		mListView = (ListView) mRootView.findViewById(android.R.id.list);
-
-		// This was previously defined on show() method, moved here to prevent
-		// force close that occured
-		// when tapping fastly on a view to show quickaction dialog.
-		// Thanx to zammbi (github.com/zammbi)
-		mRootView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-
-		mListView.setAdapter(mAdapter);
-		mListView.setOnItemClickListener(this);
-		mWindow.setContentView(mRootView);
+	public void show() {
+		show(false);
 	}
 
-	public void show(View anchor) {
-		showMenu(anchor, getMenu());
-	}
+	public void show(boolean above_view) {
+		if (mIsShowing) {
+			dismiss();
+		}
 
-	public void showMenu(View anchor, Menu menu) {
-		mAdapter.setMenu(menu);
-		mAnchorView = anchor;
-		setAnchor(anchor);
-		mWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, mPosX, mPosY);
-	}
-
-	public void showSubMenu(View anchor, SubMenu subMenu) {
-		showMenu(anchor, subMenu);
+		showMenu(getMenu(), true, above_view);
 	}
 
 	/**
@@ -200,19 +201,17 @@ public class PopupMenu implements OnDismissListener, OnItemClickListener, OnTouc
 	}
 
 	@SuppressWarnings("deprecation")
-	private void setAnchor(View anchor) {
+	private void setAnchor(View anchor, boolean above_view) {
 		preShow();
 
 		mDidAction = false;
 
-		int[] location = new int[2];
+		final int[] location = new int[2];
 
 		anchor.getLocationOnScreen(location);
 
 		Rect anchorRect = new Rect(location[0], location[1], location[0] + anchor.getWidth(), location[1]
 				+ anchor.getHeight());
-
-		int rootHeight = mRootView.getMeasuredHeight();
 
 		if (rootWidth == 0) {
 			rootWidth = mRootView.getMeasuredWidth();
@@ -238,18 +237,9 @@ public class PopupMenu implements OnDismissListener, OnItemClickListener, OnTouc
 		int dyTop = anchorRect.top;
 		int dyBottom = screenHeight - anchorRect.bottom;
 
-		boolean onTop = dyTop > dyBottom ? true : false;
+		boolean onTop = dyTop > dyBottom;
 
-		if (onTop) {
-			if (rootHeight > dyTop) {
-				mPosY = 15;
-			} else {
-				mPosY = anchorRect.top - rootHeight;
-			}
-		} else {
-			mPosY = anchorRect.bottom;
-
-		}
+		mPosY = anchorRect.top - (above_view ? anchor.getHeight() * 2 : 0);
 
 		setAnimationStyle(screenWidth, anchorRect.centerX(), onTop);
 	}
@@ -272,6 +262,34 @@ public class PopupMenu implements OnDismissListener, OnItemClickListener, OnTouc
 		} else {
 			mWindow.setAnimationStyle(onTop ? R.style.Animations_PopUpMenu_Right : R.style.Animations_PopDownMenu_Right);
 		}
+	}
+
+	/**
+	 * Set root view.
+	 * 
+	 */
+	private void setView() {
+		mRootView = LayoutInflater.from(mContext).inflate(R.layout.popup_list, null);
+		mListView = (ListView) mRootView.findViewById(android.R.id.list);
+
+		// This was previously defined on show() method, moved here to prevent
+		// force close that occured
+		// when tapping fastly on a view to show quickaction dialog.
+		// Thanx to zammbi (github.com/zammbi)
+		mRootView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
+		mListView.setAdapter(mAdapter);
+		mListView.setOnItemClickListener(this);
+		mWindow.setContentView(mRootView);
+	}
+
+	private void showMenu(Menu menu, boolean set_anchor, boolean above_view) {
+		mAdapter.setMenu(menu);
+		if (set_anchor) {
+			setAnchor(mView, above_view);
+		}
+		mWindow.showAtLocation(mView, Gravity.NO_GRAVITY, mPosX, mPosY);
+		mIsShowing = true;
 	}
 
 	/**

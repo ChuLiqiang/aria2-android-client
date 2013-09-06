@@ -9,6 +9,7 @@
 	<item name="actionbar_title" type="id"/>
 	<item name="actionbar_subtitle" type="id"/>
 	<item name="actionbar_custom_view_container" type="id"/>
+	<item name="actionbar_progress_indeterminate" type="id"/>
 	<item name="actionbar_menu_buttons" type="id"/>
 
 </resources>

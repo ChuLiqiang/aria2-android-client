@@ -10,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 
-class MenuImpl implements Menu {
+public class MenuImpl implements Menu {
 
 	private final List<MenuItem> mMenuItems;
 	private boolean mIsQwerty;
@@ -21,29 +21,25 @@ class MenuImpl implements Menu {
 	}
 
 	public MenuImpl(Context context, MenuAdapter adapter) {
-		mMenuItems = adapter == null ? null : new Menus(adapter);
+		mMenuItems = new Menus(adapter);
 		mContext = context;
 	}
 
 	@Override
 	public MenuItem add(CharSequence title) {
-		MenuItem item = new MenuItemImpl(mContext).setTitle(title);
-		mMenuItems.add(item);
-		return item;
+		return add(0, 0, 0, title);
 	}
 
 	@Override
 	public MenuItem add(int titleRes) {
-		MenuItem item = new MenuItemImpl(mContext).setTitle(titleRes);
-		mMenuItems.add(item);
-		return item;
+		return add(0, 0, 0, titleRes);
 	}
 
 	@Override
 	public MenuItem add(int groupId, int itemId, int order, CharSequence title) {
 		MenuItem item = new MenuItemImpl(mContext).setGroupId(groupId).setItemId(itemId).setOrder(order)
 				.setTitle(title);
-		mMenuItems.add(order, item);
+		mMenuItems.add(item);
 		return item;
 	}
 
@@ -51,7 +47,7 @@ class MenuImpl implements Menu {
 	public MenuItem add(int groupId, int itemId, int order, int titleRes) {
 		MenuItem item = new MenuItemImpl(mContext).setGroupId(groupId).setItemId(itemId).setOrder(order)
 				.setTitle(titleRes);
-		mMenuItems.add(order, item);
+		mMenuItems.add(item);
 		return item;
 	}
 
@@ -63,20 +59,12 @@ class MenuImpl implements Menu {
 
 	@Override
 	public SubMenu addSubMenu(CharSequence title) {
-		MenuItem item = new MenuItemImpl(mContext).setTitle(title);
-		SubMenu subMenu = new SubMenuImpl(mContext, item);
-		((MenuItemImpl) item).setSubMenu(subMenu);
-		mMenuItems.add(item);
-		return subMenu;
+		return addSubMenu(0, 0, 0, title);
 	}
 
 	@Override
 	public SubMenu addSubMenu(int titleRes) {
-		MenuItem item = new MenuItemImpl(mContext).setTitle(titleRes);
-		SubMenu subMenu = new SubMenuImpl(mContext, item);
-		((MenuItemImpl) item).setSubMenu(subMenu);
-		mMenuItems.add(item);
-		return subMenu;
+		return addSubMenu(0, 0, 0, titleRes);
 	}
 
 	@Override
@@ -85,7 +73,11 @@ class MenuImpl implements Menu {
 				.setTitle(title);
 		SubMenu subMenu = new SubMenuImpl(mContext, item);
 		((MenuItemImpl) item).setSubMenu(subMenu);
-		mMenuItems.add(order, item);
+		if (order != 0) {
+			mMenuItems.add(order, item);
+		} else {
+			mMenuItems.add(item);
+		}
 		return subMenu;
 	}
 
@@ -95,7 +87,11 @@ class MenuImpl implements Menu {
 				.setTitle(titleRes);
 		SubMenu subMenu = new SubMenuImpl(mContext, item);
 		((MenuItemImpl) item).setSubMenu(subMenu);
-		mMenuItems.add(order, item);
+		if (order != 0) {
+			mMenuItems.add(order, item);
+		} else {
+			mMenuItems.add(item);
+		}
 		return subMenu;
 	}
 
@@ -112,7 +108,13 @@ class MenuImpl implements Menu {
 	@Override
 	public MenuItem findItem(int id) {
 		for (MenuItem item : mMenuItems) {
-			if (item.getItemId() == id) return item;
+			if (item.getItemId() == id)
+				return item;
+			else if (item.hasSubMenu()) {
+				MenuItem possibleItem = item.getSubMenu().findItem(id);
+
+				if (possibleItem != null) return possibleItem;
+			}
 		}
 		return null;
 	}
@@ -120,6 +122,10 @@ class MenuImpl implements Menu {
 	@Override
 	public MenuItem getItem(int index) {
 		return mMenuItems.get(index);
+	}
+
+	public List<MenuItem> getMenuItems() {
+		return mMenuItems;
 	}
 
 	@Override
@@ -147,7 +153,11 @@ class MenuImpl implements Menu {
 
 	@Override
 	public void removeGroup(int groupId) {
-
+		for (MenuItem item : mMenuItems) {
+			if (item.getGroupId() == groupId) {
+				mMenuItems.remove(item);
+			}
+		}
 	}
 
 	@Override
@@ -162,17 +172,33 @@ class MenuImpl implements Menu {
 
 	@Override
 	public void setGroupCheckable(int group, boolean checkable, boolean exclusive) {
-
+		for (MenuItem item : mMenuItems) {
+			if (item.getGroupId() == group) {
+				item.setCheckable(checkable);
+				if (exclusive) {
+					break;
+				}
+			}
+		}
 	}
 
 	@Override
 	public void setGroupEnabled(int group, boolean enabled) {
+		for (MenuItem item : mMenuItems) {
+			if (item.getGroupId() == group) {
+				item.setEnabled(enabled);
+			}
+		}
 
 	}
 
 	@Override
 	public void setGroupVisible(int group, boolean visible) {
-
+		for (MenuItem item : mMenuItems) {
+			if (item.getGroupId() == group) {
+				item.setVisible(visible);
+			}
+		}
 	}
 
 	@Override
@@ -184,10 +210,6 @@ class MenuImpl implements Menu {
 	@Override
 	public int size() {
 		return mMenuItems.size();
-	}
-
-	List<MenuItem> getMenuItems() {
-		return mMenuItems;
 	}
 
 }

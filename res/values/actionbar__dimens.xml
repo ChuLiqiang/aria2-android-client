@@ -19,6 +19,5 @@
 
 	<dimen name="actionbar_height">48dp</dimen>
 	<dimen name="actionbar_button_width">56dp</dimen>
-	<dimen name="actionbar_button_home_width">56dp</dimen>
 
 </resources>

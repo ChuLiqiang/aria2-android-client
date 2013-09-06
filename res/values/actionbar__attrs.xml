@@ -16,7 +16,8 @@
 
 <resources>
 
-	<attr name="actionBarBackground" format="reference"/>
+  	<attr name="actionBarStyle" format="reference"/>
+  	<attr name="actionBarBackground" format="reference"/>
 	<attr name="actionBarHomeAsUpIndicator" format="reference"/>
 	<attr name="actionBarTitleStyle" format="reference"/>
 	<attr name="actionBarItemStyle" format="reference"/>

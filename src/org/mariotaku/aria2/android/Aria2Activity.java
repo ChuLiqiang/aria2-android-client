@@ -4,7 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-import org.mariotaku.actionbarcompat.app.ActionBarFragmentActivity;
+import org.mariotaku.actionbarcompat.ActionBarFragmentActivity;
 import org.mariotaku.aria2.Aria2API;
 import org.mariotaku.aria2.DownloadUris;
 import org.mariotaku.aria2.GlobalStat;
@@ -40,8 +40,9 @@ public class Aria2Activity extends ActionBarFragmentActivity implements Constant
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		/*
 		getSupportActionBar().setIcon(R.drawable.ic_launcher);
-
+		*/
 		aria2 = new Aria2API(aria2Ip);
 
 		findViewById(R.id.version).setOnClickListener(this);

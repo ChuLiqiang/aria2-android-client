@@ -2,7 +2,7 @@ package org.mariotaku.aria2.android;
 
 
 
-import org.mariotaku.actionbarcompat.app.ActionBarFragmentActivity;
+import org.mariotaku.actionbarcompat.ActionBarFragmentActivity;
 
 import android.os.Bundle;
 

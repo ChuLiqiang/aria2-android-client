@@ -3,4 +3,5 @@
     <issue id="ContentDescription">
         <ignore path="res/layout/menu_button_item.xml" />
     </issue>
+    <issue id="NewApi" severity="ignore" />
 </lint>

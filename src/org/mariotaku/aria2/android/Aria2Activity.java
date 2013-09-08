@@ -13,9 +13,12 @@ import org.mariotaku.aria2.Version;
 import org.mariotaku.aria2.android.utils.CommonUtils;
 
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,17 +36,16 @@ public class Aria2Activity extends ActionBarFragmentActivity implements Constant
 
 	private Aria2API aria2;
 
-	private String aria2Ip = "192.168.1.1";
+	private String aria2Host = "192.168.1.1";
 	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		/*
-		getSupportActionBar().setIcon(R.drawable.ic_launcher);
-		*/
-		aria2 = new Aria2API(aria2Ip);
+		
+		aria2Host = getHost();
+		aria2 = new Aria2API(aria2Host);
 
 		findViewById(R.id.version).setOnClickListener(this);
 		findViewById(R.id.session_info).setOnClickListener(this);
@@ -52,13 +54,27 @@ public class Aria2Activity extends ActionBarFragmentActivity implements Constant
 
 	}
 
+	private String getHost() {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		String prefKeyHost= sharedPref.getString(SettingsActivity.PREF_KEY_HOST,"");
+		return prefKeyHost;
+	}
+
 	@Override
 	public void onStart() {
 		super.onStart();
-		mGlobalStatRefreshTimer = new Timer();
-		
-		mGlobalStatRefreshTimer.scheduleAtFixedRate(new TimerTask() {
 
+		String nowAria2Host = getHost();
+		
+		if(!nowAria2Host.equals(aria2Host))
+		{
+			aria2Host = nowAria2Host;
+			aria2 = null;
+			aria2 = new Aria2API(aria2Host);
+		}
+		
+		mGlobalStatRefreshTimer = new Timer();
+		mGlobalStatRefreshTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
 				Message globalstat_msg = new Message();
@@ -88,7 +104,7 @@ public class Aria2Activity extends ActionBarFragmentActivity implements Constant
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu_download, menu);
+		getMenuInflater().inflate(R.menu.menu, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -97,6 +113,12 @@ public class Aria2Activity extends ActionBarFragmentActivity implements Constant
 		switch (item.getItemId()) {
 			case R.id.new_download:
 				Toast.makeText(Aria2Activity.this,"click download", Toast.LENGTH_LONG).show();
+				break;
+			case R.id.action_exit:
+				finish();
+				break;
+			case R.id.action_settings:
+				startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
 				break;
 		}
 		return super.onOptionsItemSelected(item);

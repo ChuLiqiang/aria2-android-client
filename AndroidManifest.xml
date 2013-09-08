@@ -24,13 +24,21 @@
 			</intent-filter>
 		</activity>
 
-		<service android:name=".Aria2Service">
-		</service>
-
 		<activity
 			android:name=".NewDownloadActivity"
 			android:label="@string/new_download">
 		</activity>
+		
+		<activity
+			android:name=".SettingsActivity"
+			android:label="@string/title_settings_activity"
+			android:parentActivityName=".MainActivity" >
+				<meta-data
+					android:name="android.support.PARENT_ACTIVITY"
+					android:value=".MainActivity" />
+		</activity>
+
+
 	</application>
 
 </manifest>

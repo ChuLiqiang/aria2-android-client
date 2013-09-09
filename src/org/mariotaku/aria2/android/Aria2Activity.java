@@ -4,7 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-import org.mariotaku.actionbarcompat.ActionBarFragmentActivity;
+
 import org.mariotaku.aria2.Aria2API;
 import org.mariotaku.aria2.DownloadUris;
 import org.mariotaku.aria2.GlobalStat;
@@ -13,12 +13,14 @@ import org.mariotaku.aria2.Version;
 import org.mariotaku.aria2.android.utils.CommonUtils;
 
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +29,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Aria2Activity extends ActionBarFragmentActivity implements Constants,
+public class Aria2Activity extends ActionBarActivity implements Constants,
 		OnClickListener {
 
 	private final static int GLOBAL_STAT_REFRESHED = 0;

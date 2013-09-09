@@ -13,7 +13,7 @@
 	<application
 		android:icon="@drawable/ic_launcher"
 		android:label="@string/app_name"
-		android:theme="@style/Theme.ActionBar.Light">
+		android:theme="@style/Theme.AppCompat.Light">
 		<activity
 			android:name=".Aria2Activity"
 			android:label="@string/app_name">

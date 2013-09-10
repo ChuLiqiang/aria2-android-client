@@ -29,8 +29,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Aria2Activity extends ActionBarActivity implements Constants,
-		OnClickListener {
+public class Aria2Activity extends ActionBarActivity implements OnClickListener {
 
 	private final static int GLOBAL_STAT_REFRESHED = 0;
 

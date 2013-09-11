@@ -29,77 +29,36 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Aria2Activity extends ActionBarActivity implements OnClickListener {
+public class Aria2Activity extends ActionBarActivity implements OnClickListener,Aria2Message{
 
-	private final static int GLOBAL_STAT_REFRESHED = 0;
-
-	private Timer mGlobalStatRefreshTimer;
-
-	private Aria2API aria2;
-
-	private String aria2Host = "192.168.1.1";
+	
+	private Aria2Manager _aria2Manager = null;
 	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
 		
-		aria2Host = getHost();
-		aria2 = new Aria2API(aria2Host);
-
+		setContentView(R.layout.main);
+		_aria2Manager = new Aria2Manager(this,mStatusRefreshHandler);
+		
 		findViewById(R.id.version).setOnClickListener(this);
 		findViewById(R.id.session_info).setOnClickListener(this);
 		findViewById(R.id.status).setOnClickListener(this);
 		findViewById(R.id.run).setOnClickListener(this);
-
+		
 	}
-
-	private String getHost() {
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		String prefKeyHost= sharedPref.getString(SettingsActivity.PREF_KEY_HOST,"");
-		return prefKeyHost;
-	}
-
+	
 	@Override
 	public void onStart() {
 		super.onStart();
-
-		String nowAria2Host = getHost();
-		
-		if(!nowAria2Host.equals(aria2Host))
-		{
-			aria2Host = nowAria2Host;
-			aria2 = null;
-			aria2 = new Aria2API(aria2Host);
-		}
-		
-		mGlobalStatRefreshTimer = new Timer();
-		mGlobalStatRefreshTimer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				Message globalstat_msg = new Message();
-				globalstat_msg.what = GLOBAL_STAT_REFRESHED;
-				try
-				{
-					globalstat_msg.obj = aria2.getGlobalStat();
-				}
-				catch (Exception e)
-				{
-					
-				}
-				mStatusRefreshHandler.sendMessage(globalstat_msg);
-
-			}
-
-		}, 0, 1000);
-		
+		_aria2Manager.UpdateHost();
+		_aria2Manager.StartUpdateGlobalStat();
 	}
 
 	@Override
 	public void onStop() {
-		mGlobalStatRefreshTimer.cancel();
-		mGlobalStatRefreshTimer = null;
+		_aria2Manager.StopUpdateGlobalStat();
 		super.onStop();
 	}
 
@@ -132,34 +91,20 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener 
 		{
 			switch (v.getId()) {
 				case R.id.version:
-					StringBuilder version = new StringBuilder();
-					Version versionInfo = aria2.getVersion();
-					version.append("Version : " + versionInfo.version + "\n");
-					Object[] values = versionInfo.enabledFeatures;
-					StringBuilder features = new StringBuilder();
-					for (Object value : values) {
-						features.append(value + "\n");
-					}
-					features.delete(features.length() - 1, features.length());
-					version.append("Enabled features : \n" + features.toString());
-					((TextView) v).setText(version.toString());
+					((TextView) v).setText(_aria2Manager.GetVersionInfo());
 					break;
 				case R.id.session_info:
-					StringBuilder session_info = new StringBuilder();
-					session_info.append("Session ID : " + aria2.getSessionInfo().sessionId);
-					((TextView) v).setText(session_info.toString());
+					((TextView) v).setText(_aria2Manager.GetSessionInfo());
 					break;
 				case R.id.status:
+					/*
 					aria2.tellStatus(7, "gid");
+					*/
 					//((TextView) v).setText(String.valueOf(aria2.tellStatus(7, "gid").gid));
 					break;
 				case R.id.run:
 					((TextView) v)
-							.setText("Return value : "
-									+ aria2.addUri(
-											new DownloadUris(
-													"http://releases.ubuntu.com/11.10/ubuntu-11.10-desktop-i386.iso.torrent"),
-											new Options()));
+							.setText(_aria2Manager.AddUri());
 					break;
 			}
 		}catch (Exception e) {

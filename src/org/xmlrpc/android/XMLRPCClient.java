@@ -29,6 +29,8 @@ import org.apache.http.params.HttpProtocolParams;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.util.Log;
+
 /**
  * XMLRPCClient allows to call remote XMLRPC method.
  * 
@@ -285,9 +287,12 @@ public class XMLRPCClient extends XMLRPCCommon {
 		try {
 			// prepare POST body
 			String body = methodCall(method, params);
-
+			Log.d(Tag.LOG,"post body:" + body);
+			 
+			
 			// set POST body
 			HttpEntity entity = new StringEntity(body);
+			
 			postMethod.setEntity(entity);
 
 			// This code slightly tweaked from the code by erickok in issue #6
@@ -311,6 +316,7 @@ public class XMLRPCClient extends XMLRPCCommon {
                 throw new XMLRPCException("HTTP status code: " + statusCode + " != " + HttpStatus.SC_OK, statusCode);
             }
 
+            
 			// parse response stuff
 			//
 			// setup pull parser

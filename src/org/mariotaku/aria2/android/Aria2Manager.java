@@ -102,10 +102,9 @@ public class Aria2Manager implements Aria2Message
 	public String AddUri()
 	{
 		
-		int returnValue = aria2.addUri(
+		String returnValue = aria2.addUri(
 							new DownloadUris(
-									"http://releases.ubuntu.com/11.10/ubuntu-11.10-desktop-i386.iso.torrent"),
-									new Options());
+									"http://releases.ubuntu.com/11.10/ubuntu-11.10-desktop-i386.iso.torrent"));	
 		return "Return value : " + returnValue;
 	}
 	

@@ -40,13 +40,11 @@ public class Aria2API {
 	 * 
 	 * @return GID of registered download.
 	 */
-	public int addUri(DownloadUris uris) {
+	public String addUri(DownloadUris uris) {
 
 		Object result = callMethod("aria2.addUri", new Object[] { uris.getUris() });
-
-		if (result == null) return -1;
-
-		return Integer.parseInt((String) result);
+		
+		return (String)result;
 	}
 
 	/**
@@ -63,13 +61,11 @@ public class Aria2API {
 	 * 
 	 * @return GID of registered download.
 	 */
-	public int addUri(DownloadUris uris, Options options) {
+	public String addUri(DownloadUris uris, Options options) {
 
 		Object result = callMethod("aria2.addUri", new Object[] { uris.getUris(), options.get() });
 
-		if (result == null) return -1;
-
-		return Integer.parseInt((String) result);
+		return (String)result;
 	}
 
 	/**
@@ -89,15 +85,13 @@ public class Aria2API {
 	 * 
 	 * @return GID of registered download.
 	 */
-	public int addUri(DownloadUris uris, Options options, int position) {
+	public String addUri(DownloadUris uris, Options options, int position) {
 		if (position < 0)
 			throw new IllegalArgumentException("position can't be a negative value!");
 		Object result = callMethod("aria2.addUri", new Object[] { uris.getUris(), options.get(),
 				position });
-
-		if (result == null) return -1;
-
-		return Integer.parseInt((String) result);
+		
+		return (String)result;
 	}
 
 	/**
@@ -107,14 +101,11 @@ public class Aria2API {
 	 * 
 	 * @return GID of paused download.
 	 */
-	public int forcePause(int gid) {
-		if (gid < 0) throw new IllegalArgumentException("gid can't be a negative value!");
+	public String forcePause(String gid) {
 
-		Object result = callMethod("aria2.forcePause", String.valueOf(gid));
-
-		if (result == null) return -1;
-
-		return Integer.parseInt((String) result);
+		Object result = callMethod("aria2.forcePause", gid);
+		
+		return (String) result;
 	}
 
 	/**
@@ -134,14 +125,11 @@ public class Aria2API {
 	 * 
 	 * @return GID of removed download.
 	 */
-	public int forceRemove(int gid) {
-		if (gid < 0) throw new IllegalArgumentException("gid can't be a negative value!");
+	public String forceRemove(String gid) {
 
-		Object result = callMethod("aria2.forceRemove", String.valueOf(gid));
+		Object result = callMethod("aria2.forceRemove", gid);
 
-		if (result == null) return -1;
-
-		return Integer.parseInt((String) result);
+		return (String) result;
 	}
 
 	/**
@@ -189,14 +177,11 @@ public class Aria2API {
 	 * 
 	 * @return GID of paused download.
 	 */
-	public int pause(int gid) {
-		if (gid < 0) throw new IllegalArgumentException("gid can't be a negative value!");
+	public String pause(int gid) {
 
 		Object result = callMethod("aria2.pause", String.valueOf(gid));
 
-		if (result == null) return -1;
-
-		return Integer.parseInt((String) result);
+		return (String)result;
 	}
 
 	/**
@@ -216,14 +201,11 @@ public class Aria2API {
 	 * 
 	 * @return GID of removed download.
 	 */
-	public int remove(int gid) {
-		if (gid < 0) throw new IllegalArgumentException("gid can't be a negative value!");
+	public String remove(String gid) {
 
-		Object result = callMethod("aria2.remove", String.valueOf(gid));
+		Object result = callMethod("aria2.remove", gid);
 
-		if (result == null) return -1;
-
-		return Integer.parseInt((String) result);
+		return (String)result;
 	}
 
 	/**
@@ -272,14 +254,10 @@ public class Aria2API {
 	 * 
 	 * @return GID of unpaused download.
 	 */
-	public int unpause(int gid) {
-		if (gid < 0) throw new IllegalArgumentException("gid can't be a negative value!");
+	public String unpause(int gid) {
 
 		Object result = callMethod("aria2.unpause", String.valueOf(gid));
-
-		if (result == null) return -1;
-
-		return Integer.parseInt((String) result);
+		return (String)result;
 	}
 
 	/**

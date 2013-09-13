@@ -36,7 +36,7 @@ public class Aria2APITest extends TestCase
 	
 	public void testAddUri()
 	{
-		int returnValue = aria2.addUri(
+		String returnValue = aria2.addUri(
 							new DownloadUris(
 									"http://releases.ubuntu.com/11.10/ubuntu-11.10-desktop-i386.iso.torrent"));
 		String ReturnString = "Return value : " + returnValue; 

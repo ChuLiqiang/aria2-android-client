@@ -297,7 +297,7 @@ public class Aria2API {
 		Object response = null;
 		
 		try {
-			response = mClient.call(method, args);
+			response = mClient.callEx(method, args);
 		} catch (IllegalArgumentException e) {
 			Log.e("aria2", "IllegalArgumentException", e);
 			throw new Aria2Exception("xml prc illegal argument!");

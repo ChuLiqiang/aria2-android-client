@@ -108,6 +108,15 @@ public class Aria2Manager implements Aria2Message
 		return "Return value : " + returnValue;
 	}
 	
+	public String AddUri(String uri)
+	{
+		
+		String returnValue = aria2.addUri(
+							new DownloadUris(
+									uri));	
+		return "Return value : " + returnValue;
+	}
+	
 	private String getHost() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(_context);
 		String prefKeyHost= sharedPref.getString(SettingsActivity.PREF_KEY_HOST,"");

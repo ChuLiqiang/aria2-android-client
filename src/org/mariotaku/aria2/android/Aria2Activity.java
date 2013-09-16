@@ -10,6 +10,7 @@ import org.mariotaku.aria2.DownloadUris;
 import org.mariotaku.aria2.GlobalStat;
 import org.mariotaku.aria2.Options;
 import org.mariotaku.aria2.Version;
+import org.mariotaku.aria2.android.NewDownloadDialogFragment.NewDownloadDialogListener;
 import org.mariotaku.aria2.android.utils.CommonUtils;
 
 
@@ -20,6 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -29,7 +31,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Aria2Activity extends ActionBarActivity implements OnClickListener,Aria2Message{
+public class Aria2Activity extends ActionBarActivity implements OnClickListener,Aria2Message,NewDownloadDialogFragment.NewDownloadDialogListener{
 
 	
 	private Aria2Manager _aria2Manager = null;
@@ -72,7 +74,8 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.new_download:
-				Toast.makeText(Aria2Activity.this,"click download", Toast.LENGTH_LONG).show();
+				showNoticeDialog();
+				//Toast.makeText(Aria2Activity.this,"click download", Toast.LENGTH_LONG).show();
 				break;
 			case R.id.action_exit:
 				finish();
@@ -131,5 +134,18 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 			}
 		}
 	};
+	
+	public void showNoticeDialog() {
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new NewDownloadDialogFragment();
+        dialog.show(getSupportFragmentManager(), "NewDownloadFragment");
+    }
+
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog)
+	{
+		_aria2Manager.AddUri(((NewDownloadDialogFragment)dialog).getDownloadUri());
+	}
+
 
 }

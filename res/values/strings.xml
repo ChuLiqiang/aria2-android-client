@@ -68,5 +68,11 @@
     <string name="pref_summary_retry_wait">Set the seconds to wait between retries Default : 0</string>
     <string name="pref_title_timeout">Timeout</string>
     <string name="pref_summary_timeout">Set timeout in seconds Default : 60</string>
-    <!-- HTTP Specific options -->   
+    <!-- HTTP Specific options -->
+    
+    <string name="url_notify">Url</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    
+       
 </resources>

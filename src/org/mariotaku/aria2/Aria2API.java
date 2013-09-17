@@ -284,7 +284,7 @@ public class Aria2API {
 			throw new Aria2Exception("xml prc illegal State!");
 		} catch (XMLRPCException e) {
 			Log.e("aria2", "XMLRPCException", e);
-			throw new Aria2Exception("xml prc State!");
+			throw new Aria2Exception("xml prc exception!");
 		} finally {
 
 		}

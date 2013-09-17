@@ -6,21 +6,28 @@ import org.mariotaku.aria2.Options;
 import org.mariotaku.aria2.Version;
 
 import android.util.Log;
+import android.webkit.URLUtil;
 
 import junit.framework.TestCase;
 
 public class Aria2APITest extends TestCase
 {
 	private Aria2API aria2;
-	private String aria2Host = "10.16.131.12";
+	private String aria2Host = null;
 	
     protected void setUp() {
-    	aria2 = new Aria2API(aria2Host);
+    	
     }
 
     
 	public void testGetVersion() {
-       StringBuilder version = new StringBuilder();
+		
+		String a = "aa";
+		a.equals(null);
+		aria2 = new Aria2API(aria2Host);
+		
+		
+        StringBuilder version = new StringBuilder();
 		Version versionInfo = aria2.getVersion();
 		version.append("Version : " + versionInfo.version + "\n");
 		Object[] values = versionInfo.enabledFeatures;

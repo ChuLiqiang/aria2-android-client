@@ -13,37 +13,46 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.webkit.URLUtil;
 
 public class Aria2Manager implements Aria2Message
 {
-	private Aria2API aria2;
-	private String aria2Host = "192.168.1.1";
-	private Context _context;
+	private Aria2API _aria2 = null;
+	private String _aria2Host = null;
+	private Context _context = null;
 	
-	private Timer mGlobalStatRefreshTimer;
-	private Handler _mStatusRefreshHandler;
+	private Timer mGlobalStatRefreshTimer = null;
+	private Handler _mStatusRefreshHandler = null;
+	
 	public Aria2Manager(Context context,Handler mStatusRefreshHandler)
 	{
 		_context = context;
 		_mStatusRefreshHandler = mStatusRefreshHandler;
-		
-		aria2Host = getHost();
-		aria2 = new Aria2API(aria2Host);
-		
 	}
 	
-	public void UpdateHost() {
+	public void InitHost() {
 		String nowAria2Host = getHost();
-		if(!nowAria2Host.equals(aria2Host))
+		if(!nowAria2Host.equals(_aria2Host))
 		{
-			aria2Host = nowAria2Host;
-			aria2 = null;
-			aria2 = new Aria2API(aria2Host);
+			_aria2Host = nowAria2Host;
+			try
+			{
+				_aria2 = new Aria2API(_aria2Host);
+				
+			}catch(Exception e)
+			{
+				_aria2 = null;
+				throw new IllegalArgumentException("Aria2 host is error!");
+				
+			}
+			
 		}
 	}
 	
 	public void StartUpdateGlobalStat()
 	{
+		checkAria2();
+		
 		mGlobalStatRefreshTimer = new Timer();
 		mGlobalStatRefreshTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -52,7 +61,7 @@ public class Aria2Manager implements Aria2Message
 				globalstat_msg.what = GLOBAL_STAT_REFRESHED;
 				try
 				{
-					globalstat_msg.obj = aria2.getGlobalStat();
+					globalstat_msg.obj = _aria2.getGlobalStat();
 				}
 				catch (Exception e)
 				{
@@ -67,14 +76,19 @@ public class Aria2Manager implements Aria2Message
 	
 	public void StopUpdateGlobalStat()
 	{
-		mGlobalStatRefreshTimer.cancel();
-		mGlobalStatRefreshTimer = null;
+		if(mGlobalStatRefreshTimer != null)
+		{
+			mGlobalStatRefreshTimer.cancel();
+			mGlobalStatRefreshTimer = null;
+		}
 	}
 	
 	public String GetVersionInfo()
 	{
+		checkAria2();
+		
 		StringBuilder version = new StringBuilder();
-		Version versionInfo = aria2.getVersion();
+		Version versionInfo = _aria2.getVersion();
 		version.append("Version : " + versionInfo.version + "\n");
 		Object[] values = versionInfo.enabledFeatures;
 		StringBuilder features = new StringBuilder();
@@ -89,20 +103,25 @@ public class Aria2Manager implements Aria2Message
 	
 	public String GetSessionInfo()
 	{
+		checkAria2();
+		
 		StringBuilder session_info = new StringBuilder();
-		session_info.append("Session ID : " + aria2.getSessionInfo().sessionId);
+		session_info.append("Session ID : " + _aria2.getSessionInfo().sessionId);
 		return session_info.toString();
 	}
+
+	
 	
 	public String GetStatus()
 	{
-		return String.valueOf(aria2.tellStatus(7, "gid").gid);
+		checkAria2();
+		return String.valueOf(_aria2.tellStatus(7, "gid").gid);
 	}
 	
 	public String AddUri()
 	{
-		
-		String returnValue = aria2.addUri(
+		checkAria2();
+		String returnValue = _aria2.addUri(
 							new DownloadUris(
 									"http://releases.ubuntu.com/11.10/ubuntu-11.10-desktop-i386.iso.torrent"));	
 		return "Return value : " + returnValue;
@@ -110,8 +129,8 @@ public class Aria2Manager implements Aria2Message
 	
 	public String AddUri(String uri)
 	{
-		
-		String returnValue = aria2.addUri(
+		checkAria2();
+		String returnValue = _aria2.addUri(
 							new DownloadUris(
 									uri));	
 		return "Return value : " + returnValue;
@@ -120,8 +139,26 @@ public class Aria2Manager implements Aria2Message
 	private String getHost() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(_context);
 		String prefKeyHost= sharedPref.getString(SettingsActivity.PREF_KEY_HOST,"");
+		if(prefKeyHost == null)
+		{
+			throw new IllegalArgumentException("host address is null!");
+		}
+		
+		if(prefKeyHost.equals(""))
+		{
+			throw new IllegalArgumentException("pealse initial host address!");
+		}
+		
 		return prefKeyHost;
 	}	
+	
+	private void checkAria2()
+	{
+		if(_aria2 == null)
+		{
+			throw new IllegalArgumentException("Aria2 init is error!please check setting!");
+		}
+	}
 	
 	
 

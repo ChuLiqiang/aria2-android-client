@@ -40,7 +40,6 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		setContentView(R.layout.main);
 		_aria2Manager = new Aria2Manager(this,mStatusRefreshHandler);
 		
@@ -54,8 +53,15 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 	@Override
 	public void onStart() {
 		super.onStart();
-		_aria2Manager.UpdateHost();
-		_aria2Manager.StartUpdateGlobalStat();
+		try
+		{
+			_aria2Manager.InitHost();
+			_aria2Manager.StartUpdateGlobalStat();
+		}
+		catch(Exception e)
+		{
+			Toast.makeText(Aria2Activity.this,e.getMessage(),Toast.LENGTH_LONG).show();
+		}	 
 	}
 
 	@Override
@@ -75,7 +81,6 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 		switch (item.getItemId()) {
 			case R.id.new_download:
 				showNoticeDialog();
-				//Toast.makeText(Aria2Activity.this,"click download", Toast.LENGTH_LONG).show();
 				break;
 			case R.id.action_exit:
 				finish();
@@ -111,7 +116,7 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 					break;
 			}
 		}catch (Exception e) {
-			Toast.makeText(Aria2Activity.this,"InterNet error!", Toast.LENGTH_LONG).show();
+			Toast.makeText(Aria2Activity.this,e.getMessage(), Toast.LENGTH_LONG).show();
 		}
 
 		
@@ -144,7 +149,12 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 	@Override
 	public void onDialogPositiveClick(DialogFragment dialog)
 	{
-		_aria2Manager.AddUri(((NewDownloadDialogFragment)dialog).getDownloadUri());
+		try 
+		{
+			_aria2Manager.AddUri(((NewDownloadDialogFragment)dialog).getDownloadUri());
+		}catch (Exception e) {
+			Toast.makeText(Aria2Activity.this,e.getMessage(), Toast.LENGTH_LONG).show();
+		}
 	}
 
 

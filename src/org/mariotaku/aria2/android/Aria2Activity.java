@@ -31,7 +31,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Aria2Activity extends ActionBarActivity implements OnClickListener,Aria2Message,NewDownloadDialogFragment.NewDownloadDialogListener{
+public class Aria2Activity extends ActionBarActivity implements OnClickListener,Aria2UIMessage,Aria2APIMessage,NewDownloadDialogFragment.NewDownloadDialogListener{
 
 	
 	private Aria2Manager _aria2Manager = null;
@@ -41,7 +41,8 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		_aria2Manager = new Aria2Manager(this,mStatusRefreshHandler);
+		_aria2Manager = new Aria2Manager(this,mRefreshHandler);
+		
 		
 		findViewById(R.id.version).setOnClickListener(this);
 		findViewById(R.id.session_info).setOnClickListener(this);
@@ -99,10 +100,10 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 		{
 			switch (v.getId()) {
 				case R.id.version:
-					((TextView) v).setText(_aria2Manager.GetVersionInfo());
+					_aria2Manager.sendToAria2APIHandlerMsg(GET_VERSION_INFO);
 					break;
 				case R.id.session_info:
-					((TextView) v).setText(_aria2Manager.GetSessionInfo());
+					_aria2Manager.sendToAria2APIHandlerMsg(GET_SESSION_INFO);
 					break;
 				case R.id.status:
 					/*
@@ -111,8 +112,7 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 					//((TextView) v).setText(String.valueOf(aria2.tellStatus(7, "gid").gid));
 					break;
 				case R.id.run:
-					((TextView) v)
-							.setText(_aria2Manager.AddUri());
+					_aria2Manager.sendToAria2APIHandlerMsg(ADD_URI);
 					break;
 			}
 		}catch (Exception e) {
@@ -123,19 +123,37 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 
 	}
 
-	private Handler mStatusRefreshHandler = new Handler() {
+	private Handler mRefreshHandler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {
+			
 			switch (msg.what) {
 				case GLOBAL_STAT_REFRESHED:
-					GlobalStat stat = (GlobalStat) msg.obj;
 					if (msg.obj == null) return;
+					GlobalStat stat = (GlobalStat) msg.obj;
 					String subtitle = getString(R.string.global_speed_format,
 							CommonUtils.formatSpeedString(stat.downloadSpeed),
 							CommonUtils.formatSpeedString(stat.uploadSpeed));
 					getSupportActionBar().setSubtitle(subtitle);
 					break;
+				case VERSION_INFO_REFRESHED:
+					if (msg.obj == null) return;
+					String versionInfo = (String)msg.obj;
+					((TextView)findViewById(R.id.version)).setText(versionInfo);
+					break;
+				case SESSION_INFO_REFRESHED:
+					if (msg.obj == null) return;
+					String sessionInfo = (String)msg.obj;
+					((TextView)findViewById(R.id.session_info)).setText(sessionInfo);
+					break;
+				case DOWNLOAD_INFO_REFRESHED:
+					if (msg.obj == null) return;
+					String downloadInfo = (String)msg.obj;
+					((TextView)findViewById(R.id.run)).setText(downloadInfo);
+					break;
+										
+
 			}
 		}
 	};
@@ -151,7 +169,9 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 	{
 		try 
 		{
-			_aria2Manager.AddUri(((NewDownloadDialogFragment)dialog).getDownloadUri());
+			String uri = ((NewDownloadDialogFragment)dialog).getDownloadUri(); 
+			_aria2Manager.sendToAria2APIHandlerMsg(ADD_URI,uri);
+			
 		}catch (Exception e) {
 			Toast.makeText(Aria2Activity.this,e.getMessage(), Toast.LENGTH_LONG).show();
 		}

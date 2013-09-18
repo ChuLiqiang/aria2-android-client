@@ -11,25 +11,88 @@ import org.mariotaku.aria2.Version;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.webkit.URLUtil;
+import android.util.Log;
+import android.os.Process;
 
-public class Aria2Manager implements Aria2Message
+public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 {
 	private Aria2API _aria2 = null;
 	private String _aria2Host = null;
 	private Context _context = null;
 	
 	private Timer mGlobalStatRefreshTimer = null;
-	private Handler _mStatusRefreshHandler = null;
+	private Handler _mRefreshHandler = null;
 	
-	public Aria2Manager(Context context,Handler mStatusRefreshHandler)
+	public Handler _mHandler = null;
+	HandlerThread _aria2APIHandlerThread = null;
+	
+	public Aria2Manager(Context context,Handler mRefreshHandler)
 	{
 		_context = context;
-		_mStatusRefreshHandler = mStatusRefreshHandler;
+		_mRefreshHandler = mRefreshHandler;
+		_aria2APIHandlerThread = new HandlerThread("Aria2 API Handler Thread"); 
+		
+		_aria2APIHandlerThread.start();
+		
+		
+		Looper mLooper = _aria2APIHandlerThread.getLooper(); 
+		_mHandler = new Handler(mLooper)
+		{
+			public void handleMessage(Message msg)
+			{
+				try
+				{
+					Message sendToUIThreadMsg = new Message();
+					switch (msg.what)
+					{
+					case GET_GLOBAL_STAT:
+						sendToUIThreadMsg.what = GLOBAL_STAT_REFRESHED;
+						sendToUIThreadMsg.obj = _aria2.getGlobalStat();
+						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+						break;
+					case GET_VERSION_INFO:
+						sendToUIThreadMsg.what = VERSION_INFO_REFRESHED;
+						sendToUIThreadMsg.obj = GetVersionInfo();
+						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+						break;
+					case GET_SESSION_INFO:
+						sendToUIThreadMsg.what = SESSION_INFO_REFRESHED;
+						sendToUIThreadMsg.obj = GetSessionInfo();
+						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+						break;
+					case ADD_URI:
+						sendToUIThreadMsg.what = DOWNLOAD_INFO_REFRESHED;
+						if(msg.obj == null)
+						{
+							sendToUIThreadMsg.obj = AddUri();
+						}
+						else
+						{
+							sendToUIThreadMsg.obj = AddUri((String)msg.obj);
+						}
+						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+						break;
+							
+						
+						
+					}
+				}
+				catch (Exception e)
+				{
+					Log.e("aria2", "aria2 manager handler is error!",e);
+				}
+
+			}			
+		};
+		
+		Process.setThreadPriority(_aria2APIHandlerThread.getThreadId(),Process.THREAD_PRIORITY_BACKGROUND);
+		
 	}
-	
+
 	public void InitHost() {
 		String nowAria2Host = getHost();
 		if(!nowAria2Host.equals(_aria2Host))
@@ -52,26 +115,30 @@ public class Aria2Manager implements Aria2Message
 	public void StartUpdateGlobalStat()
 	{
 		checkAria2();
-		
 		mGlobalStatRefreshTimer = new Timer();
 		mGlobalStatRefreshTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				Message globalstat_msg = new Message();
-				globalstat_msg.what = GLOBAL_STAT_REFRESHED;
-				try
-				{
-					globalstat_msg.obj = _aria2.getGlobalStat();
-				}
-				catch (Exception e)
-				{
-					
-				}
-				_mStatusRefreshHandler.sendMessage(globalstat_msg);
+				sendToAria2APIHandlerMsg(GET_GLOBAL_STAT);
 
 			}
 
 		}, 0, 1000);
+	}
+	
+	public void sendToAria2APIHandlerMsg(int msgType)
+	{
+		Message sendToAria2APIHandlerMsg = new Message();
+		sendToAria2APIHandlerMsg.what = msgType;
+		_mHandler.sendMessage(sendToAria2APIHandlerMsg);
+	}
+	
+	public void sendToAria2APIHandlerMsg(int msgType,Object msgObj)
+	{
+		Message sendToAria2APIHandlerMsg = new Message();
+		sendToAria2APIHandlerMsg.what = msgType;
+		sendToAria2APIHandlerMsg.obj = msgObj;
+		_mHandler.sendMessage(sendToAria2APIHandlerMsg);
 	}
 	
 	public void StopUpdateGlobalStat()
@@ -83,7 +150,7 @@ public class Aria2Manager implements Aria2Message
 		}
 	}
 	
-	public String GetVersionInfo()
+	private String GetVersionInfo()
 	{
 		checkAria2();
 		
@@ -101,7 +168,7 @@ public class Aria2Manager implements Aria2Message
 		return version.toString();
 	}
 	
-	public String GetSessionInfo()
+	private String GetSessionInfo()
 	{
 		checkAria2();
 		
@@ -112,13 +179,13 @@ public class Aria2Manager implements Aria2Message
 
 	
 	
-	public String GetStatus()
+	private String GetStatus()
 	{
 		checkAria2();
 		return String.valueOf(_aria2.tellStatus(7, "gid").gid);
 	}
 	
-	public String AddUri()
+	private String AddUri()
 	{
 		checkAria2();
 		String returnValue = _aria2.addUri(
@@ -127,7 +194,7 @@ public class Aria2Manager implements Aria2Message
 		return "Return value : " + returnValue;
 	}
 	
-	public String AddUri(String uri)
+	private String AddUri(String uri)
 	{
 		checkAria2();
 		String returnValue = _aria2.addUri(

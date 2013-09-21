@@ -52,7 +52,7 @@ public class Status extends CommonItem {
 	/**
 	 * GID of this download.
 	 */
-	public int gid = -1;
+	public String gid = "";
 
 	/**
 	 * "active" for currently downloading/seeding entry. "waiting" for the entry
@@ -147,7 +147,7 @@ public class Status extends CommonItem {
 	 * track these auto generated downloads. If there is no such downloads, this
 	 * key will not be included in the response.
 	 */
-	public String followedBy = "";
+	public String[] followedBy = null;
 
 	/**
 	 * GID of a parent download. Some downloads are a part of another download.

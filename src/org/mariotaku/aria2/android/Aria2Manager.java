@@ -182,7 +182,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 	private String GetStatus()
 	{
 		checkAria2();
-		return String.valueOf(_aria2.tellStatus(7, "gid").gid);
+		return String.valueOf(_aria2.tellStatus("7", "gid").gid);
 	}
 	
 	private String AddUri()

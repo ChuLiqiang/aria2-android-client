@@ -1,7 +1,9 @@
 package org.xmlrpc.android;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -26,6 +28,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -322,7 +326,13 @@ public class XMLRPCClient extends XMLRPCCommon {
 			// setup pull parser
 			XmlPullParser pullParser = XmlPullParserFactory.newInstance().newPullParser();
 			entity = response.getEntity();
-			Reader reader = new InputStreamReader(new BufferedInputStream(entity.getContent()));
+			InputStream entityContent = entity.getContent();
+			
+			//Log.d(Tag.LOG,"entity Content:" + convertStreamToString(entityContent));
+			
+			Reader reader = new InputStreamReader(new BufferedInputStream(entityContent));
+			
+			
 // for testing purposes only
 // reader = new StringReader("<?xml version='1.0'?><methodResponse><params><param><value>\n\n\n</value></param></params></methodResponse>");
 			pullParser.setInput(reader);
@@ -562,4 +572,27 @@ public class XMLRPCClient extends XMLRPCCommon {
 		};
 		return callEx(method, params);
 	}
+	
+	private static String convertStreamToString(InputStream is) {
+	    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+	    StringBuilder sb = new StringBuilder();
+	
+	    String line = null;
+	    try {
+	        while ((line = reader.readLine()) != null) {
+	            sb.append((line + "\n"));
+	        }
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            is.close();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return sb.toString();
+	}
+	
+
 }

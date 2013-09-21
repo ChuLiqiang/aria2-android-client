@@ -177,9 +177,9 @@ public class Aria2API {
 	 * 
 	 * @return GID of paused download.
 	 */
-	public String pause(int gid) {
+	public String pause(String gid) {
 
-		Object result = callMethod("aria2.pause", String.valueOf(gid));
+		Object result = callMethod("aria2.pause", gid);
 
 		return (String)result;
 	}
@@ -237,14 +237,10 @@ public class Aria2API {
 	 * 
 	 * @return {@link Status}
 	 */
-	public Status tellStatus(int gid, String... keys) {
-		if (gid < 0) throw new IllegalArgumentException("gid can't be a negative value!");
-		Status status = null;
+	public Status tellStatus(String gid, String... keys) {
 
-		callMethod("aria2.tellStatus", String.valueOf(gid), keys);
-
-		if (keys != null && keys.length > 0)
-		/* return callMethod("aria2.tellStatus", new Object[]{keys,}) */;
+		Status status = new Status((HashMap<String, Object>)callMethod("aria2.tellStatus",gid, keys));
+		
 		return status;
 	}
 

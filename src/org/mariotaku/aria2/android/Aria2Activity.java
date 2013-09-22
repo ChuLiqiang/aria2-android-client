@@ -28,6 +28,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +38,8 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 
 	
 	private Aria2Manager _aria2Manager = null;
+	
+	private ListView downloadListView = null;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -44,12 +49,39 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 		_aria2Manager = new Aria2Manager(this,mRefreshHandler);
 		
 		
+		DownloadItem data[] = new DownloadItem[]
+        {
+            new DownloadItem("11","22","33"),
+        };
+		
+		
+		 DownloadItemAdapter adapter = new DownloadItemAdapter(this,
+                R.layout.download_item,data);
+		
+		downloadListView = (ListView)findViewById(R.id.download_list_view);
+		downloadListView.setAdapter(adapter);
+		downloadListView.setOnItemClickListener(mMessageClickedHandler);
+		
+		
 		findViewById(R.id.version).setOnClickListener(this);
 		findViewById(R.id.session_info).setOnClickListener(this);
 		findViewById(R.id.status).setOnClickListener(this);
 		findViewById(R.id.run).setOnClickListener(this);
 		
 	}
+	
+	// Create a message handling object as an anonymous class.
+	private OnItemClickListener mMessageClickedHandler = new OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+	};
+
 	
 	@Override
 	public void onStart() {

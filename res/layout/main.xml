@@ -1,40 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
-
-	<LinearLayout
+	android:layout_height="fill_parent"
+	android:orientation="vertical">
+	<TextView
+		android:id="@+id/version"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:orientation="vertical">
+		android:text="Version"
+		android:textAppearance="?android:attr/textAppearanceLarge"/>
 
-		<TextView
-			android:id="@+id/version"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="Version"
-			android:textAppearance="?android:attr/textAppearanceLarge"/>
+	<TextView
+		android:id="@+id/session_info"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="Session info"
+		android:textAppearance="?android:attr/textAppearanceLarge"/>
 
-		<TextView
-			android:id="@+id/session_info"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="Session info"
-			android:textAppearance="?android:attr/textAppearanceLarge"/>
+	<TextView
+		android:id="@+id/status"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="Status"
+		android:textAppearance="?android:attr/textAppearanceLarge"/>
 
-		<TextView
-			android:id="@+id/status"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="Status"
-			android:textAppearance="?android:attr/textAppearanceLarge"/>
+	<TextView
+		android:id="@+id/run"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="Run"
+		android:textAppearance="?android:attr/textAppearanceLarge"/>
+	 <ListView
+        android:id="@+id/download_list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+</LinearLayout>
 
-		<TextView
-			android:id="@+id/run"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="Run"
-			android:textAppearance="?android:attr/textAppearanceLarge"/>
-	</LinearLayout>
-
-</ScrollView>

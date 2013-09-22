@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 public class Aria2APITest extends TestCase
 {
 	private Aria2API aria2;
-	private String aria2Host = "192.168.1.166";
+	private String aria2Host = "10.16.131.12";
 	
     protected void setUp() {
     	aria2 = new Aria2API(aria2Host);
@@ -56,7 +56,28 @@ public class Aria2APITest extends TestCase
 	
 	public void testTellStatus()
 	{
-		aria2.tellStatus("f971313b1248b502");
+		//aria2.tellStatus("0053dc207c490f5f");
+		aria2.tellStatus("a178a32f598b1355");
+	}
+	
+	public void testTellActive()
+	{
+		aria2.tellActive();
+	}
+	
+	public void testTellWaiting()
+	{
+		aria2.tellWaiting(0, 10);
+	}
+	
+	public void testTellStopped()
+	{
+		aria2.tellStopped(0, 10);
+	}
+	
+	public void testUnpauseAll()
+	{
+		aria2.unpauseAll();
 	}
 	
 	

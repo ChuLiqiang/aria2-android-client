@@ -1,6 +1,7 @@
 package org.mariotaku.aria2;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -243,16 +244,63 @@ public class Aria2API {
 		
 		return status;
 	}
+	
+	
 
+	/**
+	 * This method returns the list of active downloads. The response is of type
+	 * array and its element is the same struct returned by aria2.tellStatus() method.
+	 * For keys parameter, please refer to aria2.tellStatus() method.
+	 * 
+	 * @return {@link Status}
+	 */
+	public ArrayList<Status> tellActive(String... keys)
+	{
+		Object[] statusObjects = (Object[])callMethod("aria2.tellActive",keys);
+		
+		return getStatus(statusObjects);
+		
+	}
+
+	
+	/**
+	 * This method returns the list of waiting download, including paused downloads.
+	 * @param offset is of type integer and specifies the offset from the download waiting at the front.
+	 * @param num is of type integer and specifies the number of downloads to be returned.
+	 * @param keys
+	 * @return {@link Status}
+	 */
+	 public ArrayList<Status> tellWaiting(int offset,int num,String... keys)
+	 {
+		 Object[] statusObjects = (Object[])callMethod("aria2.tellWaiting",offset,num,keys);
+		 
+		 return getStatus(statusObjects);
+	 }
+
+	 /**
+	 * This method returns the list of stopped download. 
+	 * @param offset is of type integer and specifies the offset from the download waiting at the front.
+	 * @param num is of type integer and specifies the number of downloads to be returned.
+	 * @param keys
+	 * @return {@link Status}
+	 */
+	 public ArrayList<Status> tellStopped(int offset,int num,String... keys)
+	 {
+		 Object[] statusObjects = (Object[])callMethod("aria2.tellStopped",offset,num,keys);
+		 
+		 return getStatus(statusObjects);
+	 }
+	 
+	 
 	/**
 	 * Changes the status of the download denoted by gid from "paused" to
 	 * "waiting". This makes the download eligible to restart.
 	 * 
 	 * @return GID of unpaused download.
 	 */
-	public String unpause(int gid) {
+	public String unpause(String gid) {
 
-		Object result = callMethod("aria2.unpause", String.valueOf(gid));
+		Object result = callMethod("aria2.unpause",gid);
 		return (String)result;
 	}
 
@@ -291,5 +339,19 @@ public class Aria2API {
 	private void init(String host, int port) {
 		mClient = new XMLRPCClient("http://" + host + ":" + port + "/rpc");
 
+	}
+	
+	private ArrayList<Status> getStatus(Object[] statusObjects)
+	{
+		ArrayList<Status> status = new ArrayList<Status>();
+		
+		for (Object object : statusObjects)
+		{
+			HashMap<String, Object> statusObject = (HashMap<String, Object>) object;
+			Status statusTemp = new Status(statusObject);
+			status.add(statusTemp);
+		}
+		
+		return status;
 	}
 }

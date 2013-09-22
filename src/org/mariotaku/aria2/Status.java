@@ -7,48 +7,7 @@ public class Status extends CommonItem {
 	public Status(HashMap<String, Object> data) {
 		init(data);
 	}
-
-	/**
-	 * Struct which contains information retrieved from .torrent file.
-	 * BitTorrent only. It contains following keys.
-	 */
-	public class BitTorrent {
-
-		/**
-		 * Struct which contains data from Info dictionary. It contains
-		 * following keys.
-		 */
-		public class Info {
-
-			/**
-			 * name in info dictionary. name.utf-8 is used if available.
-			 */
-			public String name = "";
-		}
-
-		/**
-		 * List of lists of announce URI. If .torrent file contains announce and
-		 * no announce-list, announce is converted to announce-list format.
-		 */
-		public String announceList = "";
-
-		/**
-		 * The comment for the torrent. comment.utf-8 is used if available.
-		 */
-		public String comment = "";
-
-		/**
-		 * The creation time of the torrent. The value is an integer since the
-		 * Epoch, measured in seconds.
-		 */
-		public String creationDate = "";
-
-		/**
-		 * File mode of the torrent. The value is either single or multi.
-		 */
-		public String mode = "";
-	}
-
+	
 	/**
 	 * GID of this download.
 	 */
@@ -147,7 +106,7 @@ public class Status extends CommonItem {
 	 * track these auto generated downloads. If there is no such downloads, this
 	 * key will not be included in the response.
 	 */
-	public String[] followedBy = null;
+	public Object[] followedBy = null;
 
 	/**
 	 * GID of a parent download. Some downloads are a part of another download.
@@ -166,5 +125,11 @@ public class Status extends CommonItem {
 	 * Returns the list of files. The element of list is the same struct used in
 	 * aria2.getFiles method.
 	 */
-	public String files = "";
+	public Object[] files = null;
+	
+	/**
+	 * Struct which contains information retrieved from 
+	 * .torrent file. BitTorrent only. It contains following keys.
+	 */
+	public HashMap<String, Object> bittorrent = null;
 }

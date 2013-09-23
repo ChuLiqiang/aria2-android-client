@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.mariotaku.aria2.Aria2API;
 import org.mariotaku.aria2.DownloadUris;
+import org.mariotaku.aria2.Files;
 import org.mariotaku.aria2.Options;
 import org.mariotaku.aria2.Status;
 import org.mariotaku.aria2.Version;
@@ -56,8 +57,31 @@ public class Aria2APITest extends TestCase
 	
 	public void testTellStatus()
 	{
-		//aria2.tellStatus("0053dc207c490f5f");
-		aria2.tellStatus("a178a32f598b1355");
+		Status status = aria2.tellStatus("7e9a2701db3ade17");
+		//Status status = aria2.tellStatus("cc3628e95b70078b");
+		Log.d("aria2 Test","gid:" + status.gid);
+		Log.d("aria2 Test","status:" + status.status);
+		Log.d("aria2 Test","completedLength:" + status.completedLength + "bytes");
+		Log.d("aria2 Test","totalLength:" + status.totalLength + "bytes");
+		Log.d("aria2 Test","bitfield:" + status.bitfield);
+		Log.d("aria2 Test","downloadSpeed:" + status.downloadSpeed + "bytes/sec");
+		Log.d("aria2 Test","uploadSpeed:" + status.uploadSpeed + "bytes/sec");
+		Log.d("aria2 Test","dir:" + status.dir);
+		Object[] files = status.files;
+		Log.d("aria2 Test","files begin-------" );
+		for (Object file: files)
+		{
+			Files fileItem =new Files((HashMap<String, Object>)file);
+			Log.d("aria2 Test","file index:" + fileItem.index);
+			Log.d("aria2 Test","     path:" + fileItem.path);
+			Log.d("aria2 Test","     completedLength:" + fileItem.completedLength + "bytes");
+			Log.d("aria2 Test","     length:" + fileItem.length + "bytes");
+			Log.d("aria2 Test","     selected:" + fileItem.selected);
+		}
+		Log.d("aria2 Test","files end-------" );
+		
+		
+		
 	}
 	
 	public void testTellActive()

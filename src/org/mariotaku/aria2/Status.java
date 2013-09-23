@@ -1,6 +1,8 @@
 package org.mariotaku.aria2;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Status extends CommonItem {
 
@@ -132,4 +134,22 @@ public class Status extends CommonItem {
 	 * .torrent file. BitTorrent only. It contains following keys.
 	 */
 	public HashMap<String, Object> bittorrent = null;
+	
+	public List<Files> getFiles()
+	{
+		List<Files> filesList = new ArrayList<Files>();
+		
+		if(files == null)
+		{
+			return filesList;
+		}
+		
+		for (Object file: files)
+		{
+			Files fileItem =new Files((HashMap<String, Object>)file);
+			filesList.add(fileItem);
+		}
+		return filesList;
+	}
+	
 }

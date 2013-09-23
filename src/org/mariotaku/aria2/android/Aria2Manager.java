@@ -1,5 +1,6 @@
 package org.mariotaku.aria2.android;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -7,6 +8,7 @@ import org.mariotaku.aria2.Aria2API;
 import org.mariotaku.aria2.DownloadUris;
 import org.mariotaku.aria2.Options;
 import org.mariotaku.aria2.Version;
+import org.mariotaku.aria2.Status;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -76,9 +78,12 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 						}
 						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
 						break;
-							
-						
-						
+					case GET_ALL_STATUS:
+						sendToUIThreadMsg.what = ALL_STATUS_REFRESHED;
+						ArrayList<Status> status = _aria2.tellStopped(0,10);
+						sendToUIThreadMsg.obj = status;
+						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+						break;
 					}
 				}
 				catch (Exception e)

@@ -1,5 +1,8 @@
 package org.mariotaku.aria2.android;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -9,6 +12,7 @@ import org.mariotaku.aria2.Aria2API;
 import org.mariotaku.aria2.DownloadUris;
 import org.mariotaku.aria2.GlobalStat;
 import org.mariotaku.aria2.Options;
+import org.mariotaku.aria2.Status;
 import org.mariotaku.aria2.Version;
 import org.mariotaku.aria2.android.NewDownloadDialogFragment.NewDownloadDialogListener;
 import org.mariotaku.aria2.android.utils.CommonUtils;
@@ -47,19 +51,7 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		_aria2Manager = new Aria2Manager(this,mRefreshHandler);
-		
-		
-		DownloadItem data[] = new DownloadItem[]
-        {
-            new DownloadItem("11","22","33"),
-        };
-		
-		
-		 DownloadItemAdapter adapter = new DownloadItemAdapter(this,
-                R.layout.download_item,data);
-		
 		downloadListView = (ListView)findViewById(R.id.download_list_view);
-		downloadListView.setAdapter(adapter);
 		downloadListView.setOnItemClickListener(mMessageClickedHandler);
 		
 		
@@ -138,10 +130,7 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 					_aria2Manager.sendToAria2APIHandlerMsg(GET_SESSION_INFO);
 					break;
 				case R.id.status:
-					/*
-					aria2.tellStatus(7, "gid");
-					*/
-					//((TextView) v).setText(String.valueOf(aria2.tellStatus(7, "gid").gid));
+					_aria2Manager.sendToAria2APIHandlerMsg(GET_ALL_STATUS);
 					break;
 				case R.id.run:
 					_aria2Manager.sendToAria2APIHandlerMsg(ADD_URI);
@@ -184,14 +173,31 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 					String downloadInfo = (String)msg.obj;
 					((TextView)findViewById(R.id.run)).setText(downloadInfo);
 					break;
-										
-
+				case ALL_STATUS_REFRESHED:
+					if (msg.obj == null) return;
+					
+					List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
+					List<Status> status = (ArrayList<Status>) msg.obj;
+					Iterator<Status> it = status.iterator(); 
+					while (it.hasNext())
+					{
+						Status statusTemp = it.next();
+						DownloadItem downloadItem = new DownloadItem(statusTemp.getFiles().get(0).path, statusTemp.status,statusTemp.totalLength);
+						downloadItems.add(downloadItem);
+					}
+					
+					
+					DownloadItemAdapter adapter = new DownloadItemAdapter(Aria2Activity.this,R.layout.download_item,downloadItems);
+		 			
+		 			downloadListView.setAdapter(adapter);
+					
+					break;
 			}
 		}
 	};
 	
 	public void showNoticeDialog() {
-        // Create an instance of the dialog fragment and show it
+        // Create an instance of the dialog fragmnt and show it
         DialogFragment dialog = new NewDownloadDialogFragment();
         dialog.show(getSupportFragmentManager(), "NewDownloadFragment");
     }

@@ -1,5 +1,7 @@
 package org.mariotaku.aria2.android;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,16 +15,16 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
 
 	Context context;
     int layoutResourceId;   
-    DownloadItem data[] = null;
+    List<DownloadItem> data = null;
 	
 	public DownloadItemAdapter(Context context, int textViewResourceId,
-			DownloadItem[] objects)
+			List<DownloadItem> downloadItems)
 	{
-		super(context, textViewResourceId, objects);
+		super(context, textViewResourceId, downloadItems);
 		// TODO Auto-generated constructor stub
 		 this.layoutResourceId = textViewResourceId;
          this.context = context;
-         this.data = objects;
+         this.data = downloadItems;
 	}
 	
 	
@@ -49,7 +51,7 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
             holder = (DownloadItemHolder)row.getTag();
         }
        
-        DownloadItem downloadItem = data[position];
+        DownloadItem downloadItem = data.get(position);
         holder.name.setText(downloadItem.name);
         holder.status.setText(downloadItem.status);
         holder.size.setText(downloadItem.size); 

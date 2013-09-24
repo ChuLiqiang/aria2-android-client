@@ -6,6 +6,7 @@ import java.util.TimerTask;
 
 import org.mariotaku.aria2.Aria2API;
 import org.mariotaku.aria2.DownloadUris;
+import org.mariotaku.aria2.GlobalStat;
 import org.mariotaku.aria2.Options;
 import org.mariotaku.aria2.Version;
 import org.mariotaku.aria2.Status;
@@ -53,7 +54,12 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 					{
 					case GET_GLOBAL_STAT:
 						sendToUIThreadMsg.what = GLOBAL_STAT_REFRESHED;
-						sendToUIThreadMsg.obj = _aria2.getGlobalStat();
+						GlobalStat stat = _aria2.getGlobalStat();
+						sendToUIThreadMsg.obj = stat;
+						
+						//get waiting and stopped task count 
+						sendToAria2APIHandlerMsg(GET_ALL_STATUS,stat);
+						
 						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
 						break;
 					case GET_VERSION_INFO:
@@ -80,9 +86,14 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 						break;
 					case GET_ALL_STATUS:
 						sendToUIThreadMsg.what = ALL_STATUS_REFRESHED;
+						if(msg.obj == null)
+						{
+							return;
+						}
+						GlobalStat statNew = (GlobalStat) msg.obj;
 						ArrayList<Status> activeList = _aria2.tellActive();
-						ArrayList<Status> waitingList = _aria2.tellWaiting(0,10);
-						ArrayList<Status> stopList = _aria2.tellStopped(0,10);
+						ArrayList<Status> waitingList = _aria2.tellWaiting(0,Integer.valueOf(statNew.numWaiting));
+						ArrayList<Status> stopList = _aria2.tellStopped(0,Integer.valueOf(statNew.numStopped));
 						
 						ArrayList<ArrayList<Status>> list = new ArrayList<ArrayList<Status>>();
 						
@@ -134,7 +145,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 			@Override
 			public void run() {
 				sendToAria2APIHandlerMsg(GET_GLOBAL_STAT);
-				sendToAria2APIHandlerMsg(GET_ALL_STATUS);
+				
 
 			}
 

@@ -45,6 +45,10 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 	
 	private ListView downloadListView = null;
 	
+	private DownloadItemAdapter adapter = null;
+	
+	private List<DownloadItem> downloadItems = null;
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,12 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 		setContentView(R.layout.main);
 		_aria2Manager = new Aria2Manager(this,mRefreshHandler);
 		
+		downloadItems = new ArrayList<DownloadItem>();
+		adapter = new DownloadItemAdapter(Aria2Activity.this,R.layout.download_item,downloadItems);
+		
 		downloadListView = (ListView)findViewById(R.id.download_list_view);
+		downloadListView.setAdapter(adapter);
+		
 		downloadListView.setOnItemClickListener(mMessageClickedHandler);
 		
 	}
@@ -146,7 +155,7 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 				case ALL_STATUS_REFRESHED:
 					if (msg.obj == null) return;
 					
-					List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
+					List<DownloadItem> downloadItemsNew = new ArrayList<DownloadItem>();
 					
 					ArrayList<ArrayList<Status>> statusList = (ArrayList<ArrayList<Status>>)msg.obj;
 					Iterator<ArrayList<Status>> itStatusList = statusList.iterator();
@@ -158,14 +167,12 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 						{
 							Status statusTemp = it.next();
 							DownloadItem downloadItem = new DownloadItem(statusTemp);
-							downloadItems.add(downloadItem);
+							downloadItemsNew.add(downloadItem);
 						}
 					}
 					
-					DownloadItemAdapter adapter = new DownloadItemAdapter(Aria2Activity.this,R.layout.download_item,downloadItems);
-		 			
-		 			downloadListView.setAdapter(adapter);
-					
+					adapter.updateItems(downloadItemsNew);
+					adapter.notifyDataSetChanged(); 
 					break;
 			}
 		}

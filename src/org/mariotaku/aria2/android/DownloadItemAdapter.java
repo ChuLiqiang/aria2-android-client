@@ -1,5 +1,6 @@
 package org.mariotaku.aria2.android;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -14,22 +15,23 @@ import android.widget.TextView;
 public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
 {
 
-	Context context;
-    int layoutResourceId;   
-    List<DownloadItem> data = null;
-	
+
+	private Context context;
+    private int layoutResourceId;   
+    private List<DownloadItem> data = new ArrayList<DownloadItem>();;  
+
+
 	public DownloadItemAdapter(Context context, int textViewResourceId,
-			List<DownloadItem> downloadItems)
+			List<DownloadItem> objects)
 	{
-		super(context, textViewResourceId, downloadItems);
-		// TODO Auto-generated constructor stub
-		 this.layoutResourceId = textViewResourceId;
-         this.context = context;
-         this.data = downloadItems;
+		super(context, textViewResourceId, objects);
+		this.context = context;
+		this.layoutResourceId = textViewResourceId;
+		this.data = objects;
+
 	}
-	
-	
-			
+
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
@@ -62,10 +64,6 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
 		
 	}
 	
-	
-
-
-
 	static class DownloadItemHolder
     {
         TextView name;
@@ -73,4 +71,11 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
         TextView size;
         ProgressBar progressBar;
     }
+
+	public void updateItems(List<DownloadItem> downloadItemsNew)
+	{
+		data.clear();
+		data.addAll(downloadItemsNew);
+		
+	}
 }

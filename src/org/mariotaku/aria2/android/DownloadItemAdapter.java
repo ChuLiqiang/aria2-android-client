@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
@@ -44,6 +45,7 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
             holder.name = (TextView)row.findViewById(R.id.download_item_name);
             holder.status = (TextView)row.findViewById(R.id.download_item_status);
             holder.size = (TextView)row.findViewById(R.id.download_item_size);
+            holder.progressBar = (ProgressBar)row.findViewById(R.id.download_item_progress_bar); 
             row.setTag(holder);
         }
         else
@@ -55,6 +57,7 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
         holder.name.setText(downloadItem.name);
         holder.status.setText(downloadItem.status);
         holder.size.setText(downloadItem.size); 
+        holder.progressBar.setProgress(downloadItem.progress);
         return row;
 		
 	}
@@ -68,5 +71,6 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
         TextView name;
         TextView status;
         TextView size;
+        ProgressBar progressBar;
     }
 }

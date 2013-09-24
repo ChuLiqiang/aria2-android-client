@@ -51,14 +51,9 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		_aria2Manager = new Aria2Manager(this,mRefreshHandler);
+		
 		downloadListView = (ListView)findViewById(R.id.download_list_view);
 		downloadListView.setOnItemClickListener(mMessageClickedHandler);
-		
-		
-		findViewById(R.id.version).setOnClickListener(this);
-		findViewById(R.id.session_info).setOnClickListener(this);
-		findViewById(R.id.status).setOnClickListener(this);
-		findViewById(R.id.run).setOnClickListener(this);
 		
 	}
 	
@@ -81,7 +76,8 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 		try
 		{
 			_aria2Manager.InitHost();
-			_aria2Manager.StartUpdateGlobalStat();
+			_aria2Manager.StartUpdateAllStatus();
+			
 		}
 		catch(Exception e)
 		{
@@ -123,18 +119,7 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 		try 
 		{
 			switch (v.getId()) {
-				case R.id.version:
-					_aria2Manager.sendToAria2APIHandlerMsg(GET_VERSION_INFO);
-					break;
-				case R.id.session_info:
-					_aria2Manager.sendToAria2APIHandlerMsg(GET_SESSION_INFO);
-					break;
-				case R.id.status:
-					_aria2Manager.sendToAria2APIHandlerMsg(GET_ALL_STATUS);
-					break;
-				case R.id.run:
-					_aria2Manager.sendToAria2APIHandlerMsg(ADD_URI);
-					break;
+				
 			}
 		}catch (Exception e) {
 			Toast.makeText(Aria2Activity.this,e.getMessage(), Toast.LENGTH_LONG).show();
@@ -158,34 +143,24 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 							CommonUtils.formatSpeedString(stat.uploadSpeed));
 					getSupportActionBar().setSubtitle(subtitle);
 					break;
-				case VERSION_INFO_REFRESHED:
-					if (msg.obj == null) return;
-					String versionInfo = (String)msg.obj;
-					((TextView)findViewById(R.id.version)).setText(versionInfo);
-					break;
-				case SESSION_INFO_REFRESHED:
-					if (msg.obj == null) return;
-					String sessionInfo = (String)msg.obj;
-					((TextView)findViewById(R.id.session_info)).setText(sessionInfo);
-					break;
-				case DOWNLOAD_INFO_REFRESHED:
-					if (msg.obj == null) return;
-					String downloadInfo = (String)msg.obj;
-					((TextView)findViewById(R.id.run)).setText(downloadInfo);
-					break;
 				case ALL_STATUS_REFRESHED:
 					if (msg.obj == null) return;
 					
 					List<DownloadItem> downloadItems = new ArrayList<DownloadItem>();
-					List<Status> status = (ArrayList<Status>) msg.obj;
-					Iterator<Status> it = status.iterator(); 
-					while (it.hasNext())
-					{
-						Status statusTemp = it.next();
-						DownloadItem downloadItem = new DownloadItem(statusTemp.getFiles().get(0).path, statusTemp.status,statusTemp.totalLength);
-						downloadItems.add(downloadItem);
-					}
 					
+					ArrayList<ArrayList<Status>> statusList = (ArrayList<ArrayList<Status>>)msg.obj;
+					Iterator<ArrayList<Status>> itStatusList = statusList.iterator();
+					while (itStatusList.hasNext())
+					{
+						List<Status> status = itStatusList.next();
+						Iterator<Status> it = status.iterator();
+						while (it.hasNext())
+						{
+							Status statusTemp = it.next();
+							DownloadItem downloadItem = new DownloadItem(statusTemp);
+							downloadItems.add(downloadItem);
+						}
+					}
 					
 					DownloadItemAdapter adapter = new DownloadItemAdapter(Aria2Activity.this,R.layout.download_item,downloadItems);
 		 			

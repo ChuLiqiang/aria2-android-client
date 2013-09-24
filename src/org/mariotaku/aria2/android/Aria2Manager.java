@@ -80,8 +80,17 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 						break;
 					case GET_ALL_STATUS:
 						sendToUIThreadMsg.what = ALL_STATUS_REFRESHED;
-						ArrayList<Status> status = _aria2.tellStopped(0,10);
-						sendToUIThreadMsg.obj = status;
+						ArrayList<Status> activeList = _aria2.tellActive();
+						ArrayList<Status> waitingList = _aria2.tellWaiting(0,10);
+						ArrayList<Status> stopList = _aria2.tellStopped(0,10);
+						
+						ArrayList<ArrayList<Status>> list = new ArrayList<ArrayList<Status>>();
+						
+						list.add(activeList);
+						list.add(waitingList);
+						list.add(stopList);
+						
+						sendToUIThreadMsg.obj = list;
 						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
 						break;
 					}
@@ -117,7 +126,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		}
 	}
 	
-	public void StartUpdateGlobalStat()
+	public void StartUpdateAllStatus()
 	{
 		checkAria2();
 		mGlobalStatRefreshTimer = new Timer();
@@ -125,6 +134,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 			@Override
 			public void run() {
 				sendToAria2APIHandlerMsg(GET_GLOBAL_STAT);
+				sendToAria2APIHandlerMsg(GET_ALL_STATUS);
 
 			}
 

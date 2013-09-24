@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
 		this.context = context;
 		this.layoutResourceId = textViewResourceId;
 		this.data = objects;
-
+		Log.i("aria2", "init DownloadItemAdapter!");
 	}
 
 

@@ -54,6 +54,7 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
 		_aria2Manager = new Aria2Manager(this,mRefreshHandler);
 		
 		downloadItems = new ArrayList<DownloadItem>();
@@ -85,7 +86,7 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 		try
 		{
 			_aria2Manager.InitHost();
-			_aria2Manager.StartUpdateAllStatus();
+			_aria2Manager.StartUpdateGlobalStat();
 			
 		}
 		catch(Exception e)
@@ -142,40 +143,56 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 
 		@Override
 		public void handleMessage(Message msg) {
-			
-			switch (msg.what) {
-				case GLOBAL_STAT_REFRESHED:
-					if (msg.obj == null) return;
-					GlobalStat stat = (GlobalStat) msg.obj;
-					String subtitle = getString(R.string.global_speed_format,
-							CommonUtils.formatSpeedString(stat.downloadSpeed),
-							CommonUtils.formatSpeedString(stat.uploadSpeed));
-					getSupportActionBar().setSubtitle(subtitle);
-					break;
-				case ALL_STATUS_REFRESHED:
-					if (msg.obj == null) return;
-					
-					List<DownloadItem> downloadItemsNew = new ArrayList<DownloadItem>();
-					
-					ArrayList<ArrayList<Status>> statusList = (ArrayList<ArrayList<Status>>)msg.obj;
-					Iterator<ArrayList<Status>> itStatusList = statusList.iterator();
-					while (itStatusList.hasNext())
-					{
-						List<Status> status = itStatusList.next();
-						Iterator<Status> it = status.iterator();
-						while (it.hasNext())
+			Log.i("aria2", "aria2 ui handler get msg:" + msg.what);
+			try
+			{
+				switch (msg.what) 
+				{
+					case GLOBAL_STAT_REFRESHED:
+						if (msg.obj == null) return;
+						GlobalStat stat = (GlobalStat) msg.obj;
+						String subtitle = getString(R.string.global_speed_format,
+								CommonUtils.formatSpeedString(stat.downloadSpeed),
+								CommonUtils.formatSpeedString(stat.uploadSpeed));
+						getSupportActionBar().setSubtitle(subtitle);
+						break;
+					case ALL_STATUS_REFRESHED:
+						if (msg.obj == null) return;
+						
+						List<DownloadItem> downloadItemsNew = new ArrayList<DownloadItem>();
+						
+						ArrayList<ArrayList<Status>> statusList = (ArrayList<ArrayList<Status>>)msg.obj;
+						Iterator<ArrayList<Status>> itStatusList = statusList.iterator();
+						while (itStatusList.hasNext())
 						{
-							Status statusTemp = it.next();
-							DownloadItem downloadItem = new DownloadItem(statusTemp);
-							downloadItemsNew.add(downloadItem);
+							List<Status> status = itStatusList.next();
+							Iterator<Status> it = status.iterator();
+							while (it.hasNext())
+							{
+								Status statusTemp = it.next();
+								DownloadItem downloadItem = new DownloadItem(statusTemp);
+								downloadItemsNew.add(downloadItem);
+							}
 						}
-					}
-					
-					adapter.updateItems(downloadItemsNew);
-					adapter.notifyDataSetChanged(); 
-					break;
+						
+						adapter.updateItems(downloadItemsNew);
+						adapter.notifyDataSetChanged(); 
+						break;
+					case SHOW_ERROR_INFO:
+						_aria2Manager.StopUpdateGlobalStat();
+						if (msg.obj == null) 
+						{
+							Toast.makeText(Aria2Activity.this,"error happend!please check setting!", Toast.LENGTH_LONG).show();
+						}
+						String errorInfo = (String)msg.obj; 
+						Toast.makeText(Aria2Activity.this,errorInfo,Toast.LENGTH_LONG).show();
+						break;
+				}
+			}catch (Exception e) {
+				Log.e("aria2", "aria2 ui handler is error!",e);
 			}
 		}
+		
 	};
 	
 	public void showNoticeDialog() {

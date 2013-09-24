@@ -7,4 +7,8 @@ public interface Aria2UIMessage
 	final static int SESSION_INFO_REFRESHED = 2;
 	final static int DOWNLOAD_INFO_REFRESHED = 3;
 	final static int ALL_STATUS_REFRESHED = 4;
+	
+	
+	
+	final static int SHOW_ERROR_INFO = 50;
 }

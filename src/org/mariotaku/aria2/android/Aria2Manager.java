@@ -35,6 +35,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 	
 	public Aria2Manager(Context context,Handler mRefreshHandler)
 	{
+		Log.i("aria2", "init Aria2Manager!");
 		_context = context;
 		_mRefreshHandler = mRefreshHandler;
 		_aria2APIHandlerThread = new HandlerThread("Aria2 API Handler Thread"); 
@@ -47,20 +48,30 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		{
 			public void handleMessage(Message msg)
 			{
+				Message sendToUIThreadMsg = new Message();
+				Log.i("aria2", "aria2 manager handler get msg:" + msg.what);
 				try
 				{
-					Message sendToUIThreadMsg = new Message();
 					switch (msg.what)
 					{
 					case GET_GLOBAL_STAT:
-						sendToUIThreadMsg.what = GLOBAL_STAT_REFRESHED;
-						GlobalStat stat = _aria2.getGlobalStat();
-						sendToUIThreadMsg.obj = stat;
-						
-						//get waiting and stopped task count 
-						sendToAria2APIHandlerMsg(GET_ALL_STATUS,stat);
-						
-						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+						try
+						{
+							sendToUIThreadMsg.what = GLOBAL_STAT_REFRESHED;
+							GlobalStat stat = _aria2.getGlobalStat();
+							sendToUIThreadMsg.obj = stat;
+							
+							//get waiting and stopped task count 
+							sendToAria2APIHandlerMsg(GET_ALL_STATUS,stat);
+							
+							_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+						}catch (Exception e) {
+							sendToUIThreadMsg.what = SHOW_ERROR_INFO;
+							String errorInfo = "can`t get global stat please check setting!";
+							sendToUIThreadMsg.obj = errorInfo;
+							_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+							throw e;
+						}
 						break;
 					case GET_VERSION_INFO:
 						sendToUIThreadMsg.what = VERSION_INFO_REFRESHED;
@@ -119,9 +130,11 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 	}
 
 	public void InitHost() {
+		Log.i("aria2", "init host!");
 		String nowAria2Host = getHost();
 		if(!nowAria2Host.equals(_aria2Host))
 		{
+			Log.i("aria2", "host should change!");
 			_aria2Host = nowAria2Host;
 			try
 			{
@@ -137,16 +150,15 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		}
 	}
 	
-	public void StartUpdateAllStatus()
+	public void StartUpdateGlobalStat()
 	{
+		Log.i("aria2", "start update global stat!");
 		checkAria2();
 		mGlobalStatRefreshTimer = new Timer();
 		mGlobalStatRefreshTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
 				sendToAria2APIHandlerMsg(GET_GLOBAL_STAT);
-				
-
 			}
 
 		}, 0, 1000);
@@ -173,6 +185,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		{
 			mGlobalStatRefreshTimer.cancel();
 			mGlobalStatRefreshTimer = null;
+			Log.i("aria2", "aria2 stop update GlobalStat timer!");
 		}
 	}
 	

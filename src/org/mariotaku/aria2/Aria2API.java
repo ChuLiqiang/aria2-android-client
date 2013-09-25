@@ -314,6 +314,15 @@ public class Aria2API {
 		return (String) callMethod("aria2.unpauseAll");
 	}
 	
+	/**
+	 * This method purges completed/error/removed downloads to free memory.
+	 * @return "OK" if succeed.
+	 */
+	public String purgeDownloadResult() {
+		return (String) callMethod("aria2.purgeDownloadResult");
+	}
+	
+	
 	private Object callMethod(String method, Object... args){
 		
 		Object response = null;

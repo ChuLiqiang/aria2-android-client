@@ -3,6 +3,9 @@
 
 	<string name="app_name">Aria2</string>
 	<string name="new_download">New download</string>
+	<string name="pause_download">Pause All</string>
+	<string name="resume_download">Resume Paused</string>
+	<string name="remove_download">Purge Completed</string>
 	<string name="global_speed_format">Download : <xliff:g id="download_speed">%s</xliff:g>, Upload : <xliff:g id="upload_speed">%s</xliff:g></string>
 	
 	<string name="aria2_version">1.16.5</string>

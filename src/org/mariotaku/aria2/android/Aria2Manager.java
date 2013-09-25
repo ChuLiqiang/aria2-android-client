@@ -55,23 +55,14 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 					switch (msg.what)
 					{
 					case GET_GLOBAL_STAT:
-						try
-						{
-							sendToUIThreadMsg.what = GLOBAL_STAT_REFRESHED;
-							GlobalStat stat = _aria2.getGlobalStat();
-							sendToUIThreadMsg.obj = stat;
-							
-							//get waiting and stopped task count 
-							sendToAria2APIHandlerMsg(GET_ALL_STATUS,stat);
-							
-							_mRefreshHandler.sendMessage(sendToUIThreadMsg);
-						}catch (Exception e) {
-							sendToUIThreadMsg.what = SHOW_ERROR_INFO;
-							String errorInfo = "can`t get global stat please check setting!";
-							sendToUIThreadMsg.obj = errorInfo;
-							_mRefreshHandler.sendMessage(sendToUIThreadMsg);
-							throw e;
-						}
+						sendToUIThreadMsg.what = GLOBAL_STAT_REFRESHED;
+						GlobalStat stat = _aria2.getGlobalStat();
+						sendToUIThreadMsg.obj = stat;
+						
+						//get waiting and stopped task count 
+						sendToAria2APIHandlerMsg(GET_ALL_STATUS,stat);
+						
+						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
 						break;
 					case GET_VERSION_INFO:
 						sendToUIThreadMsg.what = VERSION_INFO_REFRESHED;
@@ -115,14 +106,61 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 						sendToUIThreadMsg.obj = list;
 						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
 						break;
+					case PAUSE_ALL_DOWNLOAD:
+						_aria2.pauseAll();
+						break;
+					case RESUME_ALL_DOWNLOAD:
+						_aria2.unpauseAll();
+						break;
+					case PURGE_DOWNLOAD:
+						_aria2.purgeDownloadResult();
+						break;
 					}
 				}
 				catch (Exception e)
 				{
 					Log.e("aria2", "aria2 manager handler is error!",e);
+					
+					handlerError(msg.what,sendToUIThreadMsg);
 				}
 
-			}			
+			}
+
+			private void handlerError(int comeMessage,Message sendToUIThreadMsg)
+			{
+				String errorInfo = "aria2 network errors!";
+				switch (comeMessage)
+				{
+					case GET_GLOBAL_STAT:
+						errorInfo = "get aria2 global stat error!please check setting!";
+						sendErrorInfoToUiThreadAndStopUpdateGlobalStat(sendToUIThreadMsg, errorInfo);
+						break;
+					case ADD_URI:
+						errorInfo = "add uri error!";
+						sendErrorInfoToUiThread(sendToUIThreadMsg, errorInfo);
+						break;
+						
+				}
+				
+			}
+
+			private void sendErrorInfoToUiThreadAndStopUpdateGlobalStat(Message sendToUIThreadMsg,
+					String errorInfo)
+			{
+				sendToUIThreadMsg.what = SHOW_ERROR_INFO_STOP_UPDATE_GLOBAL_STAT;
+				sendToUIThreadMsg.obj = errorInfo;
+				_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+			}	
+			
+			private void sendErrorInfoToUiThread(Message sendToUIThreadMsg,
+					String errorInfo)
+			{
+				sendToUIThreadMsg.what = SHOW_ERROR_INFO;
+				sendToUIThreadMsg.obj = errorInfo;
+				_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+			}
+			
+			
 		};
 		
 		Process.setThreadPriority(_aria2APIHandlerThread.getThreadId(),Process.THREAD_PRIORITY_BACKGROUND);

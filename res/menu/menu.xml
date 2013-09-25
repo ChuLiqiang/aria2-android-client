@@ -1,12 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android" 
+      xmlns:yourapp="http://schemas.android.com/apk/res-auto">
 
 	<item
 		android:id="@+id/new_download"
 		android:icon="@drawable/ic_menu_add"
-		android:showAsAction="always"
+		yourapp:showAsAction="ifRoom"
 		android:title="@string/new_download">
 	</item>
+	
+	<item
+		android:id="@+id/pause_download"
+		android:icon="@drawable/ic_menu_pause"
+		yourapp:showAsAction="ifRoom"
+		android:title="@string/pause_download">
+	</item>
+	
+	<item
+		android:id="@+id/resume_download"
+		android:icon="@drawable/ic_menu_resume"
+		yourapp:showAsAction="ifRoom"
+		android:title="@string/resume_download">
+	</item>
+	
+	<item
+		android:id="@+id/remove_download"
+		android:icon="@drawable/ic_menu_remove"
+		yourapp:showAsAction="ifRoom"
+		android:title="@string/remove_download">
+	</item>
+	
 	
 	<item
         android:id="@+id/action_settings"

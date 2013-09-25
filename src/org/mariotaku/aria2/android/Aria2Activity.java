@@ -111,7 +111,16 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.new_download:
-				showNoticeDialog();
+				showDownloadDialog();
+				break;
+			case R.id.pause_download:
+				_aria2Manager.sendToAria2APIHandlerMsg(PAUSE_ALL_DOWNLOAD);
+				break;
+			case R.id.resume_download:
+				_aria2Manager.sendToAria2APIHandlerMsg(RESUME_ALL_DOWNLOAD);
+				break;
+			case R.id.remove_download:
+				_aria2Manager.sendToAria2APIHandlerMsg(PURGE_DOWNLOAD);
 				break;
 			case R.id.action_exit:
 				finish();
@@ -178,14 +187,26 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 						adapter.updateItems(downloadItemsNew);
 						adapter.notifyDataSetChanged(); 
 						break;
-					case SHOW_ERROR_INFO:
-						_aria2Manager.StopUpdateGlobalStat();
-						if (msg.obj == null) 
+					case SHOW_ERROR_INFO_STOP_UPDATE_GLOBAL_STAT:
 						{
-							Toast.makeText(Aria2Activity.this,"error happend!please check setting!", Toast.LENGTH_LONG).show();
+							_aria2Manager.StopUpdateGlobalStat();
+							if (msg.obj == null) 
+							{
+								Toast.makeText(Aria2Activity.this,"error happend!please check setting!", Toast.LENGTH_LONG).show();
+							}
+							String errorInfo = (String)msg.obj; 
+							Toast.makeText(Aria2Activity.this,errorInfo,Toast.LENGTH_LONG).show();
 						}
-						String errorInfo = (String)msg.obj; 
-						Toast.makeText(Aria2Activity.this,errorInfo,Toast.LENGTH_LONG).show();
+						break;
+					case SHOW_ERROR_INFO:
+						{
+							if (msg.obj == null) 
+							{
+								Toast.makeText(Aria2Activity.this,"error happend!", Toast.LENGTH_LONG).show();
+							}
+							String errorInfo = (String)msg.obj; 
+							Toast.makeText(Aria2Activity.this,errorInfo,Toast.LENGTH_LONG).show();
+						}
 						break;
 				}
 			}catch (Exception e) {
@@ -195,7 +216,7 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 		
 	};
 	
-	public void showNoticeDialog() {
+	public void showDownloadDialog() {
         // Create an instance of the dialog fragmnt and show it
         DialogFragment dialog = new NewDownloadDialogFragment();
         dialog.show(getSupportFragmentManager(), "NewDownloadFragment");

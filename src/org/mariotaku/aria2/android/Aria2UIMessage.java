@@ -11,4 +11,5 @@ public interface Aria2UIMessage
 	
 	
 	final static int SHOW_ERROR_INFO = 50;
+	final static int SHOW_ERROR_INFO_STOP_UPDATE_GLOBAL_STAT = 51;
 }

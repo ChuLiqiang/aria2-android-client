@@ -214,7 +214,7 @@ public class Aria2API {
 	 * 
 	 * @return "OK" if succeed.
 	 */
-	public String removeDownloadResult(int gid) {
+	public String removeDownloadResult(String gid) {
 		return (String) callMethod("aria2.removeDownloadResult", gid);
 	}
 

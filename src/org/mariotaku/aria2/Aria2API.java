@@ -94,6 +94,15 @@ public class Aria2API {
 		
 		return (String)result;
 	}
+	
+	public String addTorrent(byte[] bytes) {
+		
+		Object result = callMethod("aria2.addTorrent",bytes);
+		
+		return (String)result;
+	}
+	
+	
 
 	/**
 	 * Pauses the download denoted by gid. This method behaves just like

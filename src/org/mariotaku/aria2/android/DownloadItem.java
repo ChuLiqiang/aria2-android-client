@@ -8,11 +8,14 @@ import org.mariotaku.aria2.android.utils.CommonUtils;
 
 public class DownloadItem
 {
+	public String gid;
 	public String name;
 	public String status;
 	public String size;
 	public int progress;
-	 public DownloadItem(){
+	public boolean havaBittorrent = false;
+	
+	public DownloadItem(){
         super();
     }
 
@@ -32,6 +35,11 @@ public class DownloadItem
 		double completedLength = Double.valueOf(statusTemp.completedLength);
 		double totalLength = Double.valueOf(statusTemp.totalLength);
 		this.progress = (int) ((completedLength / totalLength) * 100);
+		this.gid = statusTemp.gid;
+		if(statusTemp.bittorrent != null)
+		{
+			havaBittorrent = true;
+		}
 	}
 	
 	

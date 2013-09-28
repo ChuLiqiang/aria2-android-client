@@ -14,6 +14,7 @@ import org.mariotaku.aria2.GlobalStat;
 import org.mariotaku.aria2.Options;
 import org.mariotaku.aria2.Status;
 import org.mariotaku.aria2.Version;
+import org.mariotaku.aria2.android.DownloadItemDialogFragment.DownloadItemDialogListener;
 import org.mariotaku.aria2.android.NewDownloadDialogFragment.NewDownloadDialogListener;
 import org.mariotaku.aria2.android.utils.CommonUtils;
 
@@ -34,11 +35,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Aria2Activity extends ActionBarActivity implements OnClickListener,Aria2UIMessage,Aria2APIMessage,NewDownloadDialogFragment.NewDownloadDialogListener{
+public class Aria2Activity extends ActionBarActivity 
+						   implements OnClickListener,Aria2UIMessage,Aria2APIMessage,
+						   NewDownloadDialogListener,DownloadItemDialogListener{
 
 	
 	private Aria2Manager _aria2Manager = null;
@@ -64,6 +68,7 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 		downloadListView.setAdapter(adapter);
 		
 		downloadListView.setOnItemClickListener(mMessageClickedHandler);
+		downloadListView.setOnItemLongClickListener(mMessageLongClickedHandler);
 		
 	}
 	
@@ -74,10 +79,35 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id)
 		{
+			
 			// TODO Auto-generated method stub
 			
 		}
 	};
+	
+	private OnItemLongClickListener mMessageLongClickedHandler = new OnItemLongClickListener() {
+
+		@Override
+		public boolean onItemLongClick(AdapterView<?> parent, View view,
+				int position, long id)
+		{
+			DownloadItemDialogFragment downloadItemDialogFragment = new DownloadItemDialogFragment();
+			
+			Bundle args = new Bundle();
+			
+			args.putString("itemStatus",downloadItems.get(position).status);
+			args.putString("itemGid",downloadItems.get(position).gid);
+			args.putBoolean("havaBittorrent", downloadItems.get(position).havaBittorrent);
+			
+			downloadItemDialogFragment.setArguments(args);
+			downloadItemDialogFragment.show(getSupportFragmentManager(), "DownloadItemDialogFragment");
+			return false;
+		}
+
+		
+	};
+	
+	
 
 	
 	@Override
@@ -229,6 +259,20 @@ public class Aria2Activity extends ActionBarActivity implements OnClickListener,
 		{
 			String uri = ((NewDownloadDialogFragment)dialog).getDownloadUri(); 
 			_aria2Manager.sendToAria2APIHandlerMsg(ADD_URI,uri);
+			
+		}catch (Exception e) {
+			Toast.makeText(Aria2Activity.this,e.getMessage(), Toast.LENGTH_LONG).show();
+		}
+	}
+
+	@Override
+	public void onDialogActionClick(DialogFragment dialog)
+	{
+		try 
+		{
+			int action = ((DownloadItemDialogFragment)dialog).getAction();
+			String gid = ((DownloadItemDialogFragment)dialog).getGid();
+			_aria2Manager.sendToAria2APIHandlerMsg(action,gid);
 			
 		}catch (Exception e) {
 			Toast.makeText(Aria2Activity.this,e.getMessage(), Toast.LENGTH_LONG).show();

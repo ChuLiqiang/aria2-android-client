@@ -42,7 +42,6 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		
 		_aria2APIHandlerThread.start();
 		
-		
 		Looper mLooper = _aria2APIHandlerThread.getLooper(); 
 		_mHandler = new Handler(mLooper)
 		{
@@ -54,16 +53,6 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 				{
 					switch (msg.what)
 					{
-					case GET_GLOBAL_STAT:
-						sendToUIThreadMsg.what = GLOBAL_STAT_REFRESHED;
-						GlobalStat stat = _aria2.getGlobalStat();
-						sendToUIThreadMsg.obj = stat;
-						
-						//get waiting and stopped task count 
-						sendToAria2APIHandlerMsg(GET_ALL_STATUS,stat);
-						
-						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
-						break;
 					case GET_VERSION_INFO:
 						sendToUIThreadMsg.what = VERSION_INFO_REFRESHED;
 						sendToUIThreadMsg.obj = GetVersionInfo();
@@ -86,26 +75,6 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 						}
 						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
 						break;
-					case GET_ALL_STATUS:
-						sendToUIThreadMsg.what = ALL_STATUS_REFRESHED;
-						if(msg.obj == null)
-						{
-							return;
-						}
-						GlobalStat statNew = (GlobalStat) msg.obj;
-						ArrayList<Status> activeList = _aria2.tellActive();
-						ArrayList<Status> waitingList = _aria2.tellWaiting(0,Integer.valueOf(statNew.numWaiting));
-						ArrayList<Status> stopList = _aria2.tellStopped(0,Integer.valueOf(statNew.numStopped));
-						
-						ArrayList<ArrayList<Status>> list = new ArrayList<ArrayList<Status>>();
-						
-						list.add(activeList);
-						list.add(waitingList);
-						list.add(stopList);
-						
-						sendToUIThreadMsg.obj = list;
-						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
-						break;
 					case PAUSE_ALL_DOWNLOAD:
 						_aria2.pauseAll();
 						break;
@@ -115,6 +84,47 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 					case PURGE_DOWNLOAD:
 						_aria2.purgeDownloadResult();
 						break;
+					case PAUSE_DOWNLOAD:
+						{
+							if(msg.obj == null)
+							{
+								return;
+							}
+							String gid = (String)msg.obj;
+							_aria2.pause(gid);
+						}
+						break;
+					case RESUME_DOWNLOAD:
+						{
+							if(msg.obj == null)
+							{
+								return;
+							}
+							String gid = (String)msg.obj;
+							_aria2.unpause(gid);
+						}
+						break;
+					case REMOVE_DOWNLOAD:
+						{
+							if(msg.obj == null)
+							{
+								return;
+							}
+							String gid = (String)msg.obj;
+							_aria2.remove(gid);
+						}
+						break;
+					case REMOVE_DOWNLOAD_RESULT:
+						{
+							if(msg.obj == null)
+							{
+								return;
+							}
+							String gid = (String)msg.obj;
+							_aria2.removeDownloadResult(gid);
+						}
+						break;
+						
 					}
 				}
 				catch (Exception e)
@@ -125,42 +135,6 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 				}
 
 			}
-
-			private void handlerError(int comeMessage,Message sendToUIThreadMsg)
-			{
-				String errorInfo = "aria2 network errors!";
-				switch (comeMessage)
-				{
-					case GET_GLOBAL_STAT:
-						errorInfo = "get aria2 global stat error!please check setting!";
-						sendErrorInfoToUiThreadAndStopUpdateGlobalStat(sendToUIThreadMsg, errorInfo);
-						break;
-					case ADD_URI:
-						errorInfo = "add uri error!";
-						sendErrorInfoToUiThread(sendToUIThreadMsg, errorInfo);
-						break;
-						
-				}
-				
-			}
-
-			private void sendErrorInfoToUiThreadAndStopUpdateGlobalStat(Message sendToUIThreadMsg,
-					String errorInfo)
-			{
-				sendToUIThreadMsg.what = SHOW_ERROR_INFO_STOP_UPDATE_GLOBAL_STAT;
-				sendToUIThreadMsg.obj = errorInfo;
-				_mRefreshHandler.sendMessage(sendToUIThreadMsg);
-			}	
-			
-			private void sendErrorInfoToUiThread(Message sendToUIThreadMsg,
-					String errorInfo)
-			{
-				sendToUIThreadMsg.what = SHOW_ERROR_INFO;
-				sendToUIThreadMsg.obj = errorInfo;
-				_mRefreshHandler.sendMessage(sendToUIThreadMsg);
-			}
-			
-			
 		};
 		
 		Process.setThreadPriority(_aria2APIHandlerThread.getThreadId(),Process.THREAD_PRIORITY_BACKGROUND);
@@ -196,10 +170,53 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		mGlobalStatRefreshTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				sendToAria2APIHandlerMsg(GET_GLOBAL_STAT);
+				GlobalStat stat = null;
+				try
+				{
+					stat = getGlobalStatMessage();
+					
+				}catch (Exception e) {
+					Log.e("aria2", "aria2 get global stat error!",e);
+					Message sendToUIThreadMsg = new Message();
+					handlerError(GET_GLOBAL_STAT,sendToUIThreadMsg);
+				}
+				
+				try
+				{
+					getAllStatusMessage(stat);
+				}catch (Exception e) {
+					Log.e("aria2", "aria2 get all status error!",e);
+				}
 			}
 
 		}, 0, 1000);
+	}
+	
+	public GlobalStat getGlobalStatMessage()
+	{
+		Message sendToUIThreadMsg = new Message();
+		sendToUIThreadMsg.what = GLOBAL_STAT_REFRESHED;
+		GlobalStat stat = _aria2.getGlobalStat();
+		sendToUIThreadMsg.obj = stat;
+		_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+		return stat;
+	}
+	
+	private void getAllStatusMessage(GlobalStat statNew)
+	{												
+		Message sendToUIThreadMsg = new Message();
+		sendToUIThreadMsg.what = ALL_STATUS_REFRESHED;
+		ArrayList<Status> activeList = _aria2.tellActive();
+		ArrayList<Status> waitingList = _aria2.tellWaiting(0,Integer.valueOf(statNew.numWaiting));
+		ArrayList<Status> stopList = _aria2.tellStopped(0,Integer.valueOf(statNew.numStopped));
+		ArrayList<ArrayList<Status>> list = new ArrayList<ArrayList<Status>>();
+		
+		list.add(activeList);
+		list.add(waitingList);
+		list.add(stopList);
+		
+		sendToUIThreadMsg.obj = list;
+		_mRefreshHandler.sendMessage(sendToUIThreadMsg);
 	}
 	
 	public void sendToAria2APIHandlerMsg(int msgType)
@@ -215,6 +232,40 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		sendToAria2APIHandlerMsg.what = msgType;
 		sendToAria2APIHandlerMsg.obj = msgObj;
 		_mHandler.sendMessage(sendToAria2APIHandlerMsg);
+	}
+	
+	private void handlerError(int comeMessage,Message sendToUIThreadMsg)
+	{
+		String errorInfo = "aria2 network errors!";
+		switch (comeMessage)
+		{
+			case GET_GLOBAL_STAT:
+				errorInfo = "get aria2 global stat error!please check setting!";
+				sendErrorInfoToUiThreadAndStopUpdateGlobalStat(sendToUIThreadMsg, errorInfo);
+				break;
+			case ADD_URI:
+				errorInfo = "add uri error!";
+				sendErrorInfoToUiThread(sendToUIThreadMsg, errorInfo);
+				break;
+				
+		}
+		
+	}
+
+	private void sendErrorInfoToUiThreadAndStopUpdateGlobalStat(Message sendToUIThreadMsg,
+			String errorInfo)
+	{
+		sendToUIThreadMsg.what = SHOW_ERROR_INFO_STOP_UPDATE_GLOBAL_STAT;
+		sendToUIThreadMsg.obj = errorInfo;
+		_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+	}	
+	
+	private void sendErrorInfoToUiThread(Message sendToUIThreadMsg,
+			String errorInfo)
+	{
+		sendToUIThreadMsg.what = SHOW_ERROR_INFO;
+		sendToUIThreadMsg.obj = errorInfo;
+		_mRefreshHandler.sendMessage(sendToUIThreadMsg);
 	}
 	
 	public void StopUpdateGlobalStat()

@@ -11,5 +11,10 @@ public interface Aria2APIMessage
 	final static int RESUME_ALL_DOWNLOAD = 6;
 	final static int PURGE_DOWNLOAD = 7;
 	
+	final static int PAUSE_DOWNLOAD = 8;
+	final static int RESUME_DOWNLOAD = 9;
+	final static int REMOVE_DOWNLOAD = 10;
+	final static int REMOVE_DOWNLOAD_RESULT = 11;
+	
 	
 }

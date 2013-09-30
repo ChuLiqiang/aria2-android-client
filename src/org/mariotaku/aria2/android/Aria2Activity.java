@@ -63,31 +63,16 @@ public class Aria2Activity extends ActionBarActivity
 		setContentView(R.layout.main);
 		
 		_aria2Manager = new Aria2Manager(this,mRefreshHandler);
+		_aria2Manager.StartAria2Handler();
 		
 		downloadItems = new ArrayList<DownloadItem>();
 		adapter = new DownloadItemAdapter(Aria2Activity.this,R.layout.download_item,downloadItems);
-		
 		downloadListView = (ListView)findViewById(R.id.download_list_view);
 		downloadListView.setAdapter(adapter);
-		
-		downloadListView.setOnItemClickListener(mMessageClickedHandler);
 		downloadListView.setOnItemLongClickListener(mMessageLongClickedHandler);
 		
 	}
-	
-	// Create a message handling object as an anonymous class.
-	private OnItemClickListener mMessageClickedHandler = new OnItemClickListener() {
 
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id)
-		{
-			
-			// TODO Auto-generated method stub
-			
-		}
-	};
-	
 	private OnItemLongClickListener mMessageLongClickedHandler = new OnItemLongClickListener() {
 
 		@Override
@@ -110,9 +95,6 @@ public class Aria2Activity extends ActionBarActivity
 		
 	};
 	
-	
-
-	
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -132,6 +114,16 @@ public class Aria2Activity extends ActionBarActivity
 	public void onStop() {
 		_aria2Manager.StopUpdateGlobalStat();
 		super.onStop();
+	}
+	
+	@Override
+	public void onDestroy()
+	{
+		 if(_aria2Manager != null)
+		 {
+			 _aria2Manager.StopAria2Handler();
+		 }
+		 super.onDestroy();
 	}
 
 	@Override

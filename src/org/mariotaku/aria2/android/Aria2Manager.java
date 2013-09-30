@@ -46,8 +46,11 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		Log.i("aria2", "init Aria2Manager!");
 		_context = context;
 		_mRefreshHandler = mRefreshHandler;
+	}
+	
+	public void StartAria2Handler()
+	{
 		_aria2APIHandlerThread = new HandlerThread("Aria2 API Handler Thread"); 
-		
 		_aria2APIHandlerThread.start();
 		
 		Looper mLooper = _aria2APIHandlerThread.getLooper(); 
@@ -179,8 +182,8 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		};
 		
 		Process.setThreadPriority(_aria2APIHandlerThread.getThreadId(),Process.THREAD_PRIORITY_BACKGROUND);
-		
 	}
+	
 	
 	protected void addMetalink(File file) throws IOException
 	{
@@ -441,6 +444,15 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		if(_aria2 == null)
 		{
 			throw new IllegalArgumentException("Aria2 init is error!please check setting!");
+		}
+	}
+	
+	public void StopAria2Handler()
+	{
+	
+		if(_aria2APIHandlerThread != null)
+		{
+			_aria2APIHandlerThread.quit();
 		}
 	}
 	

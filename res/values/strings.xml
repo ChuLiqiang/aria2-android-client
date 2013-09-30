@@ -13,6 +13,10 @@
 	<string name="resume">Resume</string>
 	<string name="restart">Restart</string>
 	<string name="remove">Remove</string>
+	
+	<string name="add_download_url">Add Url</string>
+	<string name="add_download_torrent">Add Torrent File</string>
+	<string name="add_download_metalink">Add Metalink File</string>
     
     <!-- Menu Strings -->
     <string name="action_settings">Settings</string>

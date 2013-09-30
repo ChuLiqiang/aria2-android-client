@@ -1,8 +1,15 @@
 package org.mariotaku.aria2.android;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CountDownLatch;
 
 import org.mariotaku.aria2.Aria2API;
 import org.mariotaku.aria2.DownloadUris;
@@ -10,6 +17,7 @@ import org.mariotaku.aria2.GlobalStat;
 import org.mariotaku.aria2.Options;
 import org.mariotaku.aria2.Version;
 import org.mariotaku.aria2.Status;
+import org.mariotaku.aria2.android.utils.Base64;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -124,6 +132,29 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 							_aria2.removeDownloadResult(gid);
 						}
 						break;
+					case ADD_TORRENT:
+						{
+							if(msg.obj == null)
+							{
+								return;
+							}
+							File file = (File)msg.obj; 
+							addTorrnet(file);
+						}
+						break;
+					case GET_ALL_GLOBAL_AND_TASK_STATUS:
+						{
+							Log.i("aria2 handler", "begin GET_ALL_GLOBAL_AND_TASK_STATUS!");
+							if(msg.obj == null)
+							{
+								return;
+							}
+							CountDownLatch finishSignal = (CountDownLatch)msg.obj;
+							getAllGlobalAndTaskStatus();
+							Log.i("aria2 handler", "end GET_ALL_GLOBAL_AND_TASK_STATUS!");
+							finishSignal.countDown();
+						}
+						break;
 						
 					}
 				}
@@ -139,6 +170,23 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		
 		Process.setThreadPriority(_aria2APIHandlerThread.getThreadId(),Process.THREAD_PRIORITY_BACKGROUND);
 		
+	}
+	
+	public void addTorrnet(File file) throws IOException 
+	{
+		InputStream inputStream = null;
+		inputStream = new FileInputStream(file);
+		
+		byte[] bytes;
+		byte[] buffer = new byte[8192];
+		int bytesRead;
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		
+		while ((bytesRead = inputStream.read(buffer)) != -1) {
+			output.write(buffer, 0, bytesRead);
+		}
+		bytes = output.toByteArray();
+		_aria2.addTorrent(bytes);
 	}
 
 	public void InitHost() {
@@ -170,26 +218,44 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		mGlobalStatRefreshTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				GlobalStat stat = null;
+				Log.i("aria2 Timer", "start get all global and task status!");
+				CountDownLatch finishSignal = new CountDownLatch(1);
+				sendToAria2APIHandlerMsg(GET_ALL_GLOBAL_AND_TASK_STATUS,finishSignal);
 				try
 				{
-					stat = getGlobalStatMessage();
-					
-				}catch (Exception e) {
-					Log.e("aria2", "aria2 get global stat error!",e);
-					Message sendToUIThreadMsg = new Message();
-					handlerError(GET_GLOBAL_STAT,sendToUIThreadMsg);
+					finishSignal.await();
+				} catch (InterruptedException e)
+				{
+					e.printStackTrace();
 				}
+				Log.i("aria2 Timer", "end get all global and task status!");
 				
-				try
-				{
-					getAllStatusMessage(stat);
-				}catch (Exception e) {
-					Log.e("aria2", "aria2 get all status error!",e);
-				}
 			}
 
+			
+
 		}, 0, 1000);
+	}
+	
+	private void getAllGlobalAndTaskStatus()
+	{
+		GlobalStat stat = null;
+		try
+		{
+			stat = getGlobalStatMessage();
+			
+		}catch (Exception e) {
+			Log.e("aria2", "aria2 get global stat error!",e);
+			Message sendToUIThreadMsg = new Message();
+			handlerError(GET_GLOBAL_STAT,sendToUIThreadMsg);
+		}
+		
+		try
+		{
+			getAllStatusMessage(stat);
+		}catch (Exception e) {
+			Log.e("aria2", "aria2 get all status error!",e);
+		}
 	}
 	
 	public GlobalStat getGlobalStatMessage()

@@ -95,11 +95,17 @@ public class Aria2API {
 		return (String)result;
 	}
 	
-	public String addTorrent(byte[] bytes) {
+	/**
+	 * This method adds BitTorrent download by uploading ".torrent" file. If 
+	 * you want to add BitTorrent Magnet URI, use aria2.addUri() method instead.
+	 * @param torrent file to byte[]
+	 * @return GID of registered download
+	 */
+	public String addTorrent(byte[] torrent) {
 		
-		Object result = callMethod("aria2.addTorrent",bytes);
+		String result = (String)callMethod("aria2.addTorrent",torrent);
 		
-		return (String)result;
+		return result;
 	}
 	
 	

@@ -7,6 +7,14 @@
 		android:icon="@drawable/ic_menu_add"
 		yourapp:showAsAction="ifRoom"
 		android:title="@string/new_download">
+		<menu>
+            <item android:id="@+id/add_url"
+                  android:title="@string/add_download_url" />
+            <item android:id="@+id/add_torrent"
+                  android:title="@string/add_download_torrent" />
+            <item android:id="@+id/add_metalink"
+                  android:title="@string/add_download_metalink" />
+        </menu>
 	</item>
 	
 	<item

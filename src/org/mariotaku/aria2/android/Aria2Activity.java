@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
+import java.io.File;
 
 
 import org.mariotaku.aria2.Aria2API;
@@ -20,8 +20,10 @@ import org.mariotaku.aria2.android.utils.CommonUtils;
 
 
 import android.app.ActionBar;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,7 +41,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import ar.com.daidalos.afiledialog.FileChooserDialog;
 public class Aria2Activity extends ActionBarActivity 
 						   implements OnClickListener,Aria2UIMessage,Aria2APIMessage,
 						   NewDownloadDialogListener,DownloadItemDialogListener{
@@ -52,6 +54,7 @@ public class Aria2Activity extends ActionBarActivity
 	private DownloadItemAdapter adapter = null;
 	
 	private List<DownloadItem> downloadItems = null;
+	
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -140,7 +143,10 @@ public class Aria2Activity extends ActionBarActivity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.new_download:
+			case R.id.add_torrent:
+				addTorrent();
+				break;
+			case R.id.add_url:
 				showDownloadDialog();
 				break;
 			case R.id.pause_download:
@@ -162,12 +168,38 @@ public class Aria2Activity extends ActionBarActivity
 		return super.onOptionsItemSelected(item);
 	}
 
+	private void addTorrent()
+	{
+		FileChooserDialog dialog = new FileChooserDialog(this);
+    	dialog.setFilter(".*torrent");
+		dialog.addListener(new FileChooserDialog.OnFileSelectedListener() {
+			public void onFileSelected(Dialog source, File file) {
+				source.hide();
+				Toast toast = Toast.makeText(source.getContext(), "File selected: " + file.getName(), Toast.LENGTH_LONG);
+				toast.show();
+				_aria2Manager.sendToAria2APIHandlerMsg(ADD_TORRENT,file);
+			}
+			public void onFileSelected(Dialog source, File folder, String name) {
+				source.hide();
+				Toast toast = Toast.makeText(source.getContext(), "File created: " + folder.getName() + "/" + name, Toast.LENGTH_LONG);
+				toast.show();
+			}
+		});
+		dialog.show();
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+	}
+	
 	@Override
 	public void onClick(View v) {
 		
 		try 
 		{
-			switch (v.getId()) {
+			switch (v.getId()) 
+			{
 				
 			}
 		}catch (Exception e) {
@@ -278,6 +310,8 @@ public class Aria2Activity extends ActionBarActivity
 			Toast.makeText(Aria2Activity.this,e.getMessage(), Toast.LENGTH_LONG).show();
 		}
 	}
+	
+
 
 
 }

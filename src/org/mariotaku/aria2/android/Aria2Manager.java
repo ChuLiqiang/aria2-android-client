@@ -142,6 +142,16 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 							addTorrnet(file);
 						}
 						break;
+					case ADD_METALINK:
+						{
+							if(msg.obj == null)
+							{
+								return;
+							}
+							File file = (File)msg.obj; 
+							addMetalink(file);
+						}
+						break;
 					case GET_ALL_GLOBAL_AND_TASK_STATUS:
 						{
 							Log.i("aria2 handler", "begin GET_ALL_GLOBAL_AND_TASK_STATUS!");
@@ -172,7 +182,20 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		
 	}
 	
+	protected void addMetalink(File file) throws IOException
+	{
+		byte[] bytes = fileToByte(file);
+		_aria2.addMetalink(bytes);
+	}
+
 	public void addTorrnet(File file) throws IOException 
+	{
+		byte[] bytes = fileToByte(file);
+		_aria2.addTorrent(bytes);
+	}
+
+	private byte[] fileToByte(File file) throws FileNotFoundException,
+			IOException
 	{
 		InputStream inputStream = null;
 		inputStream = new FileInputStream(file);
@@ -186,7 +209,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 			output.write(buffer, 0, bytesRead);
 		}
 		bytes = output.toByteArray();
-		_aria2.addTorrent(bytes);
+		return bytes;
 	}
 
 	public void InitHost() {

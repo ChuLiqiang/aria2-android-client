@@ -12,6 +12,7 @@ public interface Aria2APIMessage
 	final static int PURGE_DOWNLOAD = 7;
 	final static int ADD_TORRENT = 12;
 	final static int GET_ALL_GLOBAL_AND_TASK_STATUS = 13;
+	final static int ADD_METALINK = 14;
 	
 	final static int PAUSE_DOWNLOAD = 8;
 	final static int RESUME_DOWNLOAD = 9;

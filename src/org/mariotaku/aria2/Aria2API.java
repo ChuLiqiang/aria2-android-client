@@ -98,7 +98,7 @@ public class Aria2API {
 	/**
 	 * This method adds BitTorrent download by uploading ".torrent" file. If 
 	 * you want to add BitTorrent Magnet URI, use aria2.addUri() method instead.
-	 * @param torrent file to byte[]
+	 * @param byte[] torrent file
 	 * @return GID of registered download
 	 */
 	public String addTorrent(byte[] torrent) {
@@ -108,7 +108,14 @@ public class Aria2API {
 		return result;
 	}
 	
-	
+	/**
+	 * This method adds Metalink download by uploading ".metalink" file.
+	 * @param bytes metalink file
+	 */
+	public void addMetalink(byte[] metalink)
+	{
+		callMethod("aria2.addMetalink",metalink);
+	}
 
 	/**
 	 * Pauses the download denoted by gid. This method behaves just like
@@ -378,4 +385,6 @@ public class Aria2API {
 		
 		return status;
 	}
+
+	
 }

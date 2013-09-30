@@ -146,6 +146,9 @@ public class Aria2Activity extends ActionBarActivity
 			case R.id.add_torrent:
 				addTorrent();
 				break;
+			case R.id.add_metalink:
+				addMetalink();
+				break;				
 			case R.id.add_url:
 				showDownloadDialog();
 				break;
@@ -166,6 +169,26 @@ public class Aria2Activity extends ActionBarActivity
 				break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void addMetalink()
+	{
+		FileChooserDialog dialog = new FileChooserDialog(this);
+    	dialog.setFilter(".*metalink");
+		dialog.addListener(new FileChooserDialog.OnFileSelectedListener() {
+			public void onFileSelected(Dialog source, File file) {
+				source.hide();
+				Toast toast = Toast.makeText(source.getContext(), "File selected: " + file.getName(), Toast.LENGTH_LONG);
+				toast.show();
+				_aria2Manager.sendToAria2APIHandlerMsg(ADD_METALINK,file);
+			}
+			public void onFileSelected(Dialog source, File folder, String name) {
+				source.hide();
+				Toast toast = Toast.makeText(source.getContext(), "File created: " + folder.getName() + "/" + name, Toast.LENGTH_LONG);
+				toast.show();
+			}
+		});
+		dialog.show();
 	}
 
 	private void addTorrent()

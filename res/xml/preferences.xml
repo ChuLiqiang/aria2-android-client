@@ -1,177 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Download Preferences -->
-	<PreferenceCategory 
-	    android:title="@string/pref_download_settings"
-	    android:key="pref_key_download_settings">
-		<PreferenceScreen 
-		    android:key="button_basic_settings_category_key"
-        	android:title="@string/basic_settings"
-        	android:persistent="false">
-        	
-	       	<EditTextPreference
-	        	android:key="pref_key_dir"
-	        	android:summary="@string/pref_summary_directory"
-	        	android:title="@string/pref_title_directory"
-	        	android:defaultValue=""/><!-- TODO : Find the good one -->
-		    	    
-		   	<EditTextPreference 
-		   	    android:key="pref_key_concurrent"
-		   	    android:summary="@string/pref_summary_concurrent"
-		   	    android:title="@string/pref_title_concurrent"
-		   	    android:defaultValue="5"/>
-		   	
-		   	<CheckBoxPreference 
-		   	    android:key="pref_key_integrity"
-		   	    android:title="@string/pref_title_integrity"
-		   	    android:defaultValue="false"/>
-		   	
-		</PreferenceScreen>
-		
-		<PreferenceScreen 
-		    android:key="button_HTTP_FTP_settings_category_key"
-        	android:title="@string/HTTP_FTP_settings"
-        	android:persistent="false">
-        	<PreferenceCategory 
-        	    android:key="pref_key_HTTP/FTP_advanced_settings"
-        	    android:title="@string/pref_title_Advanced">
-			    <PreferenceScreen 
-			    	android:key="button_HTTP_specific_settings_category_key"
-	        		android:title="@string/HTTP_specific_settings"
-	        		android:persistent="false">	    
-				</PreferenceScreen>
-				
-			    <PreferenceScreen 
-			    	android:key="button_FTP_specific_settings_category_key"
-	        		android:title="@string/FTP_specific_settings"
-	        		android:persistent="false">	    
-				</PreferenceScreen>
-			</PreferenceCategory>
-			<PreferenceCategory 
-			    android:key="pref_key_HTTP/FTP_basic_settings"
-			    android:title="@string/pref_title_Basic">
-			   	<EditTextPreference 
-			   	    android:key="pref_key_all_proxy"
-			   	    android:title="@string/pref_title_all_proxy"
-			   	    android:summary="@string/pref_summary_all_proxy"/>
-			   	<EditTextPreference 
-			   	    android:key="pref_key_all_user"
-			   	    android:title="@string/pref_title_all_user"
-			   	    android:summary="@string/pref_summary_all_user"/>
-			   	<EditTextPreference 
-			   	    android:key="pref_key_all_passwd"
-			   	    android:title="@string/pref_title_all_passwd"
-			   	    android:summary="@string/pref_summary_all_passwd"/>
-			   	<EditTextPreference 
-			   	    android:key="pref_key_connection_timeout"
-			   	    android:title="@string/pref_title_connection_timeout"
-			   	    android:summary="@string/pref_summary_connection_timeout"/>
-			   	<EditTextPreference 
-			   	    android:key="pref_key_max_connections"
-			   	    android:title="@string/pref_title_max_connections"
-			   	    android:summary="@string/pref_summary_max_conections"
-			   	    android:defaultValue="1"/>
-			   	<EditTextPreference 
-			   	    android:key="pref_key_tries"
-			   	    android:title="@string/pref_title_tries"
-			   	    android:summary="@string/pref_summary_tries"/>
-			   	<EditTextPreference 
-			   	    android:key="pref_key_min_split"
-			   	    android:title="@string/pref_title_min_split"
-			   	    android:summary="@string/pref_summary_min_split"/>
-			   	<!-- TODO : Find how to make the next node a list -->
-			   	<EditTextPreference 
-			   	    android:key="pref_key_proxy_method"
-			   	    android:title="@string/pref_title_proxy_method"
-			   	    android:summary="@string/pref_summary_proxy_method"
-			   	    android:defaultValue="get"/>
-			   	<CheckBoxPreference 
-			   	    android:key="pref_key_remote_time"
-			   	    android:title="@string/pref_title_remote_time"
-			   	    android:summary="@string/pref_summary_remote_time"
-			   	    android:defaultValue="false"/>
-			   	<CheckBoxPreference 
-			   	    android:key="pref_key_reuse"
-			   	    android:title="@string/pref_title_reuse"
-			   	    android:summary="@string/pref_summary_reuse"
-			   	    android:defaultValue="false"/>
-			   	<EditTextPreference 
-			   	    android:key="pref_key_retry_wait"
-			   	    android:title="@string/pref_title_retry_wait"
-			   	    android:summary="@string/pref_summary_retry_wait"
-			   	    android:defaultValue="0"/>
-			   	<EditTextPreference 
-			   	    android:key="pref_key_all_timeout"
-			   	    android:title="@string/pref_title_timeout"
-			   	    android:summary="@string/pref_summary_timeout"
-			   	    android:defaultValue="60"/>
-			</PreferenceCategory>
-		    
-		    
-		</PreferenceScreen>   
-		 
-		<PreferenceScreen 
-		    android:key="button_torrent_metalink_settings_category_key"
-        	android:title="@string/torrent_metalink_settings"
-        	android:persistent="false">
-		    
-		    <PreferenceScreen 
-		    	android:key="button_torrent_specific_settings_category_key"
-        		android:title="@string/torrent_specific_settings"
-        		android:persistent="false">	    
-			</PreferenceScreen>
-		    
-		    <PreferenceScreen 
-		    	android:key="button_metalink_specific_settings_category_key"
-        		android:title="@string/metalink_specific_settings"
-        		android:persistent="false">	    
-			</PreferenceScreen>	    
-		    
-		</PreferenceScreen>   
-		 
-		<PreferenceScreen 
-		    android:key="button_advanced_settings_category_key"
-        	android:title="@string/advanced_settings"
-        	android:persistent="false">	    
-		</PreferenceScreen>    
-	    
-	</PreferenceCategory>
-	
 	<!-- Connection Preferences -->
 	<PreferenceCategory 
 	    android:title="@string/pref_connection_title"
-	    android:key="pref_key_connection_settings">"
-	    <CheckBoxPreference
-	        android:key="pref_key_remote"
-	        android:summary="@string/pref_summary_remote"
-	        android:title="@string/pref_title_remote"
-	        android:defaultValue="false" />
+	    android:key="pref_key_connection_settings">
 	    <EditTextPreference 
-	        android:dependency="pref_key_remote"
 	        android:key="pref_key_host"
 	        android:summary="@string/pref_summary_host"
 	        android:title="@string/pref_title_host"
 	        android:defaultValue="localhost"/>
 	    <EditTextPreference 
-	        android:dependency="pref_key_remote"
 	        android:key="pref_key_port"
 	        android:summary="@string/pref_summary_port"
 	        android:title="@string/pref_title_port"
 	        android:defaultValue="6800"/>
-	    <CheckBoxPreference 
-	        android:dependency="pref_key_remote"
-	        android:key="pref_key_encryption"
-	        android:summary="@string/pref_summary_encryption"
-	        android:title="@string/pref_title_encryption"
-	        android:defaultValue="false"/>
 	    <EditTextPreference 
-	        android:dependency="pref_key_remote"
 	        android:key="pref_key_username"
 	        android:summary="@string/pref_summary_username"
 	        android:title="@string/pref_title_username"
 	        android:defaultValue=""/>
 	    <EditTextPreference 
-	        android:dependency="pref_key_remote"
 	        android:key="pref_key_password"
 	        android:summary="@string/pref_summary_password"
 	        android:title="@string/pref_title_password"

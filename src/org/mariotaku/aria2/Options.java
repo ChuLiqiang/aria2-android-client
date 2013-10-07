@@ -248,7 +248,7 @@ public class Options extends CommonItem {
 	/**
 	 * The directory to store the downloaded file. Default : /sdcard/Download
 	 */
-	public String dir = "/sdcard/Download";
+	public String dir = null;
 
 	/**
 	 * If true is given, aria2 just checks whether the remote file is available

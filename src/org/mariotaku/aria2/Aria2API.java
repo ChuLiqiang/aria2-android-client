@@ -25,6 +25,14 @@ public class Aria2API {
 	public Aria2API(String host) {
 		init(host, 6800);
 	}
+	
+	public Aria2API(String host,int port) {
+		init(host, port);
+	}
+	
+	public Aria2API(String host,int port,String username, String password) {
+		init(host, port,username,password);
+	}
 
 	/**
 	 * This method adds new HTTP(S)/FTP/BitTorrent Magnet URI. uris is of type
@@ -369,6 +377,11 @@ public class Aria2API {
 
 	private void init(String host, int port) {
 		mClient = new XMLRPCClient("http://" + host + ":" + port + "/rpc");
+
+	}
+	
+	private void init(String host, int port, String username, String password) {
+		mClient = new XMLRPCClient("http://" + host + ":" + port + "/rpc",username,password);
 
 	}
 	

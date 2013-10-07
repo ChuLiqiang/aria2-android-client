@@ -165,13 +165,13 @@
 	        android:title="@string/pref_title_encryption"
 	        android:defaultValue="false"/>
 	    <EditTextPreference 
-	        android:dependency="pref_key_encryption"
+	        android:dependency="pref_key_remote"
 	        android:key="pref_key_username"
 	        android:summary="@string/pref_summary_username"
 	        android:title="@string/pref_title_username"
 	        android:defaultValue=""/>
 	    <EditTextPreference 
-	        android:dependency="pref_key_encryption"
+	        android:dependency="pref_key_remote"
 	        android:key="pref_key_password"
 	        android:summary="@string/pref_summary_password"
 	        android:title="@string/pref_title_password"

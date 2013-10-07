@@ -19,6 +19,10 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 
 	
 	 public static final String PREF_KEY_HOST = "pref_key_host";
+	 public static final String PREF_KEY_PORT = "pref_key_port";
+	 public static final String PREF_KEY_USERNAME = "pref_key_username";
+	 public static final String PREF_KEY_PASSWORD = "pref_key_password";
+	 
 	 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -39,7 +43,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-			 if (key.equals(PREF_KEY_HOST)) {
+			 if (key.equals(PREF_KEY_HOST) || key.equals(PREF_KEY_PORT) || key.equals(PREF_KEY_USERNAME) || key.equals(PREF_KEY_PASSWORD)) {
 	            Preference connectionPref = findPreference(key);
 	            
 	            // Set summary to be the user-description for the selected value

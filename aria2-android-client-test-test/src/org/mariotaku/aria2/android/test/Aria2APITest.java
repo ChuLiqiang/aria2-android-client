@@ -26,10 +26,10 @@ import junit.framework.TestCase;
 public class Aria2APITest extends TestCase
 {
 	private Aria2API aria2;
-	private String aria2Host = "10.16.131.12";
+	private String aria2Host = "192.168.1.166";
 	
     protected void setUp() {
-    	aria2 = new Aria2API(aria2Host);
+    	aria2 = new Aria2API(aria2Host,6800,"username","passwd");
     }
 
     

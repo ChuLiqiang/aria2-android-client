@@ -32,7 +32,10 @@ import android.os.Process;
 public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 {
 	private Aria2API _aria2 = null;
-	private String _aria2Host = null;
+	private String _host = null;
+	private int _port = 6800;
+	private String _username = null;
+	private String _password = null;
 	private Context _context = null;
 	
 	private Timer mGlobalStatRefreshTimer = null;
@@ -216,24 +219,91 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 	}
 
 	public void InitHost() {
-		Log.i("aria2", "init host!");
-		String nowAria2Host = getHost();
-		if(!nowAria2Host.equals(_aria2Host))
+		Log.i("aria2", "init config!");
+		String nowHost = getHost();
+		int nowPort = getPort();
+		String nowUsername = getPreferences(SettingsActivity.PREF_KEY_USERNAME);
+		String nowPassword = getPreferences(SettingsActivity.PREF_KEY_PASSWORD);
+		if(configIsChange(nowHost,nowPort,nowUsername,nowPassword))
 		{
-			Log.i("aria2", "host should change!");
-			_aria2Host = nowAria2Host;
+			Log.i("aria2", "config is changed!");
+			_host = nowHost;
+			_port = nowPort;
+			_username = nowUsername;
+			_password = nowPassword;
+			
 			try
 			{
-				_aria2 = new Aria2API(_aria2Host);
+				if(canUseAuthentication(nowUsername,nowPassword))
+				{
+					_aria2 = new Aria2API(_host,_port,_username,_password);
+				}
+				else
+				{
+					_aria2 = new Aria2API(_host,_port);
+				}
 				
 			}catch(Exception e)
 			{
 				_aria2 = null;
-				throw new IllegalArgumentException("Aria2 host is error!");
+				throw new IllegalArgumentException("Aria2 config is error!");
 				
 			}
 			
 		}
+	}
+	
+	private int getPort() {
+		String prefKeyPort = getPreferences(SettingsActivity.PREF_KEY_PORT);
+		
+		if(prefKeyPort.equals(""))
+		{
+			throw new IllegalArgumentException("pealse initial host port!");
+		}
+		int port = -1;
+		
+		try
+		{
+			port = Integer.valueOf(prefKeyPort);
+		}catch (Exception e) {
+			throw new IllegalArgumentException("initial host port error!");
+		}
+		
+		return port;
+	}
+
+	private boolean canUseAuthentication(String nowUsername,String nowPassword)
+	{
+		if(nowUsername.equals("") || nowPassword.equals(""))
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean configIsChange(String nowHost,int nowPort,String nowUsername,String nowPassword)
+	{
+		if(!nowHost.equals(_host))
+		{
+			return true;
+		}
+		
+		if(nowPort != _port)
+		{
+			return true;
+		}
+			
+		if(!nowUsername.equals(_username))
+		{
+			return true;
+		}
+		
+		if(!nowUsername.equals(_password))
+		{
+			return false;
+		}
+		
+		return false;
 	}
 	
 	public void StartUpdateGlobalStat()
@@ -424,12 +494,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 	}
 	
 	private String getHost() {
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(_context);
-		String prefKeyHost= sharedPref.getString(SettingsActivity.PREF_KEY_HOST,"");
-		if(prefKeyHost == null)
-		{
-			throw new IllegalArgumentException("host address is null!");
-		}
+		String prefKeyHost = getPreferences(SettingsActivity.PREF_KEY_HOST);
 		
 		if(prefKeyHost.equals(""))
 		{
@@ -437,6 +502,12 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		}
 		
 		return prefKeyHost;
+	}
+
+	private String getPreferences(String key) {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(_context);
+		String prefKey= sharedPref.getString(key,"");
+		return prefKey;
 	}	
 	
 	private void checkAria2()

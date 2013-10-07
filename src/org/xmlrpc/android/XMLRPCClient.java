@@ -112,6 +112,12 @@ public class XMLRPCClient extends XMLRPCCommon {
 		httpParams = postMethod.getParams();
 		HttpProtocolParams.setUseExpectContinue(httpParams, false);
 		
+		setHttpTimeOut();
+		
+		this.client = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, registry), httpParams);
+	}
+
+	private void setHttpTimeOut() {
 		// Set the timeout in milliseconds until a connection is established.
         // The default value is zero, that means the timeout is not used.
         int timeoutConnection = 5000;
@@ -121,8 +127,6 @@ public class XMLRPCClient extends XMLRPCCommon {
         // in milliseconds which is the timeout for waiting for data.
         int timeoutSocket = 10000;
         HttpConnectionParams.setSoTimeout(httpParams, timeoutSocket);
-		
-		this.client = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, registry), httpParams);
 	}
 	
 	/**

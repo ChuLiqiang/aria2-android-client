@@ -1,4 +1,4 @@
-package org.mariotaku.aria2;
+package tk.igeek.aria2;
 
 /**
  * Struct which contains information retrieved from .torrent file.

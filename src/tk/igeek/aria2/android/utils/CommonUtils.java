@@ -1,4 +1,4 @@
-package org.mariotaku.aria2.android.utils;
+package tk.igeek.aria2.android.utils;
 
 import java.io.File;
 import java.text.DecimalFormat;

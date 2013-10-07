@@ -1,4 +1,4 @@
-package org.mariotaku.aria2;
+package tk.igeek.aria2;
 
 import java.util.ArrayList;
 import java.util.HashMap;

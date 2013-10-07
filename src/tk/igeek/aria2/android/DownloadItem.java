@@ -1,9 +1,10 @@
-package org.mariotaku.aria2.android;
+package tk.igeek.aria2.android;
 
 import java.io.File;
 
-import org.mariotaku.aria2.Status;
-import org.mariotaku.aria2.android.utils.CommonUtils;
+
+import tk.igeek.aria2.Status;
+import tk.igeek.aria2.android.utils.CommonUtils;
 
 
 public class DownloadItem

@@ -8,13 +8,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import org.mariotaku.aria2.Aria2API;
-import org.mariotaku.aria2.DownloadUris;
-import org.mariotaku.aria2.Files;
-import org.mariotaku.aria2.Options;
-import org.mariotaku.aria2.Status;
-import org.mariotaku.aria2.Version;
-import org.mariotaku.aria2.android.utils.Base64;
+
+import tk.igeek.aria2.Aria2API;
+import tk.igeek.aria2.DownloadUris;
+import tk.igeek.aria2.Files;
+import tk.igeek.aria2.Options;
+import tk.igeek.aria2.Status;
+import tk.igeek.aria2.Version;
+import tk.igeek.aria2.android.utils.Base64;
 
 import android.annotation.SuppressLint;
 import android.util.Log;

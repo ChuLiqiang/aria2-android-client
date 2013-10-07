@@ -1,4 +1,4 @@
-package org.mariotaku.aria2;
+package tk.igeek.aria2;
 
 public class Aria2Exception extends RuntimeException{
 

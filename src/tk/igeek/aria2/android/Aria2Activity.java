@@ -1,4 +1,4 @@
-package org.mariotaku.aria2.android;
+package tk.igeek.aria2.android;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -8,15 +8,17 @@ import java.util.TimerTask;
 import java.io.File;
 
 
-import org.mariotaku.aria2.Aria2API;
-import org.mariotaku.aria2.DownloadUris;
-import org.mariotaku.aria2.GlobalStat;
-import org.mariotaku.aria2.Options;
-import org.mariotaku.aria2.Status;
-import org.mariotaku.aria2.Version;
-import org.mariotaku.aria2.android.DownloadItemDialogFragment.DownloadItemDialogListener;
-import org.mariotaku.aria2.android.NewDownloadDialogFragment.NewDownloadDialogListener;
-import org.mariotaku.aria2.android.utils.CommonUtils;
+
+
+import tk.igeek.aria2.Aria2API;
+import tk.igeek.aria2.DownloadUris;
+import tk.igeek.aria2.GlobalStat;
+import tk.igeek.aria2.Options;
+import tk.igeek.aria2.Status;
+import tk.igeek.aria2.Version;
+import tk.igeek.aria2.android.DownloadItemDialogFragment.DownloadItemDialogListener;
+import tk.igeek.aria2.android.NewDownloadDialogFragment.NewDownloadDialogListener;
+import tk.igeek.aria2.android.utils.CommonUtils;
 
 
 import android.app.ActionBar;

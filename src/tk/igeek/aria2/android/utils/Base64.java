@@ -1,4 +1,4 @@
-package org.mariotaku.aria2.android.utils;
+package tk.igeek.aria2.android.utils;
 
 /**
  * <p>Encodes and decodes to and from Base64 notation.</p>

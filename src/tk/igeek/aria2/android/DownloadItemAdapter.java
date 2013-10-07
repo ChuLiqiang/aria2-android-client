@@ -1,4 +1,4 @@
-package org.mariotaku.aria2.android;
+package tk.igeek.aria2.android;
 
 import java.util.ArrayList;
 import java.util.List;

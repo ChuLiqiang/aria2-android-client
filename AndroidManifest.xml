@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="org.mariotaku.aria2.android"
+	package="tk.igeek.aria2.android"
 	android:versionCode="1"
 	android:versionName="1.0">
 
@@ -15,7 +15,7 @@
 		android:label="@string/app_name"
 		android:theme="@style/Theme.AppCompat.Light">
 		<activity
-			android:name=".Aria2Activity"
+			android:name="tk.igeek.aria2.android.Aria2Activity"
 			android:label="@string/app_name"
 			android:uiOptions="splitActionBarWhenNarrow">
 			<intent-filter>
@@ -28,14 +28,14 @@
 		</activity>
 
 		<activity
-			android:name=".NewDownloadActivity"
+			android:name="tk.igeek.aria2.android.NewDownloadActivity"
 			android:label="@string/new_download">
 		</activity>
 		
 		<activity
-			android:name=".SettingsActivity"
+			android:name="tk.igeek.aria2.android.SettingsActivity"
 			android:label="@string/title_settings_activity"
-			android:parentActivityName=".MainActivity" >
+			android:parentActivityName="tk.igeek.aria2.android.MainActivity" >
 				<meta-data
 					android:name="android.support.PARENT_ACTIVITY"
 					android:value=".MainActivity" />

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.mariotaku.aria2.android;
+package tk.igeek.aria2.android;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;

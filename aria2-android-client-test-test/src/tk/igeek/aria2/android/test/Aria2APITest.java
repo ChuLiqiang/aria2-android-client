@@ -1,4 +1,4 @@
-package org.mariotaku.aria2.android.test;
+package tk.igeek.aria2.android.test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

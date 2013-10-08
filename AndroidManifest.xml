@@ -26,11 +26,6 @@
 			<meta-data android:name="android.support.UI_OPTIONS"
                    android:value="splitActionBarWhenNarrow" />
 		</activity>
-
-		<activity
-			android:name="tk.igeek.aria2.android.NewDownloadActivity"
-			android:label="@string/new_download">
-		</activity>
 		
 		<activity
 			android:name="tk.igeek.aria2.android.SettingsActivity"
@@ -40,9 +35,9 @@
 					android:name="android.support.PARENT_ACTIVITY"
 					android:value=".MainActivity" />
 		</activity>
-		<!--  
+		
 		<activity android:name="ar.com.daidalos.afiledialog.FileChooserActivity" />
-		-->
+		
 	</application>
 
 </manifest>

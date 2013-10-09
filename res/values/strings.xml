@@ -50,9 +50,12 @@
     <!-- Basic Settings -->
     <string name="pref_title_directory">Directory</string>
     <string name="pref_summary_directory">Where the downloaded files will be stored</string>
+    <string name="pref_title_log">Log</string>
+    <string name="pref_summary_log">The file name of the log file</string>
     <string name="pref_title_concurrent">Concurrent Downloads</string>
     <string name="pref_summary_concurrent">Number of parallel downloads</string>
     <string name="pref_title_integrity">Integrity Check</string>
+    <string name="pref_title_continue">Continue Downloading</string>
     <!-- HTTP/FTP Common options -->
     <string name="pref_title_Advanced">Advanced Settings</string>
     <string name="pref_title_Basic">Basic Settings</string>

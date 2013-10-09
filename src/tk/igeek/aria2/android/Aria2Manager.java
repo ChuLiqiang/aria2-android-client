@@ -15,7 +15,7 @@ import java.util.concurrent.CountDownLatch;
 import tk.igeek.aria2.Aria2API;
 import tk.igeek.aria2.DownloadUris;
 import tk.igeek.aria2.GlobalStat;
-import tk.igeek.aria2.Options;
+import tk.igeek.aria2.GlobalOptions;
 import tk.igeek.aria2.Status;
 import tk.igeek.aria2.Version;
 import tk.igeek.aria2.android.utils.Base64;

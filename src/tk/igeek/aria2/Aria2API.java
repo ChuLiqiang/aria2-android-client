@@ -43,7 +43,7 @@ public class Aria2API {
 	 * may fail.
 	 * 
 	 * @deprecated Using default options compiled in aria2 is not recommend,
-	 *             please use {@link #addUri(DownloadUuris, Options)} instead.
+	 *             please use {@link #addUri(DownloadUuris, GlobalOptions)} instead.
 	 * 
 	 * @see DownloadUris
 	 * 
@@ -64,13 +64,13 @@ public class Aria2API {
 	 * URIs which point to another file, aria2 does not complain but download
 	 * may fail.
 	 * 
-	 * @see Options
+	 * @see GlobalOptions
 	 * 
 	 * @see DownloadUris
 	 * 
 	 * @return GID of registered download.
 	 */
-	public String addUri(DownloadUris uris, Options options) {
+	public String addUri(DownloadUris uris, GlobalOptions options) {
 
 		Object result = callMethod("aria2.addUri", new Object[] { uris.getUris(), options.get() });
 
@@ -88,13 +88,13 @@ public class Aria2API {
 	 * larger than the size of the queue, it is appended at the end of the
 	 * queue.
 	 * 
-	 * @see Options
+	 * @see GlobalOptions
 	 * 
 	 * @see DownloadUris
 	 * 
 	 * @return GID of registered download.
 	 */
-	public String addUri(DownloadUris uris, Options options, int position) {
+	public String addUri(DownloadUris uris, GlobalOptions options, int position) {
 		if (position < 0)
 			throw new IllegalArgumentException("position can't be a negative value!");
 		Object result = callMethod("aria2.addUri", new Object[] { uris.getUris(), options.get(),
@@ -352,6 +352,20 @@ public class Aria2API {
 		return (String) callMethod("aria2.purgeDownloadResult");
 	}
 	
+	/**
+	 * This method returns global options. The response is of type struct. 
+	 * Its key is the name of option. The value type is string. Note that 
+	 * this method does not return options which have no default value and 
+	 * have not been set by the command-line options, configuration files 
+	 * or RPC methods. Because global options are used as a template for 
+	 * the options of newly added download, the response contains keys 
+	 * returned by aria2.getOption() method.
+	 */
+	public void getGlobalOption()
+	{
+		HashMap<String, Object> globalOption= (HashMap<String, Object>)callMethod("aria2.getGlobalOption");
+		GlobalOptions options = new GlobalOptions(globalOption);
+	}
 	
 	private Object callMethod(String method, Object... args){
 		

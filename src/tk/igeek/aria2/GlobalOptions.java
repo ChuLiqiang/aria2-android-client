@@ -4,7 +4,19 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 
-public class Options extends CommonItem {
+public class GlobalOptions extends CommonItem {
+
+	
+	public String download_result = null;
+	public String log = null;
+	public String log_level = null;
+	public String max_concurrent_downloads = null;
+	public String max_download_result = null;
+	public String max_overall_download_limit = null;
+	public String max_overall_upload_limit = null;
+	public String save_cookies = null;
+	public String save_session = null;
+	public String server_stat_of = null;
 
 	/**
 	 * Use this proxy server for all protocols. To erase previously defined
@@ -31,14 +43,14 @@ public class Options extends CommonItem {
 	 * 
 	 * @see #auto_file_renaming
 	 */
-	public boolean allow_overwrite = false;
+	public String allow_overwrite = null;
 
 	/**
 	 * If false is given, aria2 aborts download when a piece length is different
 	 * from one in a control file. If true is given, you can proceed but some
 	 * download progress will be lost. Default: false
 	 */
-	public boolean allow_piece_length_change = false;
+	public String allow_piece_length_change = null;
 
 	/**
 	 * Always resume download. If true is given, aria2 always tries to resume
@@ -50,26 +62,26 @@ public class Options extends CommonItem {
 	 * 
 	 * @see #max_resume_failure_tries
 	 */
-	public boolean always_resume = true;
+	public String always_resume = null;
 
 	/**
 	 * Enable asynchronous DNS. Default: true
 	 */
-	public boolean async_dns = true;
+	public String async_dns = null;
 
 	/**
 	 * Rename file name if the same file already exists. This option works only
 	 * in HTTP(S)/FTP download. The new file name has a dot and a
 	 * number(1..9999) appended. Default: true
 	 */
-	public boolean auto_file_renaming = true;
+	public String auto_file_renaming = null;
 
 	/**
 	 * Enable Local Peer Discovery. If a private flag is set in a torrent, aria2
 	 * doesn’t use this feature for that download even if true is given.
 	 * Default: false
 	 */
-	public boolean bt_enable_lpd = false;
+	public String bt_enable_lpd = null;
 
 	/**
 	 * Comma separated list of BitTorrent tracker’s announce URI to remove. You
@@ -94,19 +106,19 @@ public class Options extends CommonItem {
 	 * false. This option has effect only on BitTorrent download. Default:
 	 * {@value #bt_hash_check_seed}
 	 */
-	public boolean bt_hash_check_seed = true;
+	public String bt_hash_check_seed = null;
 
 	/**
 	 * Specify maximum number of files to open in each BitTorrent download.
 	 * Default: 100
 	 */
-	public int bt_max_open_files = 100;
+	public String bt_max_open_files = null;
 
 	/**
 	 * Specify the maximum number of peers per torrent. 0 means unlimited. See
 	 * also bt_request_peer_speed_limit option. Default: {@value #bt_max_peers}
 	 */
-	public int bt_max_peers = 55;
+	public String bt_max_peers = null;
 
 	/**
 	 * Download metadata only. The file(s) described in metadata will not be
@@ -115,14 +127,14 @@ public class Options extends CommonItem {
 	 * 
 	 * @see #bt_save_metadata
 	 */
-	public boolean bt_metadata_only = false;
+	public String bt_metadata_only = null;
 
 	/**
 	 * Set minimum level of encryption method. If several encryption methods are
 	 * provided by a peer, aria2 chooses the lowest one which satisfies the
 	 * given level. Possible Values: plain, arc4. Default: plain
 	 */
-	public String bt_min_crypto_level = "plain";
+	public String bt_min_crypto_level = null;
 
 	/**
 	 * Try to download first and last pieces of each file first. This is useful
@@ -136,6 +148,9 @@ public class Options extends CommonItem {
 	 */
 	public String bt_prioritize_piece = null;
 
+	
+	public String bt_remove_unselected_file = null;
+	
 	/**
 	 * If the whole download speed of every torrent is lower than SPEED, aria2
 	 * temporarily increases the number of peers to try for more download speed.
@@ -143,14 +158,14 @@ public class Options extends CommonItem {
 	 * your download speed in some cases. You can append K or M(1K = 1024, 1M =
 	 * 1024K). Default: 50K
 	 */
-	public String bt_request_peer_speed_limit = "50K";
+	public String bt_request_peer_speed_limit = null;
 
 	/**
 	 * If true is given, aria2 doesn’t accept and establish connection with
 	 * legacy BitTorrent handshake(BitTorrent protocol). Thus aria2 always uses
 	 * Obfuscation handshake. Default: false
 	 */
-	public boolean bt_require_crypto = false;
+	public String bt_require_crypto = null;
 
 	/**
 	 * Save metadata as .torrent file. This option has effect only when
@@ -161,19 +176,19 @@ public class Options extends CommonItem {
 	 * 
 	 * @see #bt_metadata_only
 	 */
-	public boolean bt_save_metadata = false;
+	public String bt_save_metadata = null;
 
 	/**
 	 * Seed previously downloaded files without verifying piece hashes. Default:
 	 * false
 	 */
-	public boolean bt_seed_unverified = false;
+	public String bt_seed_unverified = null;
 
 	/**
 	 * Stop BitTorrent download if download speed is 0 in consecutive SEC
 	 * seconds. If 0 is given, this feature is disabled. Default: 0
 	 */
-	public int bt_stop_timeout = 0;
+	public String bt_stop_timeout = null;
 
 	/**
 	 * Comma separated list of additional BitTorrent tracker’s announce URI.
@@ -188,7 +203,7 @@ public class Options extends CommonItem {
 	 * After the connection is established, this option makes no effect and
 	 * {@link #bt_tracker_timeout} option is used instead. Default: 60
 	 */
-	public int bt_tracker_connect_timeout = 60;
+	public String bt_tracker_connect_timeout = null;
 
 	/**
 	 * Set the interval in seconds between tracker requests. This completely
@@ -197,12 +212,12 @@ public class Options extends CommonItem {
 	 * aria2 determines interval based on the response of tracker and the
 	 * download progress. Default: 0
 	 */
-	public int bt_tracker_interval = 0;
+	public String bt_tracker_interval = null;
 
 	/**
 	 * Set timeout in seconds. Default: 60
 	 */
-	public int bt_tracker_timeout = 60;
+	public String bt_tracker_timeout = null;
 
 	/**
 	 * Check file integrity by validating piece hashes or a hash of entire file.
@@ -215,7 +230,7 @@ public class Options extends CommonItem {
 	 * piece hashes and a hash of entire file are provided, only piece hashes
 	 * are used. Default: false
 	 */
-	public boolean check_integrity = false;
+	public String check_integrity = null;
 
 	/**
 	 * Download file only when the local file is older than remote file. This
@@ -228,14 +243,14 @@ public class Options extends CommonItem {
 	 * not specified. To overwrite existing file, --allow-overwrite is required.
 	 * Default: false
 	 */
-	public boolean conditional_get = false;
+	public String conditional_get = null;
 
 	/**
 	 * Set the connect timeout in seconds to establish connection to
 	 * HTTP/FTP/proxy server. After the connection is established, this option
 	 * makes no effect and --timeout option is used instead. Default: 60
 	 */
-	public int connect_timeout = 60;
+	public String connect_timeout = null;
 
 	/**
 	 * Continue downloading a partially downloaded file. Use this option to
@@ -243,7 +258,7 @@ public class Options extends CommonItem {
 	 * downloads files sequentially from the beginning. Currently this option is
 	 * only applicable to HTTP(S)/FTP downloads.
 	 */
-	public boolean continue_download = true;
+	public String continue_download = null;
 
 	/**
 	 * The directory to store the downloaded file. Default : /sdcard/Download
@@ -255,18 +270,18 @@ public class Options extends CommonItem {
 	 * and doesn’t download data. This option has effect on HTTP/FTP download.
 	 * BitTorrent downloads are canceled if true is specified. Default: false
 	 */
-	public boolean dry_run = false;
+	public String dry_run = null;
 
 	/**
 	 * Enable IPv6 name resolution in asynchronous DNS resolver. This option
 	 * will be ignored when {@link #async_dns} is false. Default: false
 	 */
-	public boolean enable_async_dns6 = false;
+	public String enable_async_dns6 = null;
 
 	/**
 	 * Enable HTTP/1.1 persistent connection. Default: true
 	 */
-	public boolean enable_http_keep_alive = true;
+	public String enable_http_keep_alive = null;
 
 	/**
 	 * Enable HTTP/1.1 pipelining.<br>
@@ -274,7 +289,7 @@ public class Options extends CommonItem {
 	 * 
 	 * Default: <i>false</i>
 	 */
-	public boolean enable_http_pipelining = false;
+	public String enable_http_pipelining = null;
 
 	/**
 	 * Enable Peer Exchange extension. If a private flag is set in a torrent,
@@ -283,7 +298,7 @@ public class Options extends CommonItem {
 	 * 
 	 * Default: <i>true</i>
 	 */
-	public boolean enable_peer_exchange = true;
+	public String enable_peer_exchange = null;
 
 	/**
 	 * Specify file allocation method. none doesn’t pre-allocate file space.
@@ -300,7 +315,7 @@ public class Options extends CommonItem {
 	 * Possible Values: <i>none</i>, <i>prealloc</i>, <i>falloc</i> <br>
 	 * Default: <i>prealloc</i>
 	 */
-	public String file_allocation = "prealloc";
+	public String file_allocation = null;
 
 	/**
 	 * If true or mem is specified, when a file whose suffix is ".meta4" or
@@ -313,7 +328,7 @@ public class Options extends CommonItem {
 	 * Possible Values : <i>true</i>, <i>false</i>, <i>mem</i><br>
 	 * Default: <i>true</i>
 	 */
-	public String follow_metalink = "true";
+	public String follow_metalink = null;
 
 	/**
 	 * If true or mem is specified, when a file whose suffix is ".torrent" or
@@ -339,7 +354,7 @@ public class Options extends CommonItem {
 	 * Use the passive mode in FTP. If false is given, the active mode will be
 	 * used. Default: true
 	 */
-	public boolean ftp_pasv = true;
+	public String ftp_pasv = null;
 
 	/**
 	 * Use this proxy server for FTP. To erase previously defined proxy, use "".
@@ -361,7 +376,7 @@ public class Options extends CommonItem {
 	/**
 	 * Reuse connection in FTP. Default: true
 	 */
-	public boolean ftp_reuse_connection = true;
+	public String ftp_reuse_connection = null;
 
 	/**
 	 * Set FTP transfer type.<br>
@@ -369,126 +384,73 @@ public class Options extends CommonItem {
 	 * Possible Values: <i>binary</i>, <i>ascii</i> <br>
 	 * Default: <i>binary</i>
 	 */
-	public String ftp_type = "binary";
+	public String ftp_type = null;
 
 	/**
 	 * Set FTP user. This affects all URIs.<br>
 	 * <br>
 	 * Default: <i>anonymous</i>
 	 */
-	public String ftp_user = "anonymous";
+	public String ftp_user = null;
 
-	public String header = null;
-
-	public String http_accept_gzip = null;
-
-	public String http_auth_challenge = null;
-
-	public String http_no_cache = null;
-
-	public String http_passwd = null;
-
-	public String http_proxy = null;
-
-	public String http_proxy_passwd = null;
-
-	public String http_proxy_user = null;
-
-	public String http_user = null;
-
-	public String https_proxy = null;
-
-	public String https_proxy_passwd = null;
-
-	public String https_proxy_user = null;
-
-	public String index_out = null;
-
-	public String lowest_speed_limit = null;
-
-	public String max_connection_per_server = null;
-
-	public String max_download_limit = null;
-
-	public String max_file_not_found = null;
-
-	public String max_resume_failure_tries = null;
-
-	public String max_tries = null;
-
-	public String max_upload_limit = null;
-
-	public String metalink_enable_unique_protocol = null;
-
-	public String metalink_language = null;
-
-	public String metalink_location = null;
-
-	public String metalink_os = null;
-
-	public String metalink_preferred_protocol = null;
-
-	public String metalink_version = null;
-
-	public String min_split_size = null;
-
-	public String no_file_allocation_limit = null;
-
-	public String no_netrc = null;
-
-	public String no_proxy = null;
-
-	public String out = null;
-
-	public String parameterized_uri = null;
-
-	public String proxy_method = null;
-
-	public String realtime_chunk_checksum = null;
-
-	public String referer = null;
-
-	public String remote_time = null;
-
-	public String remove_control_file = null;
-
-	public String reuse_uri = null;
-
-	public String seed_ratio = null;
-
-	public String seed_time = null;
-
-	public String select_file = null;
-
-	public String split = null;
-
-	public String timeout = null;
-
-	public String use_head = null;
-
-	public String user_agent = null;
-
-	public String retry_wait = null;
-
-	public String metalink_base_uri = null;
-
-	public String pause = null;
-
-	public String stream_piece_selector = null;
-
+	
+	public String enable_mmap = null;
+	public String force_save = null;
 	public String hash_check_only = null;
-
-	public String checksum = null;
-
+	public String header = null;
+	public String http_accept_gzip = null;
+	public String http_auth_challenge = null;
+	public String http_no_cache = null;
+	public String http_passwd = null;
+	public String http_proxy = null;
+	public String http_proxy_passwd = null;
+	public String http_proxy_user = null;
+	public String http_user = null;
+	public String https_proxy = null;
+	public String https_proxy_passwd = null;
+	public String https_proxy_user = null;
+	public String lowest_speed_limit = null;
+	public String max_connection_per_server = null;
+	public String max_download_limit = null;
+	public String max_file_not_found = null;
+	public String max_resume_failure_tries = null;
+	public String max_tries = null;
+	public String max_upload_limit = null;
+	public String metalink_base_uri = null;
+	public String metalink_enable_unique_protocol = null;
+	public String metalink_language = null;
+	public String metalink_location = null;
+	public String metalink_os = null;
+	public String metalink_preferred_protocol = null;
+	public String metalink_version = null;
+	public String min_split_size = null;
+	public String no_file_allocation_limit = null;
+	public String no_netrc = null;
+	public String no_proxy = null;
+	public String parameterized_uri = null;
 	public String piece_length = null;
-
+	public String proxy_method = null;
+	public String realtime_chunk_checksum = null;
+	public String referer = null;
+	public String remote_time = null;
+	public String remove_control_file = null;
+	public String retry_wait = null;
+	public String reuse_uri = null;
+	public String rpc_save_upload_metadata = null;
+	public String seed_ratio = null;
+	public String seed_time = null;
+	public String split = null;
+	public String stream_piece_selector = null;
+	public String timeout = null;
 	public String uri_selector = null;
-
-	public Options() {
+	public String use_head = null;
+	public String user_agent = null;
+	
+	public GlobalOptions() {
 
 	}
 
-	public Options(HashMap<String, Object> data) {
+	public GlobalOptions(HashMap<String, Object> data) {
 		init(data);
 	}
 

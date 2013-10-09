@@ -12,7 +12,7 @@ import java.util.HashMap;
 import tk.igeek.aria2.Aria2API;
 import tk.igeek.aria2.DownloadUris;
 import tk.igeek.aria2.Files;
-import tk.igeek.aria2.Options;
+import tk.igeek.aria2.GlobalOptions;
 import tk.igeek.aria2.Status;
 import tk.igeek.aria2.Version;
 import tk.igeek.aria2.android.utils.Base64;
@@ -27,10 +27,10 @@ import junit.framework.TestCase;
 public class Aria2APITest extends TestCase
 {
 	private Aria2API aria2;
-	private String aria2Host = "192.168.1.166";
+	private String aria2Host = "10.16.131.12";
 	
     protected void setUp() {
-    	aria2 = new Aria2API(aria2Host,6800,"username","passwd");
+    	aria2 = new Aria2API(aria2Host,6800);
     }
 
     
@@ -117,6 +117,11 @@ public class Aria2APITest extends TestCase
 	public void testAddTorrent() 
 	{
 		addTorrnet();
+	}
+	
+	public void testgetGlobalOption()
+	{
+		aria2.getGlobalOption();
 	}
 	
 	public void addTorrnet() 

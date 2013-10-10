@@ -499,7 +499,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		
 		if(prefKeyHost.equals(""))
 		{
-			throw new IllegalArgumentException("pealse initial host address!");
+			throw new IllegalArgumentException("Please config host address first!");
 		}
 		
 		return prefKeyHost;

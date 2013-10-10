@@ -5,7 +5,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 
@@ -23,6 +27,7 @@ import tk.igeek.aria2.android.utils.CommonUtils;
 
 import android.app.ActionBar;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -104,12 +109,43 @@ public class Aria2Activity extends ActionBarActivity
 		{
 			_aria2Manager.InitHost();
 			_aria2Manager.StartUpdateGlobalStat();
-			
+
+			Intent intent = getIntent();
+			if (intent != null) {
+				String data = intent.getDataString();
+				
+				if (data != null && intent.getData() != null && intent.getData().getScheme() != null) {
+	    			// From Android 4.2 the file path is not directly in the Intent :( but rather in the 'Download manager' cursor
+					if (intent.getData().getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+						addTorrentFromDownloads(intent.getData());
+					} 
+					else if (intent.getData().getScheme().equals("http")
+							|| intent.getData().getScheme().equals("https")) {
+						// From a global intent to add a .torrent file via URL (maybe form the browser)
+						String title = data.substring(data.lastIndexOf("/"));
+						if (intent.hasExtra("TORRENT_TITLE")) {
+							title = intent.getStringExtra("TORRENT_TITLE");
+						}
+						Toast.makeText(Aria2Activity.this, data, Toast.LENGTH_LONG).show();
+						_aria2Manager.sendToAria2APIHandlerMsg(ADD_URI, data);
+					} 
+					else if (intent.getData().getScheme().equals("magnet")) {
+						// From a global intent to add a magnet link via URL (usually from the browser)
+						Toast.makeText(Aria2Activity.this, data, Toast.LENGTH_LONG).show();
+						_aria2Manager.sendToAria2APIHandlerMsg(ADD_URI, data);
+					} 
+					else if (intent.getData().getScheme().equals("file")) {
+						// From a global intent to add via the contents of a local .torrent file (maybe form a file manager)
+						Toast.makeText(Aria2Activity.this, data, Toast.LENGTH_LONG).show();
+						_aria2Manager.sendToAria2APIHandlerMsg(ADD_TORRENT, data);
+					}
+				}
+			}			
 		}
 		catch(Exception e)
 		{
 			Toast.makeText(Aria2Activity.this,e.getMessage(),Toast.LENGTH_LONG).show();
-		}	 
+		}
 	}
 
 	@Override
@@ -329,6 +365,42 @@ public class Aria2Activity extends ActionBarActivity
 	}
 	
 
+
+	private void addTorrentFromDownloads(Uri contentUri) {
+
+		InputStream input = null;
+		try {
+			// Open the content uri as input stream
+			input = getContentResolver().openInputStream(contentUri);
+			
+			// Write a temporary file with the torrent contents
+			File tempFile = File.createTempFile("aria2android_", ".torrent", getCacheDir());
+			FileOutputStream output = new FileOutputStream(tempFile);
+			try {
+				final byte[] buffer = new byte[1024];
+				int read;
+				while ((read = input.read(buffer)) != -1)
+					output.write(buffer, 0, read);
+				output.flush();
+				_aria2Manager.sendToAria2APIHandlerMsg(ADD_TORRENT, tempFile);
+			} finally {
+				output.close();
+			}
+		} catch (SecurityException e) {
+			// No longer access to this file
+			Toast.makeText(this, R.string.error_torrentfile, Toast.LENGTH_SHORT).show();
+		} catch (IOException e1) {
+			// Can't write temporary file
+			Toast.makeText(this, R.string.error_torrentfile, Toast.LENGTH_SHORT).show();
+		} finally {
+			try {
+				if (input != null)
+					input.close();
+			} catch (IOException e) {
+				Toast.makeText(this, R.string.error_torrentfile, Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
 
 
 }

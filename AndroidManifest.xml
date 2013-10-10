@@ -62,10 +62,10 @@
 		<activity
 			android:name="tk.igeek.aria2.android.SettingsActivity"
 			android:label="@string/title_settings_activity"
-			android:parentActivityName="tk.igeek.aria2.android.MainActivity" >
+			android:parentActivityName="tk.igeek.aria2.android.Aria2Activity" >
 				<meta-data
 					android:name="android.support.PARENT_ACTIVITY"
-					android:value=".MainActivity" />
+					android:value="tk.igeek.aria2.android.Aria2Activity" />
 		</activity>
 		
 		<activity android:name="ar.com.daidalos.afiledialog.FileChooserActivity" />

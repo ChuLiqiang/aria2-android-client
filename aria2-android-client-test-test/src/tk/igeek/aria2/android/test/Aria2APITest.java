@@ -16,6 +16,7 @@ import tk.igeek.aria2.GlobalOptions;
 import tk.igeek.aria2.Status;
 import tk.igeek.aria2.Version;
 import tk.igeek.aria2.android.utils.Base64;
+import tk.igeek.aria2.android.utils.CommonUtils;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
@@ -124,6 +125,13 @@ public class Aria2APITest extends TestCase
 		aria2.getGlobalOption();
 	}
 	
+	public void testCommonUtils()
+	{
+													
+		String size = CommonUtils.formatSizeString("5388212271");
+		Log.d("aria2 Test","size:" + size );	
+	}
+	
 	public void addTorrnet() 
 	{
 		//String filepath = "/storage/sdcard0/Download/ubuntu-11.10-desktop-i386.iso.torrent";
@@ -156,6 +164,8 @@ public class Aria2APITest extends TestCase
 		Log.d("aria2 Test",encodedString);
 		String result = aria2.addTorrent(bytes);
 	}
+	
+	
 	
 	
 

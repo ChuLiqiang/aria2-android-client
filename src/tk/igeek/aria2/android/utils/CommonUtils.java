@@ -7,18 +7,18 @@ public class CommonUtils {
 
 	public static String formatSpeedString(String src) {
 		if (src == null) return "0 B";
-		int speed = 0;
+		long speed = 0;
 		String result = "";
 		try {
-			speed = Integer.parseInt(src);
+			speed = Long.parseLong(src);
 		} catch (NumberFormatException e) {
-			return src;
+			return src + " B";
 		}
 		if (speed < 1024) {
 			result = speed + " B";
-		} else if (speed > 1024 && speed < 1024 * 1024) {
+		} else if (speed >= 1024 && speed < 1024 * 1024) {
 			result = new DecimalFormat("###.##").format(((double) speed) / 1024) + " KB";
-		} else if (speed > 1024 * 1024 && speed < 1024 * 1024 * 1024){
+		} else if (speed >= 1024 * 1024 && speed < 1024 * 1024 * 1024){
 			result = new DecimalFormat("###.##").format(((double) speed) / 1024 / 1024) + " MB";
 		} else {
 			result = new DecimalFormat("###.##").format(((double) speed) / 1024 / 1024 / 1024) + " GB";

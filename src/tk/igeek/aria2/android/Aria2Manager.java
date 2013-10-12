@@ -311,6 +311,11 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 	{
 		Log.i("aria2", "start update global stat!");
 		checkAria2();
+		
+		int interval = Integer.valueOf(getPreferences(SettingsActivity.PREF_KEY_REFRESH_INTERVAL))*1000;
+		if (interval <2000 || interval > 60000) {
+			interval = 3000;
+		}
 		mGlobalStatRefreshTimer = new Timer();
 		mGlobalStatRefreshTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -328,10 +333,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 				Log.i("aria2 Timer", "end get all global and task status!");
 				
 			}
-
-			
-
-		}, 0, 1000);
+		}, 0, interval);
 	}
 	
 	private void getAllGlobalAndTaskStatus()
@@ -410,7 +412,14 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 				errorInfo = "add uri error!";
 				sendErrorInfoToUiThread(sendToUIThreadMsg, errorInfo);
 				break;
-				
+			case ADD_TORRENT:
+				errorInfo = "add torrent error!";
+				sendErrorInfoToUiThread(sendToUIThreadMsg, errorInfo);	
+				break;
+			case ADD_METALINK:
+				errorInfo = "add metalink error!";
+				sendErrorInfoToUiThread(sendToUIThreadMsg, errorInfo);				
+				break;
 		}
 		
 	}
@@ -490,7 +499,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		checkAria2();
 		String returnValue = _aria2.addUri(
 							new DownloadUris(
-									uri));	
+									uri), _aria2.getGlobalOption());	
 		return "Return value : " + returnValue;
 	}
 	

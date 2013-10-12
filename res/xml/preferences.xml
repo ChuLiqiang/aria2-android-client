@@ -37,7 +37,19 @@
 		   	    android:defaultValue="false"/>
 		   	
 		</PreferenceScreen>
-		
+		<PreferenceScreen 
+		    android:key="button_display_settings_category_key"
+        	android:title="@string/display_settings"
+        	android:persistent="false">
+        	
+		   	<EditTextPreference 
+		   	    android:key="pref_key_refresh_interval"
+		   	    android:title="@string/pref_refresh_interval"
+		   	    android:summary="@string/pref_summary_refresh_interval"
+		   	    android:defaultValue="3"/>
+		   	
+		</PreferenceScreen>
+				
 		<PreferenceScreen 
 		    android:key="button_HTTP_FTP_settings_category_key"
         	android:title="@string/HTTP_FTP_settings"

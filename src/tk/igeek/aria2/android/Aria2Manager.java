@@ -328,10 +328,8 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 				Log.i("aria2 Timer", "end get all global and task status!");
 				
 			}
-
-			
-
-		}, 0, 1000);
+		}, 0, 5000 /* TODO: Make it configurable */  
+		);
 	}
 	
 	private void getAllGlobalAndTaskStatus()
@@ -410,7 +408,14 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 				errorInfo = "add uri error!";
 				sendErrorInfoToUiThread(sendToUIThreadMsg, errorInfo);
 				break;
-				
+			case ADD_TORRENT:
+				errorInfo = "add torrent error!";
+				sendErrorInfoToUiThread(sendToUIThreadMsg, errorInfo);	
+				break;
+			case ADD_METALINK:
+				errorInfo = "add metalink error!";
+				sendErrorInfoToUiThread(sendToUIThreadMsg, errorInfo);				
+				break;
 		}
 		
 	}
@@ -490,7 +495,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		checkAria2();
 		String returnValue = _aria2.addUri(
 							new DownloadUris(
-									uri));	
+									uri), _aria2.getGlobalOption());	
 		return "Return value : " + returnValue;
 	}
 	

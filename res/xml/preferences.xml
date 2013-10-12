@@ -31,6 +31,7 @@
 		   	    android:key="pref_key_integrity"
 		   	    android:title="@string/pref_title_integrity"
 		   	    android:defaultValue="false"/>
+		   	
 		   	<CheckBoxPreference 
 		   	    android:key="pref_key_continue"
 		   	    android:title="@string/pref_title_continue"
@@ -48,7 +49,122 @@
 			    <PreferenceScreen 
 			    	android:key="button_HTTP_specific_settings_category_key"
 	        		android:title="@string/HTTP_specific_settings"
-	        		android:persistent="false">	    
+	        		android:persistent="false">
+	        		
+	        		<CheckBoxPreference 
+			   	    	android:key="pref_key_check_certificate"
+			   	    	android:title="@string/pref_title_check_certificate"
+			   	    	android:summary="@string/pref_summary_check_certificate"
+			   	    	android:defaultValue="true"/>
+	        		
+	        		<CheckBoxPreference
+	        		    android:key="pref_key_http_accept_gzip"
+			   	    	android:title="@string/pref_title_http_accept_gzip"
+			   	    	android:summary="@string/pref_summary_http_accept_gzip"
+			   	    	android:defaultValue="true"/> 
+			   	    	
+	        		<CheckBoxPreference
+	        		    android:key="pref_key_http_auth_challenge"
+			   	    	android:title="@string/pref_title_http_auth_challenge"
+			   	    	android:summary="@string/pref_summary_http_auth_challenge"
+			   	    	android:defaultValue="false"/>
+	        		
+	        		<CheckBoxPreference
+	        		    android:key="pref_key_http_no_cache"
+			   	    	android:title="@string/pref_title_http_no_cache"
+			   	    	android:summary="@string/pref_summary_http_no_cache"
+			   	    	android:defaultValue="false"/>
+
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_http_user"
+			   	    	android:title="@string/pref_title_http_user"
+				   	    android:summary="@string/pref_summary_http_user"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_http_passwd"
+			   	    	android:title="@string/pref_title_http_passwd"
+				   	    android:summary="@string/pref_summary_http_passwd"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_http_proxy"
+			   	    	android:title="@string/pref_title_http_proxy"
+				   	    android:summary="@string/pref_summary_http_proxy"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_http_proxy_passwd"
+			   	    	android:title="@string/pref_title_http_proxy_passwd"
+				   	    android:summary="@string/pref_summary_http_proxy_passwd"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_http_proxy_user"
+			   	    	android:title="@string/pref_title_http_proxy_user"
+				   	    android:summary="@string/pref_summary_http_proxy_user"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_https_proxy"
+			   	    	android:title="@string/pref_title_https_proxy"
+				   	    android:summary="@string/pref_summary_https_proxy"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_https_proxy_passwd"
+			   	    	android:title="@string/pref_title_https_proxy_passwd"
+				   	    android:summary="@string/pref_summary_https_proxy_passwd"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_https_proxy_user"
+			   	    	android:title="@string/pref_title_https_proxy_user"
+				   	    android:summary="@string/pref_summary_https_proxy_user"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_referer"
+			   	    	android:title="@string/pref_title_referer"
+				   	    android:summary="@string/pref_summary_referer"
+		   	    		/>
+	        		
+	        		<CheckBoxPreference
+	        		    android:key="pref_key_enable_http_keep_alive"
+			   	    	android:title="@string/pref_title_enable_http_keep_alive"
+			   	    	android:summary="@string/pref_summary_enable_http_keep_alive"
+			   	    	android:defaultValue="true"/>
+	        		
+	        		<CheckBoxPreference
+	        		    android:key="pref_key_enable_http_pipelining"
+			   	    	android:title="@string/pref_title_enable_http_pipelining"
+			   	    	android:summary="@string/pref_summary_enable_http_pipelining"
+			   	    	android:defaultValue="false"/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_header"
+			   	    	android:title="@string/pref_title_header"
+				   	    android:summary="@string/pref_summary_header"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_save_cookies"
+			   	    	android:title="@string/pref_title_save_cookies"
+				   	    android:summary="@string/pref_summary_save_cookies"
+		   	    		/>
+	        		
+	        		<CheckBoxPreference
+	        		    android:key="pref_key_use_head"
+			   	    	android:title="@string/pref_title_use_head"
+			   	    	android:summary="@string/pref_summary_use_head"
+			   	    	android:defaultValue="false"/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_user_agent"
+			   	    	android:title="@string/pref_title_user_agent"
+				   	    android:summary="@string/pref_summary_user_agent"
+		   	    		/>
+	        		
 				</PreferenceScreen>
 				
 			    <PreferenceScreen 

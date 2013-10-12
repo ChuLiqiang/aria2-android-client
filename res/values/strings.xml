@@ -40,10 +40,75 @@
     <string name="pref_summary_password">The password you defined on the remote server</string>
     <!-- Download Settings Menus-->
     <string name="advanced_settings">Advanced Settings</string>
-    <string name="basic_settings">Basic Settings</string>
-    <string name="FTP_specific_settings">FTP Specific Settings</string>
-    <string name="HTTP_FTP_settings">HTTP/FTP Settings</string>
+    
     <string name="HTTP_specific_settings">HTTP Specific Settings</string>
+    
+    <string name="pref_title_check_certificate">Check Certificate</string>
+    <string name="pref_summary_check_certificate">Verify the peer using certificates specified in --ca-certificate option. Default: true</string>
+    
+    <string name="pref_title_http_accept_gzip">Http Accept Gzip</string>
+    <string name="pref_summary_http_accept_gzip">Send Accept: deflate, gzip request header and inflate response if remote server responds with Content-Encoding: gzip or Content-Encoding: deflate. Default: false</string>
+    
+    <string name="pref_title_http_auth_challenge">Http Auth Challenge</string>
+    <string name="pref_summary_http_auth_challenge">Send HTTP authorization header only when it is requested by the server</string>
+    
+    <string name="pref_title_http_no_cache">Http No Cache</string>
+    <string name="pref_summary_http_no_cache">Send Cache-Control: no-cache and Pragma: no-cache header to avoid cached content. If false is given, these headers are not sent and you can add Cache-Control header with a directive you like using --header option. Default: false</string>
+    
+    <string name="pref_title_http_user">Http User</string>
+    <string name="pref_summary_http_user">Set HTTP user. This affects all URIs</string>
+    
+    <string name="pref_title_http_passwd">Http Passwd</string>
+    <string name="pref_summary_http_passwd">Set HTTP password. This affects all URIs.</string>
+    
+    <string name="pref_title_http_proxy">Http Proxy</string>
+    <string name="pref_summary_http_proxy">Use this proxy server for HTTP. To erase previously defined proxy, use "". See also --all-proxy option. This affects all URIs. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]</string>
+    
+    <string name="pref_title_http_proxy_passwd">Http Proxy Passwd</string>
+	<string name="pref_summary_http_proxy_passwd">Set password for --http-proxy option</string>
+	
+	<string name="pref_title_http_proxy_user">Http Proxy User</string>
+	<string name="pref_summary_http_proxy_user">Set user for --http-proxy option</string>
+	
+	<string name="pref_title_https_proxy">Https Proxy</string>
+    <string name="pref_summary_https_proxy">Use this proxy server for HTTPS. To erase previously defined proxy, use "". See also --all-proxy option. This affects all URIs. The format of PROXY is [http://][USER:PASSWORD@]HOST[:PORT]</string>
+    
+    <string name="pref_title_https_proxy_passwd">Https Proxy Passwd</string>
+	<string name="pref_summary_https_proxy_passwd">Set password for --https-proxy option</string>
+	
+	<string name="pref_title_https_proxy_user">Https Proxy User</string>
+	<string name="pref_summary_https_proxy_user">Set user for --https-proxy option</string>
+	
+	<string name="pref_title_referer">Referer</string>
+	<string name="pref_summary_referer">Set Referer. This affects all URIs. If * is given, each request URI is used as a referer. This may be useful when used with --parameterized-uri option</string>
+	
+	<string name="pref_title_enable_http_keep_alive">Enable HTTP Keep Alive</string>
+	<string name="pref_summary_enable_http_keep_alive">Enable HTTP/1.1 persistent connection. Default: true</string>
+	
+	<string name="pref_title_enable_http_pipelining">Enable HTTP Pipelining</string>
+	<string name="pref_summary_enable_http_pipelining">Enable HTTP/1.1 pipelining. Default: false</string>
+	
+	<string name="pref_title_header">Header</string> 
+	<string name="pref_summary_header">Append HEADER to HTTP request header. You can use this option repeatedly to specify more than one header:$ aria2c --header="X-A: b78" --header="X-B: 9J1" "http://host/file"</string>
+	
+    
+	<string name="pref_title_save_cookies">Save Cookies</string>
+	<string name="pref_summary_save_cookies">Save Cookies to FILE in Mozilla/Firefox(1.x/2.x)/ Netscape format. If FILE already exists, it is overwritten. Session Cookies are also saved and their expiry values are treated as 0. Possible Values: /path/to/file</string>
+	
+	<string name="pref_title_use_head">Use Head</string>
+	<string name="pref_summary_use_head">Use HEAD method for the first request to the HTTP server. Default: false</string>
+
+	<string name="pref_title_user_agent">User Agent</string>
+	<string name="pref_summary_user_agent">Set user agent for HTTP(S) downloads. Default: aria2/$VERSION, $VERSION is replaced by package version</string>
+		
+    <string name="FTP_specific_settings">FTP Specific Settings</string>
+    
+    <string name="basic_settings">Basic Settings</string>
+    <string name="HTTP_FTP_settings">HTTP/FTP Settings</string>
+    
+    
+    
+    
     <string name="metalink_specific_settings">Metalink Specific settings</string>
     <string name="torrent_metalink_settings">Torrent/Metalink Settings</string>
     <string name="torrent_specific_settings">Torrent Specific Settings</string>
@@ -56,6 +121,7 @@
     <string name="pref_summary_concurrent">Number of parallel downloads</string>
     <string name="pref_title_integrity">Integrity Check</string>
     <string name="pref_title_continue">Continue Downloading</string>
+    
     <!-- HTTP/FTP Common options -->
     <string name="pref_title_Advanced">Advanced Settings</string>
     <string name="pref_title_Basic">Basic Settings</string>

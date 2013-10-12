@@ -163,4 +163,6 @@
     
     <string name="error_torrentfile">Failed to add torrent file.</string>
     <string name="invalid_input">Invalid Input</string>
+
+    <string name="refresh">Refresh</string>
 </resources>

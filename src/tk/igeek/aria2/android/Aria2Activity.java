@@ -22,6 +22,7 @@ import tk.igeek.aria2.Status;
 import tk.igeek.aria2.Version;
 import tk.igeek.aria2.android.DownloadItemDialogFragment.DownloadItemDialogListener;
 import tk.igeek.aria2.android.NewDownloadDialogFragment.NewDownloadDialogListener;
+import tk.igeek.aria2.android.R.drawable;
 import tk.igeek.aria2.android.utils.CommonUtils;
 
 
@@ -45,6 +46,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,6 +64,8 @@ public class Aria2Activity extends ActionBarActivity
 	
 	private List<DownloadItem> downloadItems = null;
 	
+	private MenuItem refreshItem = null;
+
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -204,6 +208,9 @@ public class Aria2Activity extends ActionBarActivity
 				break;
 			case R.id.action_settings:
 				startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+				break;
+			case R.id.status_refresh:
+				showRefreshAnimation(item);
 				break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -413,5 +420,11 @@ public class Aria2Activity extends ActionBarActivity
 		}
 	}
 
-
+	private void showRefreshAnimation(MenuItem item) {
+		refreshItem = item;
+		
+		ImageView refreshActionView = (ImageView) getLayoutInflater().inflate(R.layout.action_refresh_view, null);
+		refreshActionView.setImageResource(drawable.ic_menu_refresh);
+		refreshItem.setActionView(refreshActionView);
+	}
 }

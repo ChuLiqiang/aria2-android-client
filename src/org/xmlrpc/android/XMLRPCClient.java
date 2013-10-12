@@ -120,7 +120,9 @@ public class XMLRPCClient extends XMLRPCCommon {
 	private void setHttpTimeOut() {
 		// Set the timeout in milliseconds until a connection is established.
         // The default value is zero, that means the timeout is not used.
-        int timeoutConnection = 5000;
+		// Do not timeout in application layer. Otherwise, uploading torrent from slow
+		// network fails due to timeout.
+        int timeoutConnection = 0;
         HttpConnectionParams.setConnectionTimeout(httpParams, timeoutConnection);
         
         // Set the default socket timeout (SO_TIMEOUT)

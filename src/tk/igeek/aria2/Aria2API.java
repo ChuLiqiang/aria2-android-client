@@ -361,10 +361,10 @@ public class Aria2API {
 	 * the options of newly added download, the response contains keys 
 	 * returned by aria2.getOption() method.
 	 */
-	public void getGlobalOption()
+	public GlobalOptions getGlobalOption()
 	{
 		HashMap<String, Object> globalOption= (HashMap<String, Object>)callMethod("aria2.getGlobalOption");
-		GlobalOptions options = new GlobalOptions(globalOption);
+		return new GlobalOptions(globalOption);
 	}
 	
 	private Object callMethod(String method, Object... args){

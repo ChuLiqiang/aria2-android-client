@@ -41,6 +41,7 @@
     <!-- Download Settings Menus-->
     <string name="advanced_settings">Advanced Settings</string>
     <string name="basic_settings">Basic Settings</string>
+    <string name="display_settings">Display Settings</string>
     <string name="FTP_specific_settings">FTP Specific Settings</string>
     <string name="HTTP_FTP_settings">HTTP/FTP Settings</string>
     <string name="HTTP_specific_settings">HTTP Specific Settings</string>
@@ -56,6 +57,9 @@
     <string name="pref_summary_concurrent">Number of parallel downloads</string>
     <string name="pref_title_integrity">Integrity Check</string>
     <string name="pref_title_continue">Continue Downloading</string>
+    <!-- Display Settings -->
+    <string name="pref_refresh_interval">Refresh Interval</string>
+    <string name="pref_summary_refresh_interval">Set interval (2-60) in seconds for refreshing Aria2 and tasks status. Default: 3\nCurrent: </string>
     <!-- HTTP/FTP Common options -->
     <string name="pref_title_Advanced">Advanced Settings</string>
     <string name="pref_title_Basic">Basic Settings</string>
@@ -158,4 +162,5 @@
     <string name="cancel">Cancel</string>
     
     <string name="error_torrentfile">Failed to add torrent file.</string>
+    <string name="invalid_input">Invalid Input</string>
 </resources>

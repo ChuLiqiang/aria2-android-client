@@ -311,6 +311,11 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 	{
 		Log.i("aria2", "start update global stat!");
 		checkAria2();
+		
+		int interval = Integer.valueOf(getPreferences(SettingsActivity.PREF_KEY_REFRESH_INTERVAL))*1000;
+		if (interval <2000 || interval > 60000) {
+			interval = 3000;
+		}
 		mGlobalStatRefreshTimer = new Timer();
 		mGlobalStatRefreshTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -328,8 +333,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 				Log.i("aria2 Timer", "end get all global and task status!");
 				
 			}
-		}, 0, 5000 /* TODO: Make it configurable */  
-		);
+		}, 0, interval);
 	}
 	
 	private void getAllGlobalAndTaskStatus()

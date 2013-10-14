@@ -23,25 +23,36 @@
     <string name="exit">Exit</string>
     <!-- Settings Activity -->
     <string name="title_settings_activity">Settings</string>
-	<string name="pref_connection_title">Connection Settings</string>
-    <string name="pref_download_settings">Download Settings</string>
-    <!-- Connection Settings -->
-    <string name="pref_title_remote">Remote</string>
-    <string name="pref_title_host">Host</string>
-    <string name="pref_title_port">Port</string>
-    <string name="pref_title_encryption">Encryption</string>
-    <string name="pref_title_username">Username</string>
-    <string name="pref_title_password">Password</string>
-    <string name="pref_summary_remote">Enable this if you want to connect to a remote server</string>
-    <string name="pref_summary_host">The name or IP of the server aria2 run on</string>
-    <string name="pref_summary_port">The port aria2 listen on the remote server</string>
-    <string name="pref_summary_encryption">Enable encrytion for the data send/received. If this isn\'t enabled on the remote server connection will fail</string>
-    <string name="pref_summary_username">The username you defined on the remote server</string>
-    <string name="pref_summary_password">The password you defined on the remote server</string>
-    <!-- Download Settings Menus-->
-    <string name="advanced_settings">Advanced Settings</string>
-
     
+	
+	
+    
+    
+    
+    <!-- Download Settings Menus-->
+    <string name="pref_download_settings">Download Settings</string> 
+
+    <!-- Basic Settings -->
+    <string name="basic_settings">Basic Settings</string>
+    
+    <string name="pref_title_directory">Directory</string>
+    <string name="pref_summary_directory">Where the downloaded files will be stored</string>
+    
+    <string name="pref_title_log">Log</string>
+    <string name="pref_summary_log">The file name of the log file</string>
+    
+    <string name="pref_title_concurrent">Concurrent Downloads</string>
+    <string name="pref_summary_concurrent">Number of parallel downloads</string>
+    
+    <string name="pref_title_integrity">Integrity Check</string>
+    <string name="pref_summary_integrity">Check file integrity by validating piece hashes or a hash of entire file</string>
+    
+    <string name="pref_title_continue">Continue Downloading</string>
+	<string name="pref_summary_continue">Continue downloading a partially downloaded file</string>
+    
+	<!-- HTTP/FTP Specific options -->
+	<string name="HTTP_FTP_settings">HTTP/FTP Settings</string>
+	
     <string name="HTTP_specific_settings">HTTP Specific Settings</string>
     
     <string name="pref_title_check_certificate">Check Certificate</string>
@@ -100,11 +111,7 @@
 	<string name="pref_summary_use_head">Use HEAD method for the first request to the HTTP server. Default: false</string>
 
 	<string name="pref_title_user_agent">User Agent</string>
-	<string name="pref_summary_user_agent">Set user agent for HTTP(S) downloads. Default: aria2/$VERSION, $VERSION is replaced by package version</string>
-		
-
-    
-    
+	<string name="pref_summary_user_agent">Set user agent for HTTP(S) downloads. Default: aria2/$VERSION, $VERSION is replaced by package version</string>    
 
     <string name="FTP_specific_settings">FTP Specific Settings</string>
     
@@ -142,11 +149,101 @@
     <string name="pref_title_ftp_reuse_connection">FTP Reuse Connection</string>
     <string name="pref_summary_ftp_reuse_connection">Reuse connection in FTP. Default: true</string>
     
+    <!-- HTTP/FTP Common options -->
+    <string name="pref_title_Advanced">Advanced Settings</string>
+    <string name="pref_title_Basic">Basic Settings</string>
+    <string name="pref_title_all_proxy">All Proxy</string>
+    <string name="pref_summary_all_proxy">Use this proxy server for all protocols</string>
+    <string name="pref_title_all_user">All Proxy User</string>
+    <string name="pref_summary_all_user">Sets the username to use with the "All Proxy" option</string>
+    <string name="pref_title_all_passwd">All Proxy Password</string>
+    <string name="pref_summary_all_passwd">Sets the password to use with the "All Proxy" option</string>
+    <string name="pref_title_connection_timeout">Connection Timeout</string>
+    <string name="pref_summary_connection_timeout">Set the connect timeout in seconds to establish a connection to the HTTP/FTP/Proxy server</string>
     
-    <string name="display_settings">Display Settings</string>
-    <string name="basic_settings">Basic Settings</string>
-    <string name="HTTP_FTP_settings">HTTP/FTP Settings</string>
+    <string name="pref_title_dry_run">Dry Run</string>
+    <string name="pref_summary_dry_run">If true is given, aria2 just checks whether the remote file is available and doesn\'t download data</string>
     
+    <string name="pref_title_lowest_speed_limit">Lowest Speed Limit</string>
+    <string name="pref_summary_lowest_speed_limit">Close connection if download speed is lower than or equal to this value(bytes per sec)</string>
+    <string name="pref_title_max_connections">Max. Connection Per Server</string>
+    <string name="pref_summary_max_conections">The maximum number of connections to one server for each download Default : 1</string>
+    <string name="pref_title_max_file_not_found">Max File Not Found</string>
+    <string name="pref_summary_max_file_not_found">If aria2 receives "file not found" status from the remote HTTP/FTP servers NUM times without getting a single byte, then force the download to fail</string>
+    
+    <string name="pref_title_tries">Max Tries</string>
+    <string name="pref_summary_tries">Set number of tries 0 means unlimited</string>
+    
+    <string name="pref_title_min_split">Min Split Size</string>
+    <string name="pref_summary_min_split">Aria2 will try to split the downloaded files by that size</string>
+    
+    <string name="pref_title_no_netrc">Disables Netrc Support</string>
+    <string name="pref_summary_no_netrc">Netrc support is enabled by default</string>
+     
+    <string name="pref_title_no_proxy">No Proxy</string>
+ 	<string name="pref_summary_no_proxy">Specify comma separated hostnames, domains and network address with or without CIDR block where proxy should not be used</string>
+ 	
+    <string name="pref_title_proxy_method">Proxy Method</string>
+    <string name="pref_summary_proxy_method">Set the method to use in proxy request method Default : get</string>
+    <string name="pref_proxy_method_get">get</string>
+    <string name="pref_proxy_method_tunnel">tunnel</string>
+    <string-array name="pref_entries_proxy_method">
+        <item>@string/pref_proxy_method_get</item>
+        <item>@string/pref_proxy_method_tunnel</item>
+    </string-array>
+    <string-array name="pref_values_proxy_method">
+        <item>@string/pref_proxy_method_get</item>
+        <item>@string/pref_proxy_method_tunnel</item>
+    </string-array>
+    
+    <string name="pref_title_remote_time">Remote Time</string>
+    <string name="pref_summary_remote_time">Retrieve timestamp from the remote server</string>
+    <string name="pref_title_reuse">Reuse URIs</string>
+    <string name="pref_summary_reuse">Reuse already used URIs if no unused are left</string>
+    <string name="pref_title_retry_wait">Retry Wait</string>
+    <string name="pref_summary_retry_wait">Set the seconds to wait between retries Default : 0</string>
+    <string name="pref_title_server_stat_of">Server Stat Of</string>
+    <string name="pref_summary_server_stat_of">Specify the filename to which performance profile of the servers is saved</string>
+    <string name="pref_title_split">Split</string>
+	<string name="pref_summary_split">Download a file using N connections</string>
+	
+	<string name="pref_title_stream_piece_selector">Stream Piece Selector</string>
+	<string name="pref_summary_stream_piece_selector">Specify piece selection algorithm used in HTTP/FTP download</string>
+	<string name="pref_stream_piece_selector_default">default</string>
+	<string name="pref_stream_piece_selector_inorder">inorder</string>
+	<string name="pref_stream_piece_selector_geom">geom</string>
+	
+	<string-array name="pref_entries_stream_piece_selector">
+	    <item>@string/pref_stream_piece_selector_default</item>
+	    <item>@string/pref_stream_piece_selector_inorder</item>
+	    <item>@string/pref_stream_piece_selector_geom</item>
+	</string-array>
+	
+	<string-array name="pref_values_stream_piece_selector">
+	    <item>@string/pref_stream_piece_selector_default</item>
+	    <item>@string/pref_stream_piece_selector_inorder</item>
+	    <item>@string/pref_stream_piece_selector_geom</item>
+	</string-array>
+	
+	
+	<string name="pref_title_uri_selector">Uri Selector</string>
+	<string name="pref_summary_stream_uri_selector">Specify URI selection algorithm</string>
+	<string name="pref_uri_selector_inorder">inorder</string>
+	<string name="pref_uri_selector_feedback">feedback</string>
+	<string name="pref_uri_selector_adaptive">adaptive</string>
+	<string-array name="pref_entries_uri_selector">
+	    <item>@string/pref_uri_selector_inorder</item>
+	    <item>@string/pref_uri_selector_feedback</item>
+	    <item>@string/pref_uri_selector_adaptive</item>
+	</string-array>
+	<string-array name="pref_values_uri_selector">
+	    <item>@string/pref_uri_selector_inorder</item>
+	    <item>@string/pref_uri_selector_feedback</item>
+	    <item>@string/pref_uri_selector_adaptive</item>
+	</string-array>
+	
+    <string name="pref_title_timeout">Timeout</string>
+    <string name="pref_summary_timeout">Set timeout in seconds Default : 60</string>
     
     <string name="torrent_metalink_settings">Torrent/Metalink Settings</string>
     
@@ -314,120 +411,71 @@
    <string name="pref_summary_metalink_enable_unique_protocol">If true is given and several protocols are available for a mirror in a metalink file, aria2 uses one of them. Use &#8211;&#8211;metalink&#8211;preferred&#8211;protocol option to specify the preference of protocol. Default: true</string>
    
    
-    <!-- Basic Settings -->
-    <string name="pref_title_directory">Directory</string>
-    <string name="pref_summary_directory">Where the downloaded files will be stored</string>
-    <string name="pref_title_log">Log</string>
-    <string name="pref_summary_log">The file name of the log file</string>
-    <string name="pref_title_concurrent">Concurrent Downloads</string>
-    <string name="pref_summary_concurrent">Number of parallel downloads</string>
     
-    <string name="pref_title_integrity">Integrity Check</string>
-    <string name="pref_summary_integrity">Check file integrity by validating piece hashes or a hash of entire file</string>
     
-    <string name="pref_title_continue">Continue Downloading</string>
-	<string name="pref_summary_continue">Continue downloading a partially downloaded file</string>
+    
+
+    
+   
+    
+    <string name="advanced_settings">Advanced Settings</string>
+    
+    <string name="pref_title_allow_overwrite">Allow Overwrite</string>
+    <string name="pref_summary_allow_overwrite">Restart download from scratch if the corresponding control file doesn\'t exist. See also &#8212;&#8212;auto&#8212;file&#8212;renaming option. Default: false</string>
+    
+    <string name="pref_title_allow_piece_length_change">Allow Piece Length Change</string>
+    <string name="pref_summary_allow_piece_length_change">If false is given, aria2 aborts download when a piece length is different from one in a control file. If true is given, you can proceed but some download progress will be lost. Default: false</string>
+    
+    <string name="pref_title_always_resume">Always Resume</string>
+    <string name="pref_summary_always_resume">Always resume download. If true is given, aria2 always tries to resume download and if resume is not possible, aborts download. If false is given, when all given URIs do not support resume or aria2 encounters N URIs which does not support resume (N is the value specified using &#8212;&#8212;max&#8212;resume&#8212;failure&#8212;tries option), aria2 downloads file from scratch. See &#8212;&#8212;max&#8212;resume&#8212;failure&#8212;tries option. Default: true</string>
+    
+    <string name="pref_title_async_dns">Async DNS</string>
+    <string name="pref_summary_async_dns">Enable asynchronous DNS. Default: true</string>
+    
+    <string name="pref_title_auto_file_renaming">Auto File Renaming</string>
+    <string name="pref_summary_auto_file_renaming">Rename file name if the same file already exists. This option works only in HTTP(S)/FTP download. The new file name has a dot and a number(1..9999) appended. Default: true</string>
+    
+    <string name="pref_title_conditional_get">Conditional Get</string>
+    <string name="pref_summary_conditional_get">Download file only when the local file is older than remote file. This function only works with HTTP(S) downloads only. It does not work if file size is specified in Metalink. It also ignores Content&#8212;Disposition header. If a control file exists, this option will be ignored. This function uses If&#8212;Modified&#8212;Since header to get only newer file conditionally. When getting modification time of local file, it uses user supplied filename(see &#8212;&#8212;out option) or filename part in URI if &#8212;&#8212;out is not specified. To overwrite existing file, &#8212;&#8212;allow&#8212;overwrite is required. Default: false</string>
+    
+    <string name="pref_title_download_result">Download Result</string>
+	<string name="pref_summary_download_result">This option changes the way Download Results is formatted. If OPT is default, print GID, status, average download speed and path/URI. If multiple files are involved, path/URI of first requested file is printed and remaining ones are omitted. If OPT is full, print GID, status, average download speed, percentage of progress and path/URI. The percentage of progress and path/URI are printed for each requested file in each row. Default: default</string>
+	<string name="pref_download_result_default">default</string>
+	<string name="pref_download_result_full">full</string>
+	<string-array name="pref_entries_download_result">
+	    <item>@string/pref_download_result_default</item>
+	    <item>@string/pref_download_result_full</item>
+	</string-array>
+	<string-array name="pref_values_download_result">
+	    <item>@string/pref_download_result_default</item>
+	    <item>@string/pref_download_result_full</item>
+	</string-array>		   	        
+
+	<string name="pref_title_enable_mmap">Enable Mmap</string>
+	<string name="pref_summary_enable_mmap">Map files into memory. This option may not work if the file space is not pre-allocated. See &#8212;&#8212;file&#8212;allocation.Default: false</string>
+	
+    <!-- Connection Settings -->
+    <string name="pref_connection_title">Connection Settings</string>
+    <string name="pref_title_remote">Remote</string>
+    <string name="pref_title_host">Host</string>
+    <string name="pref_title_port">Port</string>
+    <string name="pref_title_encryption">Encryption</string>
+    <string name="pref_title_username">Username</string>
+    <string name="pref_title_password">Password</string>
+    <string name="pref_summary_remote">Enable this if you want to connect to a remote server</string>
+    <string name="pref_summary_host">The name or IP of the server aria2 run on</string>
+    <string name="pref_summary_port">The port aria2 listen on the remote server</string>
+    <string name="pref_summary_encryption">Enable encrytion for the data send/received. If this isn\'t enabled on the remote server connection will fail</string>
+    <string name="pref_summary_username">The username you defined on the remote server</string>
+    <string name="pref_summary_password">The password you defined on the remote server</string>
+    
+    
     
     <!-- Display Settings -->
+    <string name="display_settings">Display Settings</string>
+    
     <string name="pref_refresh_interval">Refresh Interval</string>
     <string name="pref_summary_refresh_interval">Set interval (2&#8211;60) in seconds for refreshing Aria2 and tasks status. Default: 3\nCurrent: </string>
-
-    <!-- HTTP/FTP Common options -->
-    <string name="pref_title_Advanced">Advanced Settings</string>
-    <string name="pref_title_Basic">Basic Settings</string>
-    <string name="pref_title_all_proxy">All Proxy</string>
-    <string name="pref_summary_all_proxy">Use this proxy server for all protocols</string>
-    <string name="pref_title_all_user">All Proxy User</string>
-    <string name="pref_summary_all_user">Sets the username to use with the "All Proxy" option</string>
-    <string name="pref_title_all_passwd">All Proxy Password</string>
-    <string name="pref_summary_all_passwd">Sets the password to use with the "All Proxy" option</string>
-    <string name="pref_title_connection_timeout">Connection Timeout</string>
-    <string name="pref_summary_connection_timeout">Set the connect timeout in seconds to establish a connection to the HTTP/FTP/Proxy server</string>
-    
-    <string name="pref_title_dry_run">Dry Run</string>
-    <string name="pref_summary_dry_run">If true is given, aria2 just checks whether the remote file is available and doesn\'t download data</string>
-    
-    <string name="pref_title_lowest_speed_limit">Lowest Speed Limit</string>
-    <string name="pref_summary_lowest_speed_limit">Close connection if download speed is lower than or equal to this value(bytes per sec)</string>
-    <string name="pref_title_max_connections">Max. Connection Per Server</string>
-    <string name="pref_summary_max_conections">The maximum number of connections to one server for each download Default : 1</string>
-    <string name="pref_title_max_file_not_found">Max File Not Found</string>
-    <string name="pref_summary_max_file_not_found">If aria2 receives "file not found" status from the remote HTTP/FTP servers NUM times without getting a single byte, then force the download to fail</string>
-    
-    <string name="pref_title_tries">Max Tries</string>
-    <string name="pref_summary_tries">Set number of tries 0 means unlimited</string>
-    
-    <string name="pref_title_min_split">Min Split Size</string>
-    <string name="pref_summary_min_split">Aria2 will try to split the downloaded files by that size</string>
-    
-    <string name="pref_title_no_netrc">Disables Netrc Support</string>
-    <string name="pref_summary_no_netrc">Netrc support is enabled by default</string>
-     
-    <string name="pref_title_no_proxy">No Proxy</string>
- 	<string name="pref_summary_no_proxy">Specify comma separated hostnames, domains and network address with or without CIDR block where proxy should not be used</string>
- 	
-    <string name="pref_title_proxy_method">Proxy Method</string>
-    <string name="pref_summary_proxy_method">Set the method to use in proxy request method Default : get</string>
-    <string name="pref_proxy_method_get">get</string>
-    <string name="pref_proxy_method_tunnel">tunnel</string>
-    <string-array name="pref_entries_proxy_method">
-        <item>@string/pref_proxy_method_get</item>
-        <item>@string/pref_proxy_method_tunnel</item>
-    </string-array>
-    <string-array name="pref_values_proxy_method">
-        <item>@string/pref_proxy_method_get</item>
-        <item>@string/pref_proxy_method_tunnel</item>
-    </string-array>
-    
-    <string name="pref_title_remote_time">Remote Time</string>
-    <string name="pref_summary_remote_time">Retrieve timestamp from the remote server</string>
-    <string name="pref_title_reuse">Reuse URIs</string>
-    <string name="pref_summary_reuse">Reuse already used URIs if no unused are left</string>
-    <string name="pref_title_retry_wait">Retry Wait</string>
-    <string name="pref_summary_retry_wait">Set the seconds to wait between retries Default : 0</string>
-    <string name="pref_title_server_stat_of">Server Stat Of</string>
-    <string name="pref_summary_server_stat_of">Specify the filename to which performance profile of the servers is saved</string>
-    <string name="pref_title_split">Split</string>
-	<string name="pref_summary_split">Download a file using N connections</string>
-	
-	<string name="pref_title_stream_piece_selector">Stream Piece Selector</string>
-	<string name="pref_summary_stream_piece_selector">Specify piece selection algorithm used in HTTP/FTP download</string>
-	<string name="pref_stream_piece_selector_default">default</string>
-	<string name="pref_stream_piece_selector_inorder">inorder</string>
-	<string name="pref_stream_piece_selector_geom">geom</string>
-	
-	<string-array name="pref_entries_stream_piece_selector">
-	    <item>@string/pref_stream_piece_selector_default</item>
-	    <item>@string/pref_stream_piece_selector_inorder</item>
-	    <item>@string/pref_stream_piece_selector_geom</item>
-	</string-array>
-	
-	<string-array name="pref_values_stream_piece_selector">
-	    <item>@string/pref_stream_piece_selector_default</item>
-	    <item>@string/pref_stream_piece_selector_inorder</item>
-	    <item>@string/pref_stream_piece_selector_geom</item>
-	</string-array>
-	
-	
-	<string name="pref_title_uri_selector">Uri Selector</string>
-	<string name="pref_summary_stream_uri_selector">Specify URI selection algorithm</string>
-	<string name="pref_uri_selector_inorder">inorder</string>
-	<string name="pref_uri_selector_feedback">feedback</string>
-	<string name="pref_uri_selector_adaptive">adaptive</string>
-	<string-array name="pref_entries_uri_selector">
-	    <item>@string/pref_uri_selector_inorder</item>
-	    <item>@string/pref_uri_selector_feedback</item>
-	    <item>@string/pref_uri_selector_adaptive</item>
-	</string-array>
-	<string-array name="pref_values_uri_selector">
-	    <item>@string/pref_uri_selector_inorder</item>
-	    <item>@string/pref_uri_selector_feedback</item>
-	    <item>@string/pref_uri_selector_adaptive</item>
-	</string-array>
-	
-    <string name="pref_title_timeout">Timeout</string>
-    <string name="pref_summary_timeout">Set timeout in seconds Default : 60</string>
-    <!-- HTTP Specific options -->
     
     <string name="url_notify">Url</string>
     <string name="ok">OK</string>

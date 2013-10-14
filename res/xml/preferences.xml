@@ -659,7 +659,67 @@
 		<PreferenceScreen 
 		    android:key="button_advanced_settings_category_key"
         	android:title="@string/advanced_settings"
-        	android:persistent="false">	    
+        	android:persistent="false">
+		    	 
+        	<CheckBoxPreference 
+			   	    android:key="pref_key_allow_overwrite"
+			   	    android:title="@string/pref_title_allow_overwrite"
+			   	    android:summary="@string/pref_summary_allow_overwrite"
+			   	    android:defaultValue="false"
+			   	    />
+        	
+        	<CheckBoxPreference 
+			   	    android:key="pref_key_allow_piece_length_change"
+			   	    android:title="@string/pref_title_allow_piece_length_change"
+			   	    android:summary="@string/pref_summary_allow_piece_length_change"
+			   	    android:defaultValue="false"
+			   	    />
+        	
+        	<CheckBoxPreference 
+			   	    android:key="pref_key_always_resume"
+			   	    android:title="@string/pref_title_always_resume"
+			   	    android:summary="@string/pref_summary_always_resume"
+			   	    android:defaultValue="true"
+			   	    />
+        	
+        	<CheckBoxPreference 
+			   	    android:key="pref_key_async_dns"
+			   	    android:title="@string/pref_title_async_dns"
+			   	    android:summary="@string/pref_summary_async_dns"
+			   	    android:defaultValue="true"
+			   	    />
+		    
+		    <CheckBoxPreference 
+			   	    android:key="pref_key_auto_file_renaming"
+			   	    android:title="@string/pref_title_auto_file_renaming"
+			   	    android:summary="@string/pref_summary_auto_file_renaming"
+			   	    android:defaultValue="true"
+			   	    />
+		    
+		    <CheckBoxPreference 
+			   	    android:key="pref_key_conditional_get"
+			   	    android:title="@string/pref_title_conditional_get"
+			   	    android:summary="@string/pref_summary_conditional_get"
+			   	    android:defaultValue="false"
+			   	    />
+        	
+		    <ListPreference
+			   	    android:key="pref_key_download_result"
+			   	    android:title="@string/pref_title_download_result"
+			   	    android:summary="@string/pref_summary_download_result"
+			   	    android:dialogTitle="@string/pref_title_download_result"
+			   	    android:entries="@array/pref_entries_download_result"
+			        android:entryValues="@array/pref_values_download_result"
+			        android:defaultValue="@string/pref_download_result_default" />
+		    
+		    <CheckBoxPreference 
+			   	    android:key="pref_key_enable_mmap"
+			   	    android:title="@string/pref_title_enable_mmap"
+			   	    android:summary="@string/pref_summary_enable_mmap"
+			   	    android:defaultValue="false"
+			   	    />
+		    
+		    
 		</PreferenceScreen>    
 	    
 	</PreferenceCategory>

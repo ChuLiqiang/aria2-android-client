@@ -3,6 +3,8 @@ package tk.igeek.aria2.android;
 import java.util.ArrayList;
 import java.util.List;
 
+import tk.igeek.aria2.android.utils.CommonUtils;
+
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
@@ -58,7 +60,10 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
        
         DownloadItem downloadItem = data.get(position);
         holder.name.setText(downloadItem.name);
-        holder.status.setText(downloadItem.status);
+		String speed = context.getString(R.string.item_speed_format,
+				CommonUtils.formatSpeedString(downloadItem.downloadSpeed),
+				CommonUtils.formatSpeedString(downloadItem.uploadSpeed));
+		holder.status.setText(downloadItem.status + " ("+ speed +")");
         holder.size.setText(downloadItem.size); 
         holder.progressBar.setProgress(downloadItem.progress);
         return row;

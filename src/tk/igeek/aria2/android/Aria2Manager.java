@@ -389,15 +389,20 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 	{												
 		Message sendToUIThreadMsg = new Message();
 		sendToUIThreadMsg.what = ALL_STATUS_REFRESHED;
-		ArrayList<Status> activeList = _aria2.tellActive();
-		ArrayList<Status> waitingList = _aria2.tellWaiting(0,Integer.valueOf(statNew.numWaiting));
-		ArrayList<Status> stopList = _aria2.tellStopped(0,Integer.valueOf(statNew.numStopped));
-		ArrayList<ArrayList<Status>> list = new ArrayList<ArrayList<Status>>();
-		
-		list.add(activeList);
-		list.add(waitingList);
-		list.add(stopList);
-		
+
+		ArrayList<ArrayList<Status>> list = new ArrayList<ArrayList<Status>>();		
+		if (Integer.valueOf(statNew.numActive)>0) {
+			ArrayList<Status> activeList = _aria2.tellActive();
+			list.add(activeList);
+		}
+		if (Integer.valueOf(statNew.numWaiting)>0) {		
+			ArrayList<Status> waitingList = _aria2.tellWaiting(0,Integer.valueOf(statNew.numWaiting));
+			list.add(waitingList);
+		}
+		if (Integer.valueOf(statNew.numStopped)>0) {		
+			ArrayList<Status> stopList = _aria2.tellStopped(0,Integer.valueOf(statNew.numStopped));		
+			list.add(stopList);
+		}
 		sendToUIThreadMsg.obj = list;
 		_mRefreshHandler.sendMessage(sendToUIThreadMsg);
 	}

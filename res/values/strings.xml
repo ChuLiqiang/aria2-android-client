@@ -6,7 +6,7 @@
 	<string name="pause_download">Pause All</string>
 	<string name="resume_download">Resume Paused</string>
 	<string name="remove_download">Purge Completed</string>
-	<string name="global_speed_format">Download : <xliff:g id="download_speed">%s</xliff:g>, Upload : <xliff:g id="upload_speed">%s</xliff:g></string>
+	<string name="global_speed_format">Download: <xliff:g id="download_speed">%s</xliff:g>, Upload: <xliff:g id="upload_speed">%s</xliff:g></string>
 	<string name="pick_download_item_action">Pick Download Item Action</string>
 	
 	<string name="pause">Pause</string>
@@ -437,4 +437,7 @@
     <string name="invalid_input">Invalid Input</string>
 
     <string name="refresh">Refresh</string>
+    <!-- Download Item -->
+    <string name="filename_unknown">unknown</string>
+	<string name="item_speed_format">Down: <xliff:g id="download_speed">%s</xliff:g>, Up: <xliff:g id="upload_speed">%s</xliff:g></string>
 </resources>

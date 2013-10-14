@@ -3,6 +3,14 @@
       xmlns:yourapp="http://schemas.android.com/apk/res-auto">
 
 	<item
+        android:id="@+id/action_refresh"
+        android:icon="@drawable/ic_menu_refresh"
+		android:title="@string/refresh"
+        android:orderInCategory="1" 
+        yourapp:showAsAction="always">
+    </item>
+    
+	<item
 		android:id="@+id/new_download"
 		android:icon="@drawable/ic_menu_add"
 		yourapp:showAsAction="ifRoom"

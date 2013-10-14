@@ -14,6 +14,8 @@ public class DownloadItem
 	public String status;
 	public String size;
 	public int progress;
+	public String downloadSpeed;
+	public String uploadSpeed;
 	public boolean havaBittorrent = false;
 	
 	public DownloadItem(){
@@ -22,10 +24,9 @@ public class DownloadItem
 
 	public DownloadItem(Status statusTemp)
 	{
-		
 		if(statusTemp.files == null)
 		{
-			this.name = "unkow";
+			this.name = "unknown";
 		}
 		else
 		{
@@ -41,6 +42,8 @@ public class DownloadItem
 		{
 			havaBittorrent = true;
 		}
+		downloadSpeed = statusTemp.downloadSpeed;
+		uploadSpeed = statusTemp.uploadSpeed;
 	}
 	
 	

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CountDownLatch;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,6 +23,7 @@ import tk.igeek.aria2.Status;
 import tk.igeek.aria2.Version;
 import tk.igeek.aria2.android.DownloadItemDialogFragment.DownloadItemDialogListener;
 import tk.igeek.aria2.android.NewDownloadDialogFragment.NewDownloadDialogListener;
+import tk.igeek.aria2.android.R.drawable;
 import tk.igeek.aria2.android.utils.CommonUtils;
 
 
@@ -45,6 +47,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,6 +65,7 @@ public class Aria2Activity extends ActionBarActivity
 	
 	private List<DownloadItem> downloadItems = null;
 	
+	private Menu optionsMenu = null;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -174,6 +178,7 @@ public class Aria2Activity extends ActionBarActivity
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		optionsMenu = menu;
 		getMenuInflater().inflate(R.menu.menu, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -205,10 +210,18 @@ public class Aria2Activity extends ActionBarActivity
 			case R.id.action_settings:
 				startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
 				break;
+			case R.id.action_refresh:
+				onRefresh();
+				break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
+	private void onRefresh() {
+		/* Do manual refresh */
+		_aria2Manager.sendToAria2APIHandlerMsg(GET_ALL_GLOBAL_AND_TASK_STATUS);
+	}
+	
 	private void addMetalink()
 	{
 		FileChooserDialog dialog = new FileChooserDialog(this);
@@ -280,6 +293,12 @@ public class Aria2Activity extends ActionBarActivity
 			{
 				switch (msg.what) 
 				{
+					case START_REFRESHING_ALL_STATUS:
+						setRefreshActionButtonState(true);
+						break;
+					case FINISH_REFRESHING_ALL_STATUS:
+						setRefreshActionButtonState(false);
+						break;
 					case GLOBAL_STAT_REFRESHED:
 						if (msg.obj == null) return;
 						GlobalStat stat = (GlobalStat) msg.obj;
@@ -312,11 +331,6 @@ public class Aria2Activity extends ActionBarActivity
 						break;
 					case SHOW_ERROR_INFO_STOP_UPDATE_GLOBAL_STAT:
 						{
-							_aria2Manager.StopUpdateGlobalStat();
-							if (msg.obj == null) 
-							{
-								Toast.makeText(Aria2Activity.this,"error happend!please check setting!", Toast.LENGTH_LONG).show();
-							}
 							String errorInfo = (String)msg.obj; 
 							Toast.makeText(Aria2Activity.this,errorInfo,Toast.LENGTH_LONG).show();
 						}
@@ -413,5 +427,17 @@ public class Aria2Activity extends ActionBarActivity
 		}
 	}
 
-
+	public void setRefreshActionButtonState(final boolean refreshing) {
+	     if (optionsMenu != null) {
+	         final MenuItem refreshItem = optionsMenu
+	             .findItem(R.id.action_refresh);
+	         if (refreshItem != null) {
+	             if (refreshing) {
+	                 refreshItem.setActionView(R.layout.action_refresh_view);
+	             } else {
+	                 refreshItem.setActionView(null);
+	             }
+	         }
+	     }
+	 }
 }

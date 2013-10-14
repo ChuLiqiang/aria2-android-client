@@ -3,11 +3,11 @@
       xmlns:yourapp="http://schemas.android.com/apk/res-auto">
 
 	<item
-        android:id="@+id/status_refresh"
+        android:id="@+id/action_refresh"
         android:icon="@drawable/ic_menu_refresh"
 		android:title="@string/refresh"
-		android:orderInCategory="1"
-        android:showAsAction="always">
+        android:orderInCategory="1" 
+        yourapp:showAsAction="always">
     </item>
     
 	<item

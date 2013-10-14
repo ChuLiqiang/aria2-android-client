@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-  style="@android:style/Widget.ActionButton"
-  android:layout_width="wrap_content"
-  android:scaleType="centerInside"
-  android:layout_height="wrap_content" >
-    
-
-</ImageView>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="56dp"
+    android:minWidth="56dp">
+     <ProgressBar android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center"/>
+ </FrameLayout>

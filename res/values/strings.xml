@@ -454,6 +454,60 @@
 	<string name="pref_title_enable_mmap">Enable Mmap</string>
 	<string name="pref_summary_enable_mmap">Map files into memory. This option may not work if the file space is not pre-allocated. See &#8212;&#8212;file&#8212;allocation.Default: false</string>
 	
+	<string name="pref_title_file_allocation">File Allocation</string>
+	<string name="pref_summary_file_allocation">Specify file allocation method. none doesn\'t pre-allocate file space. prealloc pre-allocates file space before download begins. This may take some time depending on the size of the file. If you are using newer file systems such as ext4 (with extents support), btrfs, xfs or NTFS(MinGW build only), falloc is your best choice. It allocates large(few GiB) files almost instantly. Don\'t use falloc with legacy file systems such as ext3 and FAT32 because it takes almost same time as prealloc and it blocks aria2 entirely until allocation finishes. falloc may not be available if your system doesn\'t have posix_fallocate(3) function. trunc uses ftruncate(2) system call or platform-specific counterpart to truncate a file to a specified length.Possible Values: none, prealloc, trunc, falloc Default: prealloc</string>
+	<string name="pref_file_allocation_none">none</string>
+	<string name="pref_file_allocation_prealloc">prealloc</string>
+	<string name="pref_file_allocation_trunc">trunc</string>
+	<string name="pref_file_allocation_falloc">falloc</string>
+	<string-array name="pref_entries_file_allocation">
+	    <item>@string/pref_file_allocation_none</item>
+	    <item>@string/pref_file_allocation_prealloc</item>
+	    <item>@string/pref_file_allocation_trunc</item>
+	    <item>@string/pref_file_allocation_falloc</item>
+	</string-array>
+	<string-array name="pref_values_file_allocation">
+	    <item>@string/pref_file_allocation_none</item>
+	    <item>@string/pref_file_allocation_prealloc</item>
+	    <item>@string/pref_file_allocation_trunc</item>
+	    <item>@string/pref_file_allocation_falloc</item>
+	</string-array>
+	
+	<string name="pref_title_force_save">Force Save</string>
+	<string name="pref_summary_force_save">Save download with &#8212;&#8212;save&#8212;session option even if the download is completed or removed. This option also saves control file in that situations. This may be useful to save BitTorrent seeding which is recognized as completed state. Default: false</string>
+	
+	<string name="pref_title_hash_check_only">Hash Check Only</string>
+	<string name="pref_summary_hash_check_only">If true is given, after hash check using &#8212;&#8212;check&#8212;integrity option, abort download whether or not download is complete. Default: false</string>
+	
+	<string name="pref_title_max_download_result">Max Download Result</string>
+	<string name="pref_summary_max_download_result">Set maximum number of download result kept in memory. The download results are completed/error/removed downloads. The download results are stored in FIFO queue and it can store at most NUM download results. When queue is full and new download result is created, oldest download result is removed from the front of the queue and new one is pushed to the back. Setting big number in this option may result high memory consumption after thousands of downloads. Specifying 0 means no download result is kept. Default: 1000</string>
+	
+	<string name="pref_title_max_resume_failure_tries">Max Resume Failure Tries</string>
+	<string name="pref_summary_max_resume_failure_tries">When used with &#8212;&#8212;always&#8212;resume=false, aria2 downloads file from scratch when aria2 detects N number of URIs that does not support resume. If N is 0, aria2 downloads file from scratch when all given URIs do not support resume. See &#8212;&#8212;always&#8212;resume option. Default: 0</string>
+	
+	<string name="pref_title_log_level">Log Level</string>
+	<string name="pref_summary_log_level">Set log level to output. LEVEL is either debug, info, notice, warn or error. Default: debug</string>
+	<string name="pref_file_log_level_debug">debug</string>
+	<string name="pref_file_log_level_info">info</string>
+	<string name="pref_file_log_level_notice">notice</string>
+	<string name="pref_file_log_level_warn">warn</string>
+	<string name="pref_file_log_level_error">error</string>
+	<string-array name="pref_entries_log_level">
+	    <item>@string/pref_file_log_level_debug</item>
+	    <item>@string/pref_file_log_level_info</item>
+	    <item>@string/pref_file_log_level_notice</item>
+	    <item>@string/pref_file_log_level_warn</item>
+	    <item>@string/pref_file_log_level_error</item>
+	</string-array>
+	<string-array name="pref_values_log_level">
+	    <item>@string/pref_file_log_level_debug</item>
+	    <item>@string/pref_file_log_level_info</item>
+	    <item>@string/pref_file_log_level_notice</item>
+	    <item>@string/pref_file_log_level_warn</item>
+	    <item>@string/pref_file_log_level_error</item>
+	</string-array>
+	
+	
     <!-- Connection Settings -->
     <string name="pref_connection_title">Connection Settings</string>
     <string name="pref_title_remote">Remote</string>

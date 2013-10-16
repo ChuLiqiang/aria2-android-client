@@ -765,6 +765,60 @@
 			        android:entryValues="@array/pref_values_log_level"
 			        android:defaultValue="@string/pref_file_log_level_debug" />
 		    
+		    <EditTextPreference
+					android:key="pref_key_piece_length"
+			        android:title="@string/pref_title_piece_length"
+				   	android:summary="@string/pref_summary_piece_length"
+				   	android:defaultValue="1048576"
+			   	    />
+		    
+		    <EditTextPreference
+					android:key="pref_key_max_overall_download_limit"
+			        android:title="@string/pref_title_max_overall_download_limit"
+				   	android:summary="@string/pref_summary_max_overall_download_limit"
+				   	android:defaultValue="0"
+			   	    />
+		    
+		    <EditTextPreference
+					android:key="pref_key_max_download_limit"
+			        android:title="@string/pref_title_max_download_limit"
+				   	android:summary="@string/pref_summary_max_download_limit"
+				   	android:defaultValue="0"
+			   	    />
+		    
+		    <EditTextPreference
+					android:key="pref_key_no_file_allocation_limit"
+			        android:title="@string/pref_title_no_file_allocation_limit"
+				   	android:summary="@string/pref_summary_no_file_allocation_limit"
+				   	android:defaultValue="5242880"
+			   	    />
+		    
+		    <CheckBoxPreference 
+			   	    android:key="pref_key_parameterized_uri"
+			   	    android:title="@string/pref_title_parameterized_uri"
+			   	    android:summary="@string/pref_summary_parameterized_uri"
+			   	    android:defaultValue="false"
+			   	    />
+		    
+		    <CheckBoxPreference 
+			   	    android:key="pref_key_realtime_chunk_checksump"
+			   	    android:title="@string/pref_title_realtime_chunk_checksump"
+			   	    android:summary="@string/pref_summary_realtime_chunk_checksump"
+			   	    android:defaultValue="true"
+			   	    />
+		    
+		    <CheckBoxPreference 
+			   	    android:key="pref_key_remove_control_file"
+			   	    android:title="@string/pref_title_remove_control_file"
+			   	    android:summary="@string/pref_summary_remove_control_file"
+			   	    />
+		    
+		    <EditTextPreference
+					android:key="pref_key_save_session"
+			        android:title="@string/pref_title_save_session"
+				   	android:summary="@string/pref_summary_save_session"
+			   	    />
+		    
 		    
 		    
 		</PreferenceScreen>    

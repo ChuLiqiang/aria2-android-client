@@ -507,6 +507,31 @@
 	    <item>@string/pref_file_log_level_error</item>
 	</string-array>
 	
+	<string name="pref_title_piece_length">Piece Length</string>
+	<string name="pref_summary_piece_length">Set a piece length for HTTP/FTP downloads. This is the boundary when aria2 splits a file. All splits occur at multiple of this length. This option will be ignored in BitTorrent downloads. It will be also ignored if Metalink file contains piece hashes. Default: 1M</string>
+	
+	<string name="pref_title_max_overall_download_limit">Max Overall Download Limit</string>
+	<string name="pref_summary_max_overall_download_limit">Set max overall download speed in bytes/sec. 0 means unrestricted. You can append K or M (1K = 1024, 1M = 1024K). To limit the download speed per download, use &#8212;&#8212;max&#8212;download&#8212;limit option. Default: 0</string>
+	
+	<string name="pref_title_max_download_limit">Max Download Limit</string>
+	<string name="pref_summary_max_download_limit">Set max download speed per each download in bytes/sec. 0 means unrestricted. You can append K or M (1K = 1024, 1M = 1024K). To limit the overall download speed, use &#8212;&#8212;max&#8212;overall&#8212;download&#8212;limit option. Default: 0</string>
+	
+	<string name="pref_title_no_file_allocation_limit">No File Allocation Limit</string>
+	<string name="pref_summary_no_file_allocation_limit">No file allocation is made for files whose size is smaller than SIZE. You can append K or M (1K = 1024, 1M = 1024K). Default: 5M</string>
+	
+	<string name="pref_title_parameterized_uri">Parameterized Uri</string>
+	<string name="pref_summary_parameterized_uri">Enable parameterized URI support. You can specify set of parts: http://{sv1,sv2,sv3}/foo.iso. Also you can specify numeric sequences with step counter: http://host/image[000&#8211;100:2].img. A step counter can be omitted. If all URIs do not point to the same file, such as the second example above, &#8211;Z option is required. Default: false</string>
+	
+	<string name="pref_title_realtime_chunk_checksump">Realtime Chunk Checksump</string>
+	<string name="pref_summary_realtime_chunk_checksump">Validate chunk of data by calculating checksum while downloading a file if chunk checksums are provided. Default: true</string>
+	
+	<string name="pref_title_remove_control_file">Remove Control File</string>
+	<string name="pref_summary_remove_control_file">Remove control file before download. Using with &#8212;&#8212;allow&#8212;overwrite=true, download always starts from scratch. This will be useful for users behind proxy server which disables resume</string>
+	
+	<string name="pref_title_save_session">Save Session</string>
+	<string name="pref_summary_save_session">Save error/unfinished downloads to FILE on exit. You can pass this output file to aria2c with &#8212;&#8212;input&#8212;file option on restart</string>
+	
+	
 	
     <!-- Connection Settings -->
     <string name="pref_connection_title">Connection Settings</string>

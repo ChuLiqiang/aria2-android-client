@@ -10,10 +10,12 @@ import java.util.Set;
 import android.R.bool;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-public class GlobalOptions extends CommonItem {
+public class GlobalOptions extends CommonItem implements Parcelable{
 
 	
 	public String download_result = null;
@@ -579,5 +581,77 @@ public class GlobalOptions extends CommonItem {
 		}
 		
 		
+	}
+
+	
+	
+	public static final Parcelable.Creator<GlobalOptions> CREATOR =
+			new Parcelable.Creator<GlobalOptions>(){
+
+	    @Override
+	    public GlobalOptions createFromParcel(Parcel source) {
+	     return new GlobalOptions(source);
+	    }
+	
+	    @Override
+	    public GlobalOptions[] newArray(int size) {
+	     return new GlobalOptions[size];
+	    }
+	};
+	
+	@Override
+	public int describeContents()
+	{
+
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags)
+	{
+		write(dest); 
+		
+	}
+	
+	 private void readFromParcel(Parcel in) 
+	 {    
+		read(in); 
+     }  
+	 
+	 public GlobalOptions(Parcel source) {
+		 readFromParcel(source);
+	 }
+	 
+	 public void write(Parcel dest) {
+		Field[] fields = getClass().getFields();
+
+		try {
+			for (Field field : fields) {
+				if (field.getModifiers() == Modifier.PUBLIC) {
+					Object value = field.get(this);
+					dest.writeString((String) value);
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
+	 
+	 public void read(Parcel in) {
+		Field[] fields = getClass().getFields();
+
+		try {
+			for (Field field : fields) {
+				if (field.getModifiers() == Modifier.PUBLIC) {
+					field.set(this,in.readString());
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 }

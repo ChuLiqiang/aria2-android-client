@@ -1,6 +1,7 @@
 package tk.igeek.aria2.android;
 
 import tk.igeek.aria2.GlobalOptions;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -9,12 +10,15 @@ import android.widget.Toast;
 
 public class GlobalOptionActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener
 {
+	
+	
 	private GlobalOptions globalOptions = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstaceState)
 	{
 		super.onCreate(savedInstaceState);
+		globalOptions = null;
 		addPreferencesFromResource(R.xml.global_option_preferences);
 	}
 	
@@ -47,8 +51,21 @@ public class GlobalOptionActivity extends PreferenceActivity implements OnShared
 	
 	@Override
 	protected void onPause() {
-	    super.onPause();
+	    
 	    getPreferenceScreen().getSharedPreferences()
 	            .unregisterOnSharedPreferenceChangeListener(this);
+	    super.onPause();    
+	    
 	}
+	
+	@Override
+	public void finish() {
+	  // Prepare data intent 
+	  Intent data = new Intent();
+	  data.putExtra("returnKey1", "Swinging on a star. ");
+	  data.putExtra("returnKey2", "You could be better then you are. ");
+	  // Activity finished ok, return the data
+	  setResult(RESULT_OK, data);
+	  super.finish();
+	} 
 }

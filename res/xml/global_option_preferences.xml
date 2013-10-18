@@ -241,14 +241,14 @@
 			   	    android:summary="@string/pref_summary_all_proxy"/>
 			   	
 			   	<EditTextPreference 
-			   	    android:key="pref_key_all_user"
-			   	    android:title="@string/pref_title_all_user"
-			   	    android:summary="@string/pref_summary_all_user"/>
+			   	    android:key="pref_key_all_proxy_user"
+			   	    android:title="@string/pref_title_all_proxy_user"
+			   	    android:summary="@string/pref_summary_all_proxy_user"/>
 			   	
 			   	<EditTextPreference 
-			   	    android:key="pref_key_all_passwd"
-			   	    android:title="@string/pref_title_all_passwd"
-			   	    android:summary="@string/pref_summary_all_passwd"/>
+			   	    android:key="pref_key_all_proxy_passwd"
+			   	    android:title="@string/pref_title_all_proxy_passwd"
+			   	    android:summary="@string/pref_summary_all_proxy_passwd"/>
 			   	
 			   	<EditTextPreference 
 			   	    android:key="pref_key_connection_timeout"
@@ -269,9 +269,9 @@
 			   	    android:defaultValue="0"/>
 			   	
 			   	<EditTextPreference 
-			   	    android:key="pref_key_max_connections"
-			   	    android:title="@string/pref_title_max_connections"
-			   	    android:summary="@string/pref_summary_max_conections"
+			   	    android:key="pref_key_max_connection_per_server"
+			   	    android:title="@string/pref_title_max_connection_per_server"
+			   	    android:summary="@string/pref_summary_max_connection_per_server"
 			   	    android:defaultValue="1"/>
 			   	
 			   	<EditTextPreference 
@@ -281,15 +281,15 @@
 			   	    android:defaultValue="0"/>
 			   	
 			   	<EditTextPreference 
-			   	    android:key="pref_key_tries"
-			   	    android:title="@string/pref_title_tries"
-			   	    android:summary="@string/pref_summary_tries"
+			   	    android:key="pref_key_max_tries"
+			   	    android:title="@string/pref_title_max_tries"
+			   	    android:summary="@string/pref_summary_max_tries"
 			   	    android:defaultValue="5"/>
 			   	
 			   	<EditTextPreference 
-			   	    android:key="pref_key_min_split"
-			   	    android:title="@string/pref_title_min_split"
-			   	    android:summary="@string/pref_summary_min_split"/>
+			   	    android:key="pref_key_min_split_size"
+			   	    android:title="@string/pref_title_min_split_size"
+			   	    android:summary="@string/pref_summary_min_split_size"/>
 			   	
 			   	<CheckBoxPreference 
 		   	    	android:key="pref_key_no_netrc"
@@ -301,7 +301,6 @@
 			   	    android:key="pref_key_no_proxy"
 			   	    android:title="@string/pref_title_no_proxy"
 			   	    android:summary="@string/pref_summary_no_proxy"/>
-			   	<!-- TODO : Find how to make the next node a list -->
 			   	
 			   	<ListPreference
 			   	    android:key="pref_key_proxy_method"
@@ -319,9 +318,9 @@
 			   	    android:defaultValue="false"/>
 			   	
 			   	<CheckBoxPreference 
-			   	    android:key="pref_key_reuse"
-			   	    android:title="@string/pref_title_reuse"
-			   	    android:summary="@string/pref_summary_reuse"
+			   	    android:key="pref_key_reuse_uri"
+			   	    android:title="@string/pref_title_reuse_uri"
+			   	    android:summary="@string/pref_summary_reuse_uri"
 			   	    android:defaultValue="true"/>
 			   	
 			   	<EditTextPreference 
@@ -329,11 +328,13 @@
 			   	    android:title="@string/pref_title_retry_wait"
 			   	    android:summary="@string/pref_summary_retry_wait"
 			   	    android:defaultValue="0"/>
+			   	
 			   	<EditTextPreference 
 			   	    android:key="pref_key_server_stat_of"
 			   	    android:title="@string/pref_title_server_stat_of"
 			   	    android:summary="@string/pref_summary_server_stat_of"
 			   	    />
+			   	
 			   	<EditTextPreference 
 			   	    android:key="pref_key_split"
 			   	    android:title="@string/pref_title_split"
@@ -349,6 +350,12 @@
 			        android:entryValues="@array/pref_values_stream_piece_selector"
 			        android:defaultValue="@string/pref_stream_piece_selector_default" />
 		   		
+		   		<EditTextPreference 
+			   	    android:key="pref_key_timeout"
+			   	    android:title="@string/pref_title_timeout"
+			   	    android:summary="@string/pref_summary_timeout"
+			   	    android:defaultValue="60"/>
+		   		
 		   		 <ListPreference
 			        android:key="pref_key_uri_selector"
 			        android:title="@string/pref_title_uri_selector"
@@ -358,11 +365,7 @@
 			        android:entryValues="@array/pref_values_uri_selector"
 			        android:defaultValue="@string/pref_uri_selector_feedback" />
 		   		
-			   	<EditTextPreference 
-			   	    android:key="pref_key_all_timeout"
-			   	    android:title="@string/pref_title_timeout"
-			   	    android:summary="@string/pref_summary_timeout"
-			   	    android:defaultValue="60"/>
+			   	
 			</PreferenceCategory>
 		    
 		    

@@ -156,12 +156,16 @@
     <!-- HTTP/FTP Common options -->
     <string name="pref_title_Advanced">Advanced Settings</string>
     <string name="pref_title_Basic">Basic Settings</string>
+    
     <string name="pref_title_all_proxy">All Proxy</string>
     <string name="pref_summary_all_proxy">Use this proxy server for all protocols</string>
-    <string name="pref_title_all_user">All Proxy User</string>
-    <string name="pref_summary_all_user">Sets the username to use with the "All Proxy" option</string>
-    <string name="pref_title_all_passwd">All Proxy Password</string>
-    <string name="pref_summary_all_passwd">Sets the password to use with the "All Proxy" option</string>
+    
+    <string name="pref_title_all_proxy_user">All Proxy User</string>
+    <string name="pref_summary_all_proxy_user">Sets the username to use with the "All Proxy" option</string>
+    
+    <string name="pref_title_all_proxy_passwd">All Proxy Password</string>
+    <string name="pref_summary_all_proxy_passwd">Sets the password to use with the "All Proxy" option</string>
+    
     <string name="pref_title_connection_timeout">Connection Timeout</string>
     <string name="pref_summary_connection_timeout">Set the connect timeout in seconds to establish a connection to the HTTP/FTP/Proxy server</string>
     
@@ -170,16 +174,18 @@
     
     <string name="pref_title_lowest_speed_limit">Lowest Speed Limit</string>
     <string name="pref_summary_lowest_speed_limit">Close connection if download speed is lower than or equal to this value(bytes per sec)</string>
-    <string name="pref_title_max_connections">Max. Connection Per Server</string>
-    <string name="pref_summary_max_conections">The maximum number of connections to one server for each download Default : 1</string>
+    
+    <string name="pref_title_max_connection_per_server">Max. Connection Per Server</string>
+    <string name="pref_summary_max_connection_per_server">The maximum number of connections to one server for each download Default : 1</string>
+    
     <string name="pref_title_max_file_not_found">Max File Not Found</string>
     <string name="pref_summary_max_file_not_found">If aria2 receives "file not found" status from the remote HTTP/FTP servers NUM times without getting a single byte, then force the download to fail</string>
     
-    <string name="pref_title_tries">Max Tries</string>
-    <string name="pref_summary_tries">Set number of tries 0 means unlimited</string>
+    <string name="pref_title_max_tries">Max Tries</string>
+    <string name="pref_summary_max_tries">Set number of tries 0 means unlimited</string>
     
-    <string name="pref_title_min_split">Min Split Size</string>
-    <string name="pref_summary_min_split">Aria2 will try to split the downloaded files by that size</string>
+    <string name="pref_title_min_split_size">Min Split Size</string>
+    <string name="pref_summary_min_split_size">Aria2 will try to split the downloaded files by that size</string>
     
     <string name="pref_title_no_netrc">Disables Netrc Support</string>
     <string name="pref_summary_no_netrc">Netrc support is enabled by default</string>
@@ -202,10 +208,13 @@
     
     <string name="pref_title_remote_time">Remote Time</string>
     <string name="pref_summary_remote_time">Retrieve timestamp from the remote server</string>
-    <string name="pref_title_reuse">Reuse URIs</string>
-    <string name="pref_summary_reuse">Reuse already used URIs if no unused are left</string>
+    
+    <string name="pref_title_reuse_uri">Reuse URIs</string>
+    <string name="pref_summary_reuse_uri">Reuse already used URIs if no unused are left</string>
+    
     <string name="pref_title_retry_wait">Retry Wait</string>
     <string name="pref_summary_retry_wait">Set the seconds to wait between retries Default : 0</string>
+    
     <string name="pref_title_server_stat_of">Server Stat Of</string>
     <string name="pref_summary_server_stat_of">Specify the filename to which performance profile of the servers is saved</string>
     <string name="pref_title_split">Split</string>

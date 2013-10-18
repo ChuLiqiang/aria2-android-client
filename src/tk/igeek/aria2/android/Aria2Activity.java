@@ -86,6 +86,14 @@ public class Aria2Activity extends ActionBarActivity
 		downloadListView.setAdapter(adapter);
 		downloadListView.setOnItemLongClickListener(mMessageLongClickedHandler);
 	
+		handleIntent();
+		
+		_context = this;
+		
+	}
+
+	private void handleIntent()
+	{
 		try
 		{
 			_aria2Manager.InitHost();
@@ -125,9 +133,6 @@ public class Aria2Activity extends ActionBarActivity
 		{
 			Toast.makeText(Aria2Activity.this,e.getMessage(),Toast.LENGTH_LONG).show();
 		}
-		
-		_context = this;
-		
 	}
 
 	private OnItemLongClickListener mMessageLongClickedHandler = new OnItemLongClickListener() {
@@ -237,16 +242,16 @@ public class Aria2Activity extends ActionBarActivity
 		_aria2Manager.sendToAria2APIHandlerMsg(GET_ALL_GLOBAL_AND_TASK_STATUS);
 	}
 	
-	private void addMetalink()
+	private void addFile(String type,final int action)
 	{
 		FileChooserDialog dialog = new FileChooserDialog(this);
-    	dialog.setFilter(".*metalink");
+    	dialog.setFilter(type);
 		dialog.addListener(new FileChooserDialog.OnFileSelectedListener() {
 			public void onFileSelected(Dialog source, File file) {
 				source.hide();
 				Toast toast = Toast.makeText(source.getContext(), "File selected: " + file.getName(), Toast.LENGTH_LONG);
 				toast.show();
-				_aria2Manager.sendToAria2APIHandlerMsg(ADD_METALINK,file);
+				_aria2Manager.sendToAria2APIHandlerMsg(action,file);
 			}
 			public void onFileSelected(Dialog source, File folder, String name) {
 				source.hide();
@@ -255,31 +260,28 @@ public class Aria2Activity extends ActionBarActivity
 			}
 		});
 		dialog.show();
+	}
+	
+	private void addMetalink()
+	{
+		addFile(".*metalink",ADD_METALINK);
 	}
 
 	private void addTorrent()
 	{
-		FileChooserDialog dialog = new FileChooserDialog(this);
-    	dialog.setFilter(".*torrent");
-		dialog.addListener(new FileChooserDialog.OnFileSelectedListener() {
-			public void onFileSelected(Dialog source, File file) {
-				source.hide();
-				Toast toast = Toast.makeText(source.getContext(), "File selected: " + file.getName(), Toast.LENGTH_LONG);
-				toast.show();
-				_aria2Manager.sendToAria2APIHandlerMsg(ADD_TORRENT,file);
-			}
-			public void onFileSelected(Dialog source, File folder, String name) {
-				source.hide();
-				Toast toast = Toast.makeText(source.getContext(), "File created: " + folder.getName() + "/" + name, Toast.LENGTH_LONG);
-				toast.show();
-			}
-		});
-		dialog.show();
+		addFile(".*torrent",ADD_TORRENT);
 	}
 
+	private final int GET_GLOBAL_OPTIONS= 0;
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		
+		if (resultCode == RESULT_OK && requestCode == GET_GLOBAL_OPTIONS) {
+			if (data.hasExtra("returnKey1")) {
+				Toast.makeText(this, data.getExtras().getString("returnKey1"),
+						Toast.LENGTH_SHORT).show();
+			}
+		}
 	}
 	
 	@Override
@@ -369,10 +371,12 @@ public class Aria2Activity extends ActionBarActivity
 						break;
 					case MSG_GET_GLOBAL_OPTION_SUCCESS:
 						removeMessages(MSG_GET_GLOBAL_OPTION_FAILED);
-						pd.dismiss();
 						GlobalOptions globalOptions = (GlobalOptions )msg.obj;
 						globalOptions.SetGlobalOptionsActivity(_context);
-						startActivity(new Intent(getApplicationContext(), GlobalOptionActivity.class));
+						pd.dismiss();
+						Intent globalOption = new Intent(getApplicationContext(), GlobalOptionActivity.class);
+						startActivityForResult(globalOption,GET_GLOBAL_OPTIONS);
+						//startActivity(globalOption);
 						break;
 						
 						
@@ -460,9 +464,9 @@ public class Aria2Activity extends ActionBarActivity
 	}
 
 	public void setRefreshActionButtonState(final boolean refreshing) {
+		/*
 	     if (optionsMenu != null) {
-	         final MenuItem refreshItem = optionsMenu
-	             .findItem(R.id.action_refresh);
+	         final MenuItem refreshItem = optionsMenu.findItem(R.id.action_refresh);
 	         if (refreshItem != null) {
 	             if (refreshing) {
 	                 refreshItem.setActionView(R.layout.action_refresh_view);
@@ -471,6 +475,7 @@ public class Aria2Activity extends ActionBarActivity
 	             }
 	         }
 	     }
+	     */
 	 }
 	
 	private AsyncTask<Void, Void, Void> mAsyncTask;

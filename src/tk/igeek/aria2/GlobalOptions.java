@@ -504,9 +504,9 @@ public class GlobalOptions extends CommonItem {
 	}
 	
 	private static final Set<String> BOOL_TYPE_VALUES = new HashSet<String>(Arrays.asList(
-     new String[] {"pref_key_integrity","pref_key_continue","pref_key_check_certificate","pref_key_http_accept_gzip","pref_key_http_auth_challenge",
+     new String[] {"pref_key_check_integrity","pref_key_continue","pref_key_check_certificate","pref_key_http_accept_gzip","pref_key_http_auth_challenge",
     		       "pref_key_http_no_cache","pref_key_enable_http_keep_alive","pref_key_enable_http_pipelining","pref_key_use_head","pref_key_ftp_pasv",
-    		       "pref_key_ftp_reuse_connection","pref_key_dry_run","pref_key_no_netrc","pref_key_remote_time","pref_key_reuse","pref_key_bt_enable_lpd",
+    		       "pref_key_ftp_reuse_connection","pref_key_dry_run","pref_key_no_netrc","pref_key_remote_time","pref_key_reuse_uri","pref_key_bt_enable_lpd",
     		       "pref_key_bt_hash_check_seed","pref_key_bt_metadata_only","pref_key_bt_remove_unselected_file","pref_key_bt_require_crypto","pref_key_bt_save_metadata",
     		       "pref_key_bt_seed_unverified","pref_key_enable_peer_exchange","pref_key_metalink_enable_unique_protocol","pref_key_show_files","pref_key_rpc_save_upload_metadata",
     		       "pref_key_allow_overwrite","pref_key_allow_piece_length_change","pref_key_always_resume","pref_key_async_dns","pref_key_auto_file_renaming",

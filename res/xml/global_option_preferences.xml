@@ -1,0 +1,816 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+      
+     <!-- Download Preferences -->
+	<PreferenceCategory 
+	    android:title="@string/pref_download_settings"
+	    android:key="pref_key_download_settings">
+		<PreferenceScreen 
+		    android:key="button_basic_settings_category_key"
+        	android:title="@string/basic_settings"
+        	android:persistent="false">
+        	
+	       	<EditTextPreference
+	        	android:key="pref_key_dir"
+	        	android:summary="@string/pref_summary_directory"
+	        	android:title="@string/pref_title_directory"
+	        	android:defaultValue=""/><!-- TODO : Find the good one -->
+	        	
+	        <EditTextPreference
+	        	android:key="pref_key_log"
+	        	android:summary="@string/pref_summary_log"
+	        	android:title="@string/pref_title_log"
+	        	android:defaultValue=""/>
+		    	    
+		   	<EditTextPreference 
+		   	    android:key="pref_key_max_concurrent_downloads"
+		   	    android:summary="@string/pref_summary_max_concurrent_downloads"
+		   	    android:title="@string/pref_title_max_concurrent_downloads"
+		   	    android:defaultValue="5"/>
+		   	
+		   	<CheckBoxPreference 
+		   	    android:key="pref_key_check_integrity"
+		   	    android:title="@string/pref_title_check_integrity"
+		   	    android:summary="@string/pref_summary_check_integrity"
+		   	    android:defaultValue="false"/>
+		   	
+		   	<CheckBoxPreference 
+		   	    android:key="pref_key_continue"
+		   	    android:title="@string/pref_title_continue"
+		   	    android:summary="@string/pref_summary_continue"
+		   	    android:defaultValue="false"/>
+		   	
+		</PreferenceScreen>
+			
+		<PreferenceScreen 
+		    android:key="button_HTTP_FTP_settings_category_key"
+        	android:title="@string/HTTP_FTP_settings"
+        	android:persistent="false">
+        	<PreferenceCategory 
+        	    android:key="pref_key_HTTP/FTP_advanced_settings"
+        	    android:title="@string/pref_title_Advanced">
+			    <PreferenceScreen 
+			    	android:key="button_HTTP_specific_settings_category_key"
+	        		android:title="@string/HTTP_specific_settings"
+	        		android:persistent="false">
+	        		
+	        		<CheckBoxPreference 
+			   	    	android:key="pref_key_check_certificate"
+			   	    	android:title="@string/pref_title_check_certificate"
+			   	    	android:summary="@string/pref_summary_check_certificate"
+			   	    	android:defaultValue="true"/>
+	        		
+	        		<CheckBoxPreference
+	        		    android:key="pref_key_http_accept_gzip"
+			   	    	android:title="@string/pref_title_http_accept_gzip"
+			   	    	android:summary="@string/pref_summary_http_accept_gzip"
+			   	    	android:defaultValue="true"/> 
+			   	    	
+	        		<CheckBoxPreference
+	        		    android:key="pref_key_http_auth_challenge"
+			   	    	android:title="@string/pref_title_http_auth_challenge"
+			   	    	android:summary="@string/pref_summary_http_auth_challenge"
+			   	    	android:defaultValue="false"/>
+	        		
+	        		<CheckBoxPreference
+	        		    android:key="pref_key_http_no_cache"
+			   	    	android:title="@string/pref_title_http_no_cache"
+			   	    	android:summary="@string/pref_summary_http_no_cache"
+			   	    	android:defaultValue="false"/>
+
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_http_user"
+			   	    	android:title="@string/pref_title_http_user"
+				   	    android:summary="@string/pref_summary_http_user"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_http_passwd"
+			   	    	android:title="@string/pref_title_http_passwd"
+				   	    android:summary="@string/pref_summary_http_passwd"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_http_proxy"
+			   	    	android:title="@string/pref_title_http_proxy"
+				   	    android:summary="@string/pref_summary_http_proxy"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_http_proxy_passwd"
+			   	    	android:title="@string/pref_title_http_proxy_passwd"
+				   	    android:summary="@string/pref_summary_http_proxy_passwd"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_http_proxy_user"
+			   	    	android:title="@string/pref_title_http_proxy_user"
+				   	    android:summary="@string/pref_summary_http_proxy_user"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_https_proxy"
+			   	    	android:title="@string/pref_title_https_proxy"
+				   	    android:summary="@string/pref_summary_https_proxy"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_https_proxy_passwd"
+			   	    	android:title="@string/pref_title_https_proxy_passwd"
+				   	    android:summary="@string/pref_summary_https_proxy_passwd"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_https_proxy_user"
+			   	    	android:title="@string/pref_title_https_proxy_user"
+				   	    android:summary="@string/pref_summary_https_proxy_user"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_referer"
+			   	    	android:title="@string/pref_title_referer"
+				   	    android:summary="@string/pref_summary_referer"
+		   	    		/>
+	        		
+	        		<CheckBoxPreference
+	        		    android:key="pref_key_enable_http_keep_alive"
+			   	    	android:title="@string/pref_title_enable_http_keep_alive"
+			   	    	android:summary="@string/pref_summary_enable_http_keep_alive"
+			   	    	android:defaultValue="true"/>
+	        		
+	        		<CheckBoxPreference
+	        		    android:key="pref_key_enable_http_pipelining"
+			   	    	android:title="@string/pref_title_enable_http_pipelining"
+			   	    	android:summary="@string/pref_summary_enable_http_pipelining"
+			   	    	android:defaultValue="false"/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_header"
+			   	    	android:title="@string/pref_title_header"
+				   	    android:summary="@string/pref_summary_header"
+		   	    		/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_save_cookies"
+			   	    	android:title="@string/pref_title_save_cookies"
+				   	    android:summary="@string/pref_summary_save_cookies"
+		   	    		/>
+	        		
+	        		<CheckBoxPreference
+	        		    android:key="pref_key_use_head"
+			   	    	android:title="@string/pref_title_use_head"
+			   	    	android:summary="@string/pref_summary_use_head"
+			   	    	android:defaultValue="false"/>
+	        		
+	        		<EditTextPreference 
+			   	    	android:key="pref_key_user_agent"
+			   	    	android:title="@string/pref_title_user_agent"
+				   	    android:summary="@string/pref_summary_user_agent"
+		   	    		/>
+	        		
+				</PreferenceScreen>
+				
+			    <PreferenceScreen 
+			    	android:key="button_FTP_specific_settings_category_key"
+	        		android:title="@string/FTP_specific_settings"
+	        		android:persistent="false">
+	        		
+					<EditTextPreference 
+			   	    	android:key="pref_key_ftp_user"
+			   	    	android:title="@string/pref_title_ftp_user"
+				   	    android:summary="@string/pref_summary_ftp_user"
+		   	    		android:defaultValue="anonymous"/>
+					
+					
+					<EditTextPreference 
+			   	    	android:key="pref_key_ftp_passwd"
+			   	    	android:title="@string/pref_title_ftp_passwd"
+				   	    android:summary="@string/pref_summary_ftp_passwd"
+		   	    		android:defaultValue="ARIA2USER@"/>
+					
+					<CheckBoxPreference
+	        		    android:key="pref_key_ftp_pasv"
+			   	    	android:title="@string/pref_title_ftp_pasv"
+			   	    	android:summary="@string/pref_summary_ftp_pasv"
+			   	    	android:defaultValue="true"/>
+					
+					<EditTextPreference 
+			   	    	android:key="pref_key_ftp_proxy"
+			   	    	android:title="@string/pref_title_ftp_proxy"
+				   	    android:summary="@string/pref_summary_ftp_proxy"
+		   	    		/>
+					
+					<EditTextPreference 
+			   	    	android:key="pref_key_ftp_proxy_passwd"
+			   	    	android:title="@string/pref_title_ftp_proxy_passwd"
+				   	    android:summary="@string/pref_summary_ftp_proxy_passwd"
+		   	    		/>
+					
+					<EditTextPreference 
+			   	    	android:key="pref_key_ftp_proxy_user"
+			   	    	android:title="@string/pref_title_ftp_proxy_user"
+				   	    android:summary="@string/pref_summary_ftp_proxy_user"
+		   	    		/>
+					
+					<ListPreference
+				   	    android:key="pref_key_ftp_type"
+				   	    android:title="@string/pref_title_ftp_type"
+				   	    android:summary="@string/pref_summary_ftp_type"
+				   	    android:dialogTitle="@string/pref_title_ftp_type"
+				   	    android:entries="@array/pref_entries_ftp_type"
+				        android:entryValues="@array/pref_values_ftp_type"
+				        android:defaultValue="@string/pref_ftp_type_binary" />
+					
+					<CheckBoxPreference
+	        		    android:key="pref_key_ftp_reuse_connection"
+			   	    	android:title="@string/pref_title_ftp_reuse_connection"
+			   	    	android:summary="@string/pref_summary_ftp_reuse_connection"
+			   	    	android:defaultValue="true"/>
+					
+
+						        			   
+				</PreferenceScreen>
+			</PreferenceCategory>
+			<PreferenceCategory 
+			    android:key="pref_key_HTTP/FTP_basic_settings"
+			    android:title="@string/pref_title_Basic">
+			    
+			   	<EditTextPreference 
+			   	    android:key="pref_key_all_proxy"
+			   	    android:title="@string/pref_title_all_proxy"
+			   	    android:summary="@string/pref_summary_all_proxy"/>
+			   	
+			   	<EditTextPreference 
+			   	    android:key="pref_key_all_user"
+			   	    android:title="@string/pref_title_all_user"
+			   	    android:summary="@string/pref_summary_all_user"/>
+			   	
+			   	<EditTextPreference 
+			   	    android:key="pref_key_all_passwd"
+			   	    android:title="@string/pref_title_all_passwd"
+			   	    android:summary="@string/pref_summary_all_passwd"/>
+			   	
+			   	<EditTextPreference 
+			   	    android:key="pref_key_connection_timeout"
+			   	    android:title="@string/pref_title_connection_timeout"
+			   	    android:summary="@string/pref_summary_connection_timeout"
+			   	    android:defaultValue="60"/>
+			   	
+			   	<CheckBoxPreference 
+		   	    	android:key="pref_key_dry_run"
+		   	    	android:title="@string/pref_title_dry_run"
+		   	    	android:summary="@string/pref_summary_dry_run"
+		   	    	android:defaultValue="false"/>
+			   	
+			   	<EditTextPreference 
+			   	    android:key="pref_key_lowest_speed_limit"
+			   	    android:title="@string/pref_title_lowest_speed_limit"
+			   	    android:summary="@string/pref_summary_lowest_speed_limit"
+			   	    android:defaultValue="0"/>
+			   	
+			   	<EditTextPreference 
+			   	    android:key="pref_key_max_connections"
+			   	    android:title="@string/pref_title_max_connections"
+			   	    android:summary="@string/pref_summary_max_conections"
+			   	    android:defaultValue="1"/>
+			   	
+			   	<EditTextPreference 
+			   	    android:key="pref_key_max_file_not_found"
+			   	    android:title="@string/pref_title_max_file_not_found"
+			   	    android:summary="@string/pref_summary_max_file_not_found"
+			   	    android:defaultValue="0"/>
+			   	
+			   	<EditTextPreference 
+			   	    android:key="pref_key_tries"
+			   	    android:title="@string/pref_title_tries"
+			   	    android:summary="@string/pref_summary_tries"
+			   	    android:defaultValue="5"/>
+			   	
+			   	<EditTextPreference 
+			   	    android:key="pref_key_min_split"
+			   	    android:title="@string/pref_title_min_split"
+			   	    android:summary="@string/pref_summary_min_split"/>
+			   	
+			   	<CheckBoxPreference 
+		   	    	android:key="pref_key_no_netrc"
+		   	    	android:title="@string/pref_title_no_netrc"
+		   	    	android:summary="@string/pref_summary_no_netrc"
+		   	    	android:defaultValue="false"/>
+			   	
+			   	<EditTextPreference 
+			   	    android:key="pref_key_no_proxy"
+			   	    android:title="@string/pref_title_no_proxy"
+			   	    android:summary="@string/pref_summary_no_proxy"/>
+			   	<!-- TODO : Find how to make the next node a list -->
+			   	
+			   	<ListPreference
+			   	    android:key="pref_key_proxy_method"
+			   	    android:title="@string/pref_title_proxy_method"
+			   	    android:summary="@string/pref_summary_proxy_method"
+			   	    android:dialogTitle="@string/pref_title_proxy_method"
+			   	    android:entries="@array/pref_entries_proxy_method"
+			        android:entryValues="@array/pref_values_proxy_method"
+			        android:defaultValue="@string/pref_proxy_method_get" />
+			   	
+			   	<CheckBoxPreference 
+			   	    android:key="pref_key_remote_time"
+			   	    android:title="@string/pref_title_remote_time"
+			   	    android:summary="@string/pref_summary_remote_time"
+			   	    android:defaultValue="false"/>
+			   	
+			   	<CheckBoxPreference 
+			   	    android:key="pref_key_reuse"
+			   	    android:title="@string/pref_title_reuse"
+			   	    android:summary="@string/pref_summary_reuse"
+			   	    android:defaultValue="true"/>
+			   	
+			   	<EditTextPreference 
+			   	    android:key="pref_key_retry_wait"
+			   	    android:title="@string/pref_title_retry_wait"
+			   	    android:summary="@string/pref_summary_retry_wait"
+			   	    android:defaultValue="0"/>
+			   	<EditTextPreference 
+			   	    android:key="pref_key_server_stat_of"
+			   	    android:title="@string/pref_title_server_stat_of"
+			   	    android:summary="@string/pref_summary_server_stat_of"
+			   	    />
+			   	<EditTextPreference 
+			   	    android:key="pref_key_split"
+			   	    android:title="@string/pref_title_split"
+			   	    android:summary="@string/pref_summary_split"
+			   	    android:defaultValue="5"/>
+			   	
+		   		<ListPreference
+			   	    android:key="pref_key_stream_piece_selector"
+			   	    android:title="@string/pref_title_stream_piece_selector"
+			   	    android:summary="@string/pref_summary_stream_piece_selector"
+			   	    android:dialogTitle="@string/pref_title_stream_piece_selector"
+			   	    android:entries="@array/pref_entries_stream_piece_selector"
+			        android:entryValues="@array/pref_values_stream_piece_selector"
+			        android:defaultValue="@string/pref_stream_piece_selector_default" />
+		   		
+		   		 <ListPreference
+			        android:key="pref_key_uri_selector"
+			        android:title="@string/pref_title_uri_selector"
+			        android:summary="@string/pref_summary_stream_uri_selector"
+			        android:dialogTitle="@string/pref_title_uri_selector"
+			        android:entries="@array/pref_entries_uri_selector"
+			        android:entryValues="@array/pref_values_uri_selector"
+			        android:defaultValue="@string/pref_uri_selector_feedback" />
+		   		
+			   	<EditTextPreference 
+			   	    android:key="pref_key_all_timeout"
+			   	    android:title="@string/pref_title_timeout"
+			   	    android:summary="@string/pref_summary_timeout"
+			   	    android:defaultValue="60"/>
+			</PreferenceCategory>
+		    
+		    
+		</PreferenceScreen>   
+		 
+		<PreferenceScreen 
+		    android:key="button_torrent_metalink_settings_category_key"
+        	android:title="@string/torrent_metalink_settings"
+        	android:persistent="false">
+		    <PreferenceCategory 
+        	    android:key="pref_key_bittorrent/metalink_advanced_settings"
+        	    android:title="@string/pref_title_Advanced">
+			   	
+			    <PreferenceScreen 
+			    	android:key="button_torrent_specific_settings_category_key"
+	        		android:title="@string/torrent_specific_settings"
+	        		android:persistent="false">
+						
+			        <CheckBoxPreference 
+				   	    android:key="pref_key_bt_enable_lpd"
+				   	    android:title="@string/pref_title_bt_enable_lpd"
+				   	    android:summary="@string/pref_summary_bt_enable_lpd"
+				   	    android:defaultValue="false"
+			   	    />
+	        		
+			        <EditTextPreference 
+				   	    android:key="pref_key_bt_exclude_tracker"
+				   	    android:title="@string/pref_title_bt_exclude_tracker"
+				   	    android:summary="@string/pref_summary_bt_exclude_tracker"
+				   	    />
+			        
+			        <EditTextPreference 
+				   	    android:key="pref_key_bt_external_ip"
+				   	    android:title="@string/pref_title_bt_external_ip"
+				   	    android:summary="@string/pref_summary_bt_external_ip"
+				   	/>    
+			        
+			         <CheckBoxPreference 
+				   	    android:key="pref_key_bt_hash_check_seed"
+				   	    android:title="@string/pref_title_bt_hash_check_seed"
+				   	    android:summary="@string/pref_summary_bt_hash_check_seed"
+				   	    android:defaultValue="true"
+			   	    />
+			         
+			         <EditTextPreference
+			         	android:key="pref_key_bt_max_open_files"
+			         	android:title="@string/pref_title_max_open_files"
+				   	    android:summary="@string/pref_summary_max_open_files"
+				   	    android:defaultValue="100"
+			         />
+			         
+			         <EditTextPreference
+			         	android:key="pref_key_bt_max_peers"
+			         	android:title="@string/pref_title_bt_max_peers"
+				   	    android:summary="@string/pref_summary_bt_max_peers"
+				   	    android:defaultValue="55"
+			         />	
+			         
+			          <CheckBoxPreference 
+				   	    android:key="pref_key_bt_metadata_only"
+				   	    android:title="@string/pref_title_bt_metadata_only"
+				   	    android:summary="@string/pref_summary_bt_metadata_only"
+				   	    android:defaultValue="false"
+			   	    	/>
+	        		  
+			          <ListPreference
+				   	    android:key="pref_key_bt_min_crypto_level"
+				   	    android:title="@string/pref_title_bt_min_crypto_level"
+				   	    android:summary="@string/pref_summary_bt_min_crypto_level"
+				   	    android:dialogTitle="@string/pref_title_bt_min_crypto_level"
+				   	    android:entries="@array/pref_entries_bt_min_crypto_level"
+				        android:entryValues="@array/pref_values_bt_min_crypto_level"
+				        android:defaultValue="@string/pref_bt_min_crypto_level_plain" />
+			          
+			          <EditTextPreference
+			         	android:key="pref_key_bt_prioritize_piece"
+			         	android:title="@string/pref_title_bt_prioritize_piece"
+				   	    android:summary="@string/pref_summary_bt_prioritize_piece"
+			          	/>
+			          
+			          <CheckBoxPreference
+			            android:key="pref_key_bt_remove_unselected_file"
+				   	    android:title="@string/pref_title_bt_remove_unselected_file"
+				   	    android:summary="@string/pref_summary_bt_remove_unselected_file"
+				   	    android:defaultValue="false"
+			   	    	/>
+			          
+			          <CheckBoxPreference
+			            android:key="pref_key_bt_require_crypto"
+				   	    android:title="@string/pref_title_bt_require_crypto"
+				   	    android:summary="@string/pref_summary_bt_require_crypto"
+				   	    android:defaultValue="false"
+			   	    	/>
+			          
+			          <EditTextPreference
+			            android:key="pref_key_bt_request_peer_speed_limit"
+			         	android:title="@string/pref_title_bt_request_peer_speed_limit"
+				   	    android:summary="@string/pref_summary_bt_request_peer_speed_limit"
+				   	    android:defaultValue="51200"
+			          />
+			          
+			          <CheckBoxPreference
+			            android:key="pref_key_bt_save_metadata"
+				   	    android:title="@string/pref_title_bt_save_metadata"
+				   	    android:summary="@string/pref_summary_bt_save_metadata"
+				   	    android:defaultValue="false"
+			   	    	/>
+			          
+			          <CheckBoxPreference
+			            android:key="pref_key_bt_seed_unverified"
+				   	    android:title="@string/pref_title_bt_seed_unverified"
+				   	    android:summary="@string/pref_summary_bt_seed_unverified"
+				   	    android:defaultValue="false"
+			   	    	/>
+			          
+			          <EditTextPreference
+			            android:key="pref_key_bt_stop_timeout"
+			         	android:title="@string/pref_title_bt_stop_timeout"
+				   	    android:summary="@string/pref_summary_bt_stop_timeout"
+				   	    android:defaultValue="0"
+			          />
+			          
+			          <EditTextPreference
+			            android:key="pref_key_bt_tracker"
+			         	android:title="@string/pref_title_bt_tracker"
+				   	    android:summary="@string/pref_summary_bt_tracker"
+			          />
+			          
+			          <EditTextPreference
+			            android:key="pref_key_bt_tracker_connect_timeout"
+			         	android:title="@string/pref_title_bt_tracker_connect_timeout"
+				   	    android:summary="@string/pref_summary_bt_tracker_connect_timeout"
+				   	    android:defaultValue="60"
+			          />
+			          
+			          <EditTextPreference
+			            android:key="pref_key_bt_tracker_interval"
+			         	android:title="@string/pref_title_bt_tracker_interval"
+				   	    android:summary="@string/pref_summary_bt_tracker_interval"
+				   	    android:defaultValue="0"
+			          />
+			          
+			          <EditTextPreference
+			            android:key="pref_key_bt_tracker_timeout"
+			         	android:title="@string/pref_title_bt_tracker_timeout"
+				   	    android:summary="@string/pref_summary_bt_tracker_timeout"
+				   	    android:defaultValue="60"
+			          />
+			          
+			          <CheckBoxPreference
+			            android:key="pref_key_enable_peer_exchange"
+			          	android:title="@string/pref_title_enable_peer_exchange"
+				   	    android:summary="@string/pref_summary_enable_peer_exchange"
+				   	    android:defaultValue="true"
+			   	    	/>
+			          
+			          <ListPreference
+				   	    android:key="pref_key_follow_torrent"
+				   	    android:title="@string/pref_title_follow_torrent"
+				   	    android:summary="@string/pref_summary_follow_torrent"
+				   	    android:dialogTitle="@string/pref_title_follow_torrent"
+				   	    android:entries="@array/pref_entries_follow_torrent"
+				        android:entryValues="@array/pref_values_follow_torrent"
+				        android:defaultValue="@string/pref_follow_torrent_true" />
+			          
+			          <EditTextPreference
+			            android:key="pref_key_max_overall_upload_limit"
+			          	android:title="@string/pref_title_max_overall_upload_limit"
+				   	    android:summary="@string/pref_summary_max_overall_upload_limit"
+				   	    android:defaultValue="0"
+			   	    	/>
+			          
+			          <EditTextPreference
+			            android:key="pref_key_max_upload_limit"
+			          	android:title="@string/pref_title_max_upload_limit"
+				   	    android:summary="@string/pref_summary_max_upload_limit"
+				   	    android:defaultValue="0"
+			   	    	/>
+			          
+			          
+			          <EditTextPreference
+			            android:key="pref_key_seed_ratio"
+			          	android:title="@string/pref_title_seed_ratio"
+				   	    android:summary="@string/pref_summary_seed_ratio"
+				   	    android:defaultValue="1.0"
+			   	    	/>
+			          
+			          <EditTextPreference
+			            android:key="pref_key_seed_time"
+			          	android:title="@string/pref_title_seed_time"
+				   	    android:summary="@string/pref_summary_seed_time"
+			   	    	/>
+			          
+			          
+				</PreferenceScreen>
+			    
+			    <PreferenceScreen 
+			    	android:key="button_metalink_specific_settings_category_key"
+	        		android:title="@string/metalink_specific_settings"
+	        		android:persistent="false">	
+	        		
+	        		<ListPreference
+				   	    android:key="pref_key_follow_metalink"
+				   	    android:title="@string/pref_title_follow_metalink"
+				   	    android:summary="@string/pref_summary_follow_metalink"
+				   	    android:dialogTitle="@string/pref_title_follow_metalink"
+				   	    android:entries="@array/pref_entries_follow_metalink"
+				        android:entryValues="@array/pref_values_follow_metalink"
+				        android:defaultValue="@string/pref_follow_metalink_true" />
+	        		
+	        		<EditTextPreference
+			            android:key="pref_key_metalink_base_uri"
+			          	android:title="@string/pref_title_metalink_base_uri"
+				   	    android:summary="@string/pref_summary_metalink_base_uri"
+			   	    	/>
+	        		
+	        		<EditTextPreference
+			            android:key="pref_key_metalink_language"
+			          	android:title="@string/pref_title_metalink_language"
+				   	    android:summary="@string/pref_summary_metalink_language"
+			   	    	/>
+	        		
+	        		<EditTextPreference
+			            android:key="pref_key_metalink_location"
+			          	android:title="@string/pref_title_metalink_location"
+				   	    android:summary="@string/pref_summary_metalink_location"
+			   	    	/>
+	        		
+	        		<EditTextPreference
+			            android:key="pref_key_metalink_os"
+			          	android:title="@string/pref_title_metalink_os"
+				   	    android:summary="@string/pref_summary_metalink_os"
+			   	    	/>
+	        		
+	        		<EditTextPreference
+			            android:key="pref_key_metalink_version"
+			          	android:title="@string/pref_title_metalink_version"
+				   	    android:summary="@string/pref_summary_metalink_version"
+			   	    	/>
+			         
+	        		<ListPreference
+				   	    android:key="pref_key_metalink_preferred_protocol"
+				   	    android:title="@string/pref_title_metalink_preferred_protocol"
+				   	    android:summary="@string/pref_summary_metalink_preferred_protocol"
+				   	    android:dialogTitle="@string/pref_title_metalink_preferred_protocol"
+				   	    android:entries="@array/pref_entries_metalink_preferred_protocol"
+				        android:entryValues="@array/pref_values_metalink_preferred_protocol"
+				        android:defaultValue="@string/pref_metalink_preferred_protocol_none" />
+	        		
+	        		<CheckBoxPreference
+			            android:key="pref_key_metalink_enable_unique_protocol"
+			          	android:title="@string/pref_title_metalink_enable_unique_protocol"
+				   	    android:summary="@string/pref_summary_metalink_enable_unique_protocol"
+				   	    android:defaultValue="true"
+			   	    	/>
+	        		
+	        		
+	        		
+				</PreferenceScreen>	    
+				
+		    </PreferenceCategory>
+		    <PreferenceCategory 
+			    android:key="pref_key_bittorrent/metalink_basic_settings"
+			    android:title="@string/pref_title_Basic">
+			    
+			    <CheckBoxPreference 
+			   	    android:key="pref_key_show_files"
+			   	    android:title="@string/pref_title_show_files"
+			   	    android:summary="@string/pref_summary_show_files"
+			   	    />
+			    
+			    <CheckBoxPreference 
+			   	    android:key="pref_key_rpc_save_upload_metadata"
+			   	    android:title="@string/pref_title_rpc_save_upload_metadata"
+			   	    android:summary="@string/pref_summary_rpc_save_upload_metadata"
+			   	    />
+			    
+			    
+			    
+			</PreferenceCategory>
+		</PreferenceScreen>   
+		 
+		<PreferenceScreen 
+		    android:key="button_advanced_settings_category_key"
+        	android:title="@string/advanced_settings"
+        	android:persistent="false">
+		    	 
+        	<CheckBoxPreference 
+			   	    android:key="pref_key_allow_overwrite"
+			   	    android:title="@string/pref_title_allow_overwrite"
+			   	    android:summary="@string/pref_summary_allow_overwrite"
+			   	    android:defaultValue="false"
+			   	    />
+        	
+        	<CheckBoxPreference 
+			   	    android:key="pref_key_allow_piece_length_change"
+			   	    android:title="@string/pref_title_allow_piece_length_change"
+			   	    android:summary="@string/pref_summary_allow_piece_length_change"
+			   	    android:defaultValue="false"
+			   	    />
+        	
+        	<CheckBoxPreference 
+			   	    android:key="pref_key_always_resume"
+			   	    android:title="@string/pref_title_always_resume"
+			   	    android:summary="@string/pref_summary_always_resume"
+			   	    android:defaultValue="true"
+			   	    />
+        	
+        	<CheckBoxPreference 
+			   	    android:key="pref_key_async_dns"
+			   	    android:title="@string/pref_title_async_dns"
+			   	    android:summary="@string/pref_summary_async_dns"
+			   	    android:defaultValue="true"
+			   	    />
+		    
+		    <CheckBoxPreference 
+			   	    android:key="pref_key_auto_file_renaming"
+			   	    android:title="@string/pref_title_auto_file_renaming"
+			   	    android:summary="@string/pref_summary_auto_file_renaming"
+			   	    android:defaultValue="true"
+			   	    />
+		    
+		    <CheckBoxPreference 
+			   	    android:key="pref_key_conditional_get"
+			   	    android:title="@string/pref_title_conditional_get"
+			   	    android:summary="@string/pref_summary_conditional_get"
+			   	    android:defaultValue="false"
+			   	    />
+        	
+		    <ListPreference
+			   	    android:key="pref_key_download_result"
+			   	    android:title="@string/pref_title_download_result"
+			   	    android:summary="@string/pref_summary_download_result"
+			   	    android:dialogTitle="@string/pref_title_download_result"
+			   	    android:entries="@array/pref_entries_download_result"
+			        android:entryValues="@array/pref_values_download_result"
+			        android:defaultValue="@string/pref_download_result_default" />
+		    
+		    <CheckBoxPreference 
+			   	    android:key="pref_key_enable_mmap"
+			   	    android:title="@string/pref_title_enable_mmap"
+			   	    android:summary="@string/pref_summary_enable_mmap"
+			   	    android:defaultValue="false"
+			   	    />
+		    
+		    <ListPreference
+			   	    android:key="pref_key_file_allocation"
+			   	    android:title="@string/pref_title_file_allocation"
+			   	    android:summary="@string/pref_summary_file_allocation"
+			   	    android:dialogTitle="@string/pref_title_file_allocation"
+			   	    android:entries="@array/pref_entries_file_allocation"
+			        android:entryValues="@array/pref_values_file_allocation"
+			        android:defaultValue="@string/pref_file_allocation_prealloc" />
+		    
+		    <CheckBoxPreference 
+			   	    android:key="pref_key_force_save"
+			   	    android:title="@string/pref_title_force_save"
+			   	    android:summary="@string/pref_summary_force_save"
+			   	    android:defaultValue="false"
+			   	    />
+		    
+		    <CheckBoxPreference 
+			   	    android:key="pref_key_hash_check_only"
+			   	    android:title="@string/pref_title_hash_check_only"
+			   	    android:summary="@string/pref_summary_hash_check_only"
+			   	    android:defaultValue="false"
+			   	    />
+		    
+		    <EditTextPreference
+					android:key="pref_key_max_download_result"
+			        android:title="@string/pref_title_max_download_result"
+				   	android:summary="@string/pref_summary_max_download_result"
+				   	android:defaultValue="1000"
+			   	    />
+		    
+		    <EditTextPreference
+					android:key="pref_key_max_resume_failure_tries"
+			        android:title="@string/pref_title_max_resume_failure_tries"
+				   	android:summary="@string/pref_summary_max_resume_failure_tries"
+				   	android:defaultValue="0"
+			   	    />
+		    
+		    <ListPreference
+			   	    android:key="pref_key_log_level"
+			   	    android:title="@string/pref_title_log_level"
+			   	    android:summary="@string/pref_summary_log_level"
+			   	    android:dialogTitle="@string/pref_title_log_level"
+			   	    android:entries="@array/pref_entries_log_level"
+			        android:entryValues="@array/pref_values_log_level"
+			        android:defaultValue="@string/pref_file_log_level_debug" />
+		    
+		    <EditTextPreference
+					android:key="pref_key_piece_length"
+			        android:title="@string/pref_title_piece_length"
+				   	android:summary="@string/pref_summary_piece_length"
+				   	android:defaultValue="1048576"
+			   	    />
+		    
+		    <EditTextPreference
+					android:key="pref_key_max_overall_download_limit"
+			        android:title="@string/pref_title_max_overall_download_limit"
+				   	android:summary="@string/pref_summary_max_overall_download_limit"
+				   	android:defaultValue="0"
+			   	    />
+		    
+		    <EditTextPreference
+					android:key="pref_key_max_download_limit"
+			        android:title="@string/pref_title_max_download_limit"
+				   	android:summary="@string/pref_summary_max_download_limit"
+				   	android:defaultValue="0"
+			   	    />
+		    
+		    <EditTextPreference
+					android:key="pref_key_no_file_allocation_limit"
+			        android:title="@string/pref_title_no_file_allocation_limit"
+				   	android:summary="@string/pref_summary_no_file_allocation_limit"
+				   	android:defaultValue="5242880"
+			   	    />
+		    
+		    <CheckBoxPreference 
+			   	    android:key="pref_key_parameterized_uri"
+			   	    android:title="@string/pref_title_parameterized_uri"
+			   	    android:summary="@string/pref_summary_parameterized_uri"
+			   	    android:defaultValue="false"
+			   	    />
+		    
+		    <CheckBoxPreference 
+			   	    android:key="pref_key_realtime_chunk_checksump"
+			   	    android:title="@string/pref_title_realtime_chunk_checksump"
+			   	    android:summary="@string/pref_summary_realtime_chunk_checksump"
+			   	    android:defaultValue="true"
+			   	    />
+		    
+		    <CheckBoxPreference 
+			   	    android:key="pref_key_remove_control_file"
+			   	    android:title="@string/pref_title_remove_control_file"
+			   	    android:summary="@string/pref_summary_remove_control_file"
+			   	    />
+		    
+		    <EditTextPreference
+					android:key="pref_key_save_session"
+			        android:title="@string/pref_title_save_session"
+				   	android:summary="@string/pref_summary_save_session"
+			   	    />
+		    
+		    
+		    
+		</PreferenceScreen>    
+	    
+	</PreferenceCategory>
+</PreferenceScreen>

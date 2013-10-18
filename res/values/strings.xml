@@ -19,10 +19,14 @@
 	<string name="add_download_metalink">Add Metalink File</string>
     
     <!-- Menu Strings -->
+    <string name="action_global_option">Global Option</string>
     <string name="action_settings">Settings</string>
     <string name="exit">Exit</string>
     <!-- Settings Activity -->
     <string name="title_settings_activity">Settings</string>
+    
+    <!-- Global Option Activity -->
+    <string name="title_global_option_activity">Global Option</string>
     
 	
 	
@@ -41,11 +45,11 @@
     <string name="pref_title_log">Log</string>
     <string name="pref_summary_log">The file name of the log file</string>
     
-    <string name="pref_title_concurrent">Concurrent Downloads</string>
-    <string name="pref_summary_concurrent">Number of parallel downloads</string>
+    <string name="pref_title_max_concurrent_downloads">Concurrent Downloads</string>
+    <string name="pref_summary_max_concurrent_downloads">Number of parallel downloads</string>
     
-    <string name="pref_title_integrity">Integrity Check</string>
-    <string name="pref_summary_integrity">Check file integrity by validating piece hashes or a hash of entire file</string>
+    <string name="pref_title_check_integrity">Integrity Check</string>
+    <string name="pref_summary_check_integrity">Check file integrity by validating piece hashes or a hash of entire file</string>
     
     <string name="pref_title_continue">Continue Downloading</string>
 	<string name="pref_summary_continue">Continue downloading a partially downloaded file</string>
@@ -551,6 +555,7 @@
     
     
     <!-- Display Settings -->
+    <string name="pref_software_settings">Software Settings</string>
     <string name="display_settings">Display Settings</string>
     
     <string name="pref_refresh_interval">Refresh Interval</string>

@@ -4,7 +4,7 @@
 	android:versionCode="1"
 	android:versionName="1.0">
 
-	<uses-sdk android:minSdkVersion="7"/>
+	<uses-sdk android:minSdkVersion="11"/>
 
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 	<uses-permission android:name="android.permission.INTERNET"/>
@@ -62,6 +62,15 @@
 		<activity
 			android:name="tk.igeek.aria2.android.SettingsActivity"
 			android:label="@string/title_settings_activity"
+			android:parentActivityName="tk.igeek.aria2.android.Aria2Activity" >
+				<meta-data
+					android:name="android.support.PARENT_ACTIVITY"
+					android:value="tk.igeek.aria2.android.Aria2Activity" />
+		</activity>
+		
+		<activity
+			android:name="tk.igeek.aria2.android.GlobalOptionActivity"
+			android:label="@string/title_global_option_activity"
 			android:parentActivityName="tk.igeek.aria2.android.Aria2Activity" >
 				<meta-data
 					android:name="android.support.PARENT_ACTIVITY"

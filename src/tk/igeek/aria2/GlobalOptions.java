@@ -2,7 +2,16 @@ package tk.igeek.aria2;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
+import android.R.bool;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class GlobalOptions extends CommonItem {
 
@@ -453,6 +462,64 @@ public class GlobalOptions extends CommonItem {
 	public GlobalOptions(HashMap<String, Object> data) {
 		init(data);
 	}
+	
+	public void SetGlobalOptionsActivity(Context _context)
+	{
+		Field[] fields = getClass().getFields();
+		try {
+			for (Field field : fields) {
+				if (field.getModifiers() == Modifier.PUBLIC) {
+					String name = field.getName();
+					Object value = field.get(this);
+					if (field.getType() == String.class) {
+						if (value == null || "".equals(value)) continue;
+					}
+					
+					name = "pref_key_" + name;
+					
+					Log.d("aria2 global options","name:" + name + " value:" + value);
+			
+					SharedPreferences.Editor sharedPref = PreferenceManager.getDefaultSharedPreferences(_context).edit();
+					if(typeIsBoolean(name))
+					{
+						sharedPref.putBoolean(name, Boolean.valueOf((String) value));
+					}
+					else
+					{
+						sharedPref.putString(name,(String)value);
+					}
+					
+					sharedPref.commit();
+
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+	
+	private static final Set<String> BOOL_TYPE_VALUES = new HashSet<String>(Arrays.asList(
+     new String[] {"pref_key_integrity","pref_key_continue","pref_key_check_certificate","pref_key_http_accept_gzip","pref_key_http_auth_challenge",
+    		       "pref_key_http_no_cache","pref_key_enable_http_keep_alive","pref_key_enable_http_pipelining","pref_key_use_head","pref_key_ftp_pasv",
+    		       "pref_key_ftp_reuse_connection","pref_key_dry_run","pref_key_no_netrc","pref_key_remote_time","pref_key_reuse","pref_key_bt_enable_lpd",
+    		       "pref_key_bt_hash_check_seed","pref_key_bt_metadata_only","pref_key_bt_remove_unselected_file","pref_key_bt_require_crypto","pref_key_bt_save_metadata",
+    		       "pref_key_bt_seed_unverified","pref_key_enable_peer_exchange","pref_key_metalink_enable_unique_protocol","pref_key_show_files","pref_key_rpc_save_upload_metadata",
+    		       "pref_key_allow_overwrite","pref_key_allow_piece_length_change","pref_key_always_resume","pref_key_async_dns","pref_key_auto_file_renaming",
+    		       "pref_key_conditional_get","pref_key_enable_mmap","pref_key_force_save","pref_key_hash_check_only","pref_key_parameterized_uri","pref_key_realtime_chunk_checksump",
+    		       "pref_key_remove_control_file"}
+	));
+	
+	boolean typeIsBoolean(String name)
+	{
+		boolean ishava = BOOL_TYPE_VALUES.contains(name);
+		return ishava;
+
+	}
 
 	public HashMap<String, Object> get() {
 		Field[] fields = getClass().getFields();
@@ -477,5 +544,40 @@ public class GlobalOptions extends CommonItem {
 			e.printStackTrace();
 		}
 		return map;
+	}
+
+	public void setField(String key, SharedPreferences sharedPreferences) 
+	{
+		Log.d("aria2 global options","change name:" + key);
+		String value = null;
+		if(typeIsBoolean(key))
+		{
+			boolean bValue = sharedPreferences.getBoolean(key,true);
+			value = Boolean.toString(bValue);
+		}
+		else
+		{
+			value = sharedPreferences.getString(key,"");
+		}
+		String pref = "pref_key_";
+		String name = key.substring(pref.length(),key.length());
+		
+		if ("continue".equals(name))
+		{ 
+			name = "continue_download";
+		}
+		try
+		{
+			Field field = getClass().getField(name);
+			field.set(this, value);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		}
+		
+		
 	}
 }

@@ -177,6 +177,14 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 							}
 						}
 						break;
+					case GET_GLOBAL_OPTION:
+						{
+							GlobalOptions globalOptions = _aria2.getGlobalOption();
+							sendToUIThreadMsg.what =  MSG_GET_GLOBAL_OPTION_SUCCESS;
+							sendToUIThreadMsg.obj = globalOptions;
+							_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+						}
+						break;
 						
 					}
 				}

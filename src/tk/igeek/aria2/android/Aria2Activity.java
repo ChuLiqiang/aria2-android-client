@@ -28,11 +28,15 @@ import tk.igeek.aria2.android.utils.CommonUtils;
 
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -122,6 +126,8 @@ public class Aria2Activity extends ActionBarActivity
 			Toast.makeText(Aria2Activity.this,e.getMessage(),Toast.LENGTH_LONG).show();
 		}
 		
+		_context = this;
+		
 	}
 
 	private OnItemLongClickListener mMessageLongClickedHandler = new OnItemLongClickListener() {
@@ -169,11 +175,16 @@ public class Aria2Activity extends ActionBarActivity
 	@Override
 	public void onDestroy()
 	{
-		 if(_aria2Manager != null)
-		 {
-			 _aria2Manager.StopAria2Handler();
-		 }
-		 super.onDestroy();
+		if (pd!=null) 
+		{
+			pd.dismiss();
+		}
+		
+		if(_aria2Manager != null)
+		{
+			_aria2Manager.StopAria2Handler();
+		}
+		super.onDestroy();
 	}
 
 	@Override
@@ -206,6 +217,10 @@ public class Aria2Activity extends ActionBarActivity
 				break;
 			case R.id.action_exit:
 				finish();
+				break;
+			case R.id.action_global_option:
+				tryOpenGlobalOption();
+				
 				break;
 			case R.id.action_settings:
 				startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
@@ -345,6 +360,23 @@ public class Aria2Activity extends ActionBarActivity
 							Toast.makeText(Aria2Activity.this,errorInfo,Toast.LENGTH_LONG).show();
 						}
 						break;
+						
+					case MSG_GET_GLOBAL_OPTION_FAILED:
+						removeMessages(MSG_GET_GLOBAL_OPTION_FAILED);
+						pd.dismiss();
+						new AlertDialog.Builder(Aria2Activity.this).setTitle("Waring")
+						.setMessage("get global option error, please check network!").setPositiveButton("OK", null).show();
+						break;
+					case MSG_GET_GLOBAL_OPTION_SUCCESS:
+						removeMessages(MSG_GET_GLOBAL_OPTION_FAILED);
+						pd.dismiss();
+						GlobalOptions globalOptions = (GlobalOptions )msg.obj;
+						globalOptions.SetGlobalOptionsActivity(_context);
+						startActivity(new Intent(getApplicationContext(), GlobalOptionActivity.class));
+						break;
+						
+						
+					 
 				}
 			}catch (Exception e) {
 				Log.e("aria2", "aria2 ui handler is error!",e);
@@ -440,4 +472,44 @@ public class Aria2Activity extends ActionBarActivity
 	         }
 	     }
 	 }
+	
+	private AsyncTask<Void, Void, Void> mAsyncTask;
+	private ProgressDialog pd;      
+	private Context _context;
+
+	private void tryOpenGlobalOption(){
+		if (mAsyncTask != null) return;
+		mAsyncTask = new AsyncTask<Void, Void, Void>()
+		{
+			@Override
+			protected void onPreExecute(){
+				super.onPreExecute();
+				showProgressDialog();
+				mRefreshHandler.sendEmptyMessageDelayed(MSG_GET_GLOBAL_OPTION_FAILED, 20 * 1000);
+			}
+
+			@Override
+			protected Void doInBackground( Void... params ){
+				_aria2Manager.sendToAria2APIHandlerMsg(GET_GLOBAL_OPTION);
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute( Void result ){
+				mAsyncTask = null;
+			};
+		};
+		mAsyncTask.execute();
+	}
+	
+	private void showProgressDialog() 
+	{
+		pd = new ProgressDialog(_context);
+		pd.setTitle("Processing...");
+		pd.setMessage("Please wait.");
+		pd.setCancelable(false);
+		pd.setIndeterminate(true);
+		pd.show();
+	}
+	
 }

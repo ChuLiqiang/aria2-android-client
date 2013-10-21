@@ -49,6 +49,7 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
             holder = new DownloadItemHolder();
             holder.name = (TextView)row.findViewById(R.id.download_item_name);
             holder.status = (TextView)row.findViewById(R.id.download_item_status);
+            holder.speed = (TextView)row.findViewById(R.id.download_item_speed);
             holder.size = (TextView)row.findViewById(R.id.download_item_size);
             holder.progressBar = (ProgressBar)row.findViewById(R.id.download_item_progress_bar); 
             row.setTag(holder);
@@ -60,11 +61,24 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
        
         DownloadItem downloadItem = data.get(position);
         holder.name.setText(downloadItem.name);
-		String speed = context.getString(R.string.item_speed_format,
-				CommonUtils.formatSpeedString(downloadItem.downloadSpeed),
-				CommonUtils.formatSpeedString(downloadItem.uploadSpeed));
-		holder.status.setText(downloadItem.status + " ("+ speed +")");
-        holder.size.setText(downloadItem.size); 
+        holder.status.setText("Status:" + downloadItem.status);
+        
+        if(downloadItem.status.equals("active"))
+        {
+	        holder.speed.setVisibility(View.VISIBLE);
+			String speedInfo = context.getString(R.string.item_speed_format,
+					CommonUtils.formatSpeedString(downloadItem.downloadSpeed),
+					CommonUtils.formatSpeedString(downloadItem.uploadSpeed));
+			holder.speed.setText("Speed:"+speedInfo);
+		}
+        else
+        {
+        	holder.speed.setVisibility(View.GONE);
+        }
+		
+		
+		
+        holder.size.setText("Size:" + downloadItem.size); 
         holder.progressBar.setProgress(downloadItem.progress);
         return row;
 		
@@ -74,6 +88,7 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
     {
         TextView name;
         TextView status;
+        TextView speed;
         TextView size;
         ProgressBar progressBar;
     }

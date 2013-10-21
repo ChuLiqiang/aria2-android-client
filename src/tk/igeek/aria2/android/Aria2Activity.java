@@ -86,13 +86,13 @@ public class Aria2Activity extends ActionBarActivity
 		downloadListView.setAdapter(adapter);
 		downloadListView.setOnItemLongClickListener(mMessageLongClickedHandler);
 	
-		handleIntent();
+		handleDownloadIntent();
 		
 		_context = this;
 		
 	}
 
-	private void handleIntent()
+	private void handleDownloadIntent()
 	{
 		try
 		{
@@ -467,6 +467,7 @@ public class Aria2Activity extends ActionBarActivity
 	}
 
 	public void setRefreshActionButtonState(final boolean refreshing) {
+		// setActionView is not support low version of android
 		/*
 	     if (optionsMenu != null) {
 	         final MenuItem refreshItem = optionsMenu.findItem(R.id.action_refresh);

@@ -367,6 +367,16 @@ public class Aria2API {
 		return new GlobalOptions(globalOption);
 	}
 	
+	/**
+	 * This method changes global options dynamically. options is of type struct.
+	 * @param options
+	 * @return "OK" if succeed
+	 */
+	public String changeGlobalOption(GlobalOptions options)
+	{
+		return (String) callMethod("aria2.changeGlobalOption",new Object[] { options.get() });
+	}
+	
 	private Object callMethod(String method, Object... args){
 		
 		Object response = null;

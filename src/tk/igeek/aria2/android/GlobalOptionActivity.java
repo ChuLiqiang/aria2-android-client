@@ -62,8 +62,10 @@ public class GlobalOptionActivity extends PreferenceActivity implements OnShared
 	public void finish() {
 	  // Prepare data intent 
 	  Intent data = new Intent();
-	  data.putExtra("returnKey1", "Swinging on a star. ");
-	  data.putExtra("returnKey2", "You could be better then you are. ");
+	  if(globalOptions != null)
+	  {
+		  data.putExtra("changeGlobalOptions",globalOptions);
+	  }
 	  // Activity finished ok, return the data
 	  setResult(RESULT_OK, data);
 	  super.finish();

@@ -277,9 +277,11 @@ public class Aria2Activity extends ActionBarActivity
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK && requestCode == GET_GLOBAL_OPTIONS) {
-			if (data.hasExtra("returnKey1")) {
-				Toast.makeText(this, data.getExtras().getString("returnKey1"),
-						Toast.LENGTH_SHORT).show();
+			if(data.hasExtra("changeGlobalOptions"))
+			{
+				GlobalOptions globalOptions = data.getParcelableExtra("changeGlobalOptions");
+				_aria2Manager.sendToAria2APIHandlerMsg(CHANGE_GLOBAL_OPTION,globalOptions);
+				Toast.makeText(this, "begin change global options",Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -364,6 +366,7 @@ public class Aria2Activity extends ActionBarActivity
 						break;
 						
 					case MSG_GET_GLOBAL_OPTION_FAILED:
+						_aria2Manager.removeMessages(GET_GLOBAL_OPTION);
 						removeMessages(MSG_GET_GLOBAL_OPTION_FAILED);
 						pd.dismiss();
 						new AlertDialog.Builder(Aria2Activity.this).setTitle("Waring")

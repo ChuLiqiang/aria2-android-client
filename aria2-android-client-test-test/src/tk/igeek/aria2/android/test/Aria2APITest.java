@@ -120,10 +120,22 @@ public class Aria2APITest extends TestCase
 		addTorrnet();
 	}
 	
-	public void testgetGlobalOption()
+	public void testGetGlobalOption()
 	{
 		aria2.getGlobalOption();
 	}
+	
+	public void testChangeGlobalOption()
+	{
+		GlobalOptions options = new GlobalOptions();
+		
+		options.async_dns = "true";
+		String  returnValue = aria2.changeGlobalOption(options);
+		
+		Log.i("aria2 Test","change global option:" + returnValue);
+	}
+	
+	
 	
 	public void testCommonUtils()
 	{

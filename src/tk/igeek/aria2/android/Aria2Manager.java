@@ -185,6 +185,16 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 							_mRefreshHandler.sendMessage(sendToUIThreadMsg);
 						}
 						break;
+					case CHANGE_GLOBAL_OPTION:
+						{
+							if(msg.obj == null)
+							{
+								return;
+							}
+							GlobalOptions globalOptions = (GlobalOptions)msg.obj;
+							_aria2.changeGlobalOption(globalOptions);
+						}
+						break;
 						
 					}
 				}
@@ -420,7 +430,14 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		Message sendToAria2APIHandlerMsg = new Message();
 		sendToAria2APIHandlerMsg.what = msgType;
 		_mHandler.sendMessage(sendToAria2APIHandlerMsg);
+	} 
+	
+	public void removeMessages(int msgType)
+	{
+		_mHandler.removeMessages(msgType);
 	}
+	
+	
 	
 	public void sendToAria2APIHandlerMsg(int msgType,Object msgObj)
 	{

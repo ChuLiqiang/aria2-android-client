@@ -30,7 +30,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.os.Process;
 
-public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
+public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage,IIncomingHandler
 {
 	private Aria2API _aria2 = null;
 	private String _host = null;
@@ -59,155 +59,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 		_aria2APIHandlerThread.start();
 		
 		Looper mLooper = _aria2APIHandlerThread.getLooper(); 
-		_mHandler = new Handler(mLooper)
-		{
-			public void handleMessage(Message msg)
-			{
-				Message sendToUIThreadMsg = new Message();
-				Log.i("aria2", "aria2 manager handler get msg:" + msg.what);
-				try
-				{
-					switch (msg.what)
-					{
-					case GET_VERSION_INFO:
-						sendToUIThreadMsg.what = VERSION_INFO_REFRESHED;
-						sendToUIThreadMsg.obj = GetVersionInfo();
-						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
-						break;
-					case GET_SESSION_INFO:
-						sendToUIThreadMsg.what = SESSION_INFO_REFRESHED;
-						sendToUIThreadMsg.obj = GetSessionInfo();
-						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
-						break;
-					case ADD_URI:
-						sendToUIThreadMsg.what = DOWNLOAD_INFO_REFRESHED;
-						if(msg.obj == null)
-						{
-							sendToUIThreadMsg.obj = AddUri();
-						}
-						else
-						{
-							sendToUIThreadMsg.obj = AddUri((String)msg.obj);
-						}
-						_mRefreshHandler.sendMessage(sendToUIThreadMsg);
-						break;
-					case PAUSE_ALL_DOWNLOAD:
-						_aria2.pauseAll();
-						break;
-					case RESUME_ALL_DOWNLOAD:
-						_aria2.unpauseAll();
-						break;
-					case PURGE_DOWNLOAD:
-						_aria2.purgeDownloadResult();
-						break;
-					case PAUSE_DOWNLOAD:
-						{
-							if(msg.obj == null)
-							{
-								return;
-							}
-							String gid = (String)msg.obj;
-							_aria2.pause(gid);
-						}
-						break;
-					case RESUME_DOWNLOAD:
-						{
-							if(msg.obj == null)
-							{
-								return;
-							}
-							String gid = (String)msg.obj;
-							_aria2.unpause(gid);
-						}
-						break;
-					case REMOVE_DOWNLOAD:
-						{
-							if(msg.obj == null)
-							{
-								return;
-							}
-							String gid = (String)msg.obj;
-							_aria2.remove(gid);
-						}
-						break;
-					case REMOVE_DOWNLOAD_RESULT:
-						{
-							if(msg.obj == null)
-							{
-								return;
-							}
-							String gid = (String)msg.obj;
-							_aria2.removeDownloadResult(gid);
-						}
-						break;
-					case ADD_TORRENT:
-						{
-							if(msg.obj == null)
-							{
-								return;
-							}
-							File file = (File)msg.obj; 
-							addTorrnet(file);
-						}
-						break;
-					case ADD_METALINK:
-						{
-							if(msg.obj == null)
-							{
-								return;
-							}
-							File file = (File)msg.obj; 
-							addMetalink(file);
-						}
-						break;
-					case GET_ALL_GLOBAL_AND_TASK_STATUS:
-						{
-							Log.i("aria2 handler", "begin GET_ALL_GLOBAL_AND_TASK_STATUS!");
-							if (_updating_status == false)
-							{
-								if(msg.obj == null)
-								{
-									getAllGlobalAndTaskStatus();
-									return;
-								}
-								CountDownLatch finishSignal = (CountDownLatch)msg.obj;
-								getAllGlobalAndTaskStatus();
-								Log.i("aria2 handler", "end GET_ALL_GLOBAL_AND_TASK_STATUS!");
-								finishSignal.countDown();
-							}
-						}
-						break;
-					case GET_GLOBAL_OPTION:
-						{
-							GlobalOptions globalOptions = _aria2.getGlobalOption();
-							sendToUIThreadMsg.what =  MSG_GET_GLOBAL_OPTION_SUCCESS;
-							sendToUIThreadMsg.obj = globalOptions;
-							_mRefreshHandler.sendMessage(sendToUIThreadMsg);
-						}
-						break;
-					case CHANGE_GLOBAL_OPTION:
-						{
-							if(msg.obj == null)
-							{
-								return;
-							}
-							GlobalOptions globalOptions = (GlobalOptions)msg.obj;
-							_aria2.changeGlobalOption(globalOptions);
-						}
-						break;
-						
-					}
-				}
-				catch (Exception e)
-				{
-					Log.e("aria2", "aria2 manager handler is error!",e);
-					
-					handlerError(msg.what,sendToUIThreadMsg);
-				}
-
-			}
-		};
-		
+		_mHandler = new IncomingHandler(mLooper,this);
 		Process.setThreadPriority(_aria2APIHandlerThread.getThreadId(),Process.THREAD_PRIORITY_BACKGROUND);
 	}
 	
@@ -584,8 +436,152 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 			_aria2APIHandlerThread.quit();
 		}
 	}
-	
-	
 
-
+	@Override
+	public void handleMessage(Message msg, Handler handler)
+	{
+		Message sendToUIThreadMsg = new Message();
+		Log.i("aria2", "aria2 manager handler get msg:" + msg.what);
+		try
+		{
+			switch (msg.what)
+			{
+			case GET_VERSION_INFO:
+				sendToUIThreadMsg.what = VERSION_INFO_REFRESHED;
+				sendToUIThreadMsg.obj = GetVersionInfo();
+				_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+				break;
+			case GET_SESSION_INFO:
+				sendToUIThreadMsg.what = SESSION_INFO_REFRESHED;
+				sendToUIThreadMsg.obj = GetSessionInfo();
+				_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+				break;
+			case ADD_URI:
+				sendToUIThreadMsg.what = DOWNLOAD_INFO_REFRESHED;
+				if(msg.obj == null)
+				{
+					sendToUIThreadMsg.obj = AddUri();
+				}
+				else
+				{
+					sendToUIThreadMsg.obj = AddUri((String)msg.obj);
+				}
+				_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+				break;
+			case PAUSE_ALL_DOWNLOAD:
+				_aria2.pauseAll();
+				break;
+			case RESUME_ALL_DOWNLOAD:
+				_aria2.unpauseAll();
+				break;
+			case PURGE_DOWNLOAD:
+				_aria2.purgeDownloadResult();
+				break;
+			case PAUSE_DOWNLOAD:
+				{
+					if(msg.obj == null)
+					{
+						return;
+					}
+					String gid = (String)msg.obj;
+					_aria2.pause(gid);
+				}
+				break;
+			case RESUME_DOWNLOAD:
+				{
+					if(msg.obj == null)
+					{
+						return;
+					}
+					String gid = (String)msg.obj;
+					_aria2.unpause(gid);
+				}
+				break;
+			case REMOVE_DOWNLOAD:
+				{
+					if(msg.obj == null)
+					{
+						return;
+					}
+					String gid = (String)msg.obj;
+					_aria2.remove(gid);
+				}
+				break;
+			case REMOVE_DOWNLOAD_RESULT:
+				{
+					if(msg.obj == null)
+					{
+						return;
+					}
+					String gid = (String)msg.obj;
+					_aria2.removeDownloadResult(gid);
+				}
+				break;
+			case ADD_TORRENT:
+				{
+					if(msg.obj == null)
+					{
+						return;
+					}
+					File file = (File)msg.obj; 
+					addTorrnet(file);
+				}
+				break;
+			case ADD_METALINK:
+				{
+					if(msg.obj == null)
+					{
+						return;
+					}
+					File file = (File)msg.obj; 
+					addMetalink(file);
+				}
+				break;
+			case GET_ALL_GLOBAL_AND_TASK_STATUS:
+				{
+					Log.i("aria2 handler", "begin GET_ALL_GLOBAL_AND_TASK_STATUS!");
+					if (_updating_status == false)
+					{
+						if(msg.obj == null)
+						{
+							getAllGlobalAndTaskStatus();
+							return;
+						}
+						CountDownLatch finishSignal = (CountDownLatch)msg.obj;
+						getAllGlobalAndTaskStatus();
+						Log.i("aria2 handler", "end GET_ALL_GLOBAL_AND_TASK_STATUS!");
+						finishSignal.countDown();
+					}
+				}
+				break;
+			case GET_GLOBAL_OPTION:
+				{
+					GlobalOptions globalOptions = _aria2.getGlobalOption();
+					sendToUIThreadMsg.what =  MSG_GET_GLOBAL_OPTION_SUCCESS;
+					sendToUIThreadMsg.obj = globalOptions;
+					_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+				}
+				break;
+			case CHANGE_GLOBAL_OPTION:
+				{
+					if(msg.obj == null)
+					{
+						return;
+					}
+					GlobalOptions globalOptions = (GlobalOptions)msg.obj;
+					_aria2.changeGlobalOption(globalOptions);
+				}
+				break;
+				
+			}
+		}
+		catch (Exception e)
+		{
+			Log.e("aria2", "aria2 manager handler is error!",e);
+			
+			handlerError(msg.what,sendToUIThreadMsg);
+		}
+		
+	}
+	
 }

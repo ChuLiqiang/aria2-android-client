@@ -57,7 +57,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import ar.com.daidalos.afiledialog.FileChooserDialog;
 public class Aria2Activity extends ActionBarActivity 
-						   implements OnClickListener,Aria2UIMessage,Aria2APIMessage,
+						   implements OnClickListener,Aria2UIMessage,Aria2APIMessage,IIncomingHandler,
 						   NewDownloadDialogListener,DownloadItemDialogListener{
 
 	
@@ -71,11 +71,15 @@ public class Aria2Activity extends ActionBarActivity
 	
 	private Menu optionsMenu = null;
 	
+	
+	private Handler mRefreshHandler = null; 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
+		mRefreshHandler = new IncomingHandler(this);
 		
 		_aria2Manager = new Aria2Manager(this,mRefreshHandler);
 		_aria2Manager.StartAria2Handler();
@@ -302,12 +306,17 @@ public class Aria2Activity extends ActionBarActivity
 		
 
 	}
+	
+	
+	public void showDownloadDialog() {
+        // Create an instance of the dialog fragmnt and show it
+        DialogFragment dialog = new NewDownloadDialogFragment();
+        dialog.show(getSupportFragmentManager(), "NewDownloadFragment");
+    }
 
-	private Handler mRefreshHandler = new Handler() {
-
-		@Override
-		public void handleMessage(Message msg) {
-			Log.i("aria2", "aria2 ui handler get msg:" + msg.what);
+	public void handleMessage(Message msg,Handler handler)
+	{
+		Log.i("aria2", "aria2 ui handler get msg:" + msg.what);
 			try
 			{
 				switch (msg.what) 
@@ -367,13 +376,13 @@ public class Aria2Activity extends ActionBarActivity
 						
 					case MSG_GET_GLOBAL_OPTION_FAILED:
 						_aria2Manager.removeMessages(GET_GLOBAL_OPTION);
-						removeMessages(MSG_GET_GLOBAL_OPTION_FAILED);
+						handler.removeMessages(MSG_GET_GLOBAL_OPTION_FAILED);
 						pd.dismiss();
 						new AlertDialog.Builder(Aria2Activity.this).setTitle("Waring")
 						.setMessage("get global option error, please check network!").setPositiveButton("OK", null).show();
 						break;
 					case MSG_GET_GLOBAL_OPTION_SUCCESS:
-						removeMessages(MSG_GET_GLOBAL_OPTION_FAILED);
+						handler.removeMessages(MSG_GET_GLOBAL_OPTION_FAILED);
 						GlobalOptions globalOptions = (GlobalOptions )msg.obj;
 						globalOptions.SetGlobalOptionsActivity(_context);
 						pd.dismiss();
@@ -388,15 +397,7 @@ public class Aria2Activity extends ActionBarActivity
 			}catch (Exception e) {
 				Log.e("aria2", "aria2 ui handler is error!",e);
 			}
-		}
-		
-	};
-	
-	public void showDownloadDialog() {
-        // Create an instance of the dialog fragmnt and show it
-        DialogFragment dialog = new NewDownloadDialogFragment();
-        dialog.show(getSupportFragmentManager(), "NewDownloadFragment");
-    }
+	}
 
 	@Override
 	public void onDialogPositiveClick(DialogFragment dialog)

@@ -77,6 +77,17 @@
 					android:value="tk.igeek.aria2.android.Aria2Activity" />
 		</activity>
 		
+		<activity
+			android:name="tk.igeek.aria2.android.DownloadItemInfoActivity"
+			android:label="@string/title_download_item_info_activity"
+			android:parentActivityName="tk.igeek.aria2.android.Aria2Activity" >
+				<meta-data
+					android:name="android.support.PARENT_ACTIVITY"
+					android:value="tk.igeek.aria2.android.Aria2Activity" />
+		</activity>
+		
+		
+		
 		<activity android:name="ar.com.daidalos.afiledialog.FileChooserActivity" />
 		
 	</application>

@@ -4,10 +4,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Status extends CommonItem {
+import android.R.string;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
+public class Status extends CommonItem implements Parcelable{
 
 	public Status(HashMap<String, Object> data) {
 		init(data);
+		getFiles();
+		if(bittorrent != null)
+		{
+			bittorrentInfo = new BitTorrent(bittorrent);
+		}
 	}
 	
 	/**
@@ -128,28 +141,168 @@ public class Status extends CommonItem {
 	 * aria2.getFiles method.
 	 */
 	public Object[] files = null;
+    public ArrayList<Files> filesList = new ArrayList<Files>();
 	
 	/**
 	 * Struct which contains information retrieved from 
 	 * .torrent file. BitTorrent only. It contains following keys.
 	 */
 	public HashMap<String, Object> bittorrent = null;
+	public BitTorrent bittorrentInfo = null;
 	
-	public List<Files> getFiles()
+	
+	enum DOWNLOAD_TYPE{UNKNOWN,HTTP_FTP,TORRENT,METALINK};
+	
+	public String getName()
 	{
-		List<Files> filesList = new ArrayList<Files>();
+		String name = "unknow";
+		DOWNLOAD_TYPE downloadType = DOWNLOAD_TYPE.HTTP_FTP;
 		
-		if(files == null)
+		Log.i("getName", "numSeeders:" + numSeeders);
+		
+		if(!numSeeders.equals(""))
 		{
-			return filesList;
+			downloadType = DOWNLOAD_TYPE.TORRENT;
 		}
 		
+		switch(downloadType)
+		{
+		case HTTP_FTP:
+			if(filesList.size() > 0)
+			{
+				name = filesList.get(0).path;
+				if(name.equals("") && filesList.get(0).urisList.size() > 0)
+				{
+					name = filesList.get(0).urisList.get(0).uri;
+				}
+			}
+			break;
+		case TORRENT:
+		case METALINK:
+			if(bittorrentInfo != null)
+			{
+				if(bittorrentInfo.mode.equals("multi"))
+				{
+					name = (String)bittorrentInfo.info.get("name");
+				}else
+				{
+					name = filesList.get(0).path;
+				}
+				
+			}else {
+				name = filesList.get(0).path;
+			}
+			break;
+			
+		}
+		
+		return name;
+	}
+	
+	
+	
+	
+	
+	
+	public void getFiles()
+	{
+		if(files == null)
+		{
+			return;
+		}
 		for (Object file: files)
 		{
 			Files fileItem =new Files((HashMap<String, Object>)file);
 			filesList.add(fileItem);
 		}
-		return filesList;
 	}
+	
+	public static final Parcelable.Creator<Status> CREATOR =
+			new Parcelable.Creator<Status>(){
+
+	    @Override
+	    public Status createFromParcel(Parcel source) {
+	     return new Status(source);
+	    }
+	
+	    @Override
+	    public Status[] newArray(int size) {
+	     return new Status[size];
+	    }
+	};
+	
+	@Override
+	public int describeContents()
+	{
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags)
+	{
+		write(dest); 
+		
+	}
+	
+	 private void readFromParcel(Parcel in) 
+	 {    
+		read(in); 
+     }  
+	 
+	 public Status(Parcel source) {
+		 readFromParcel(source);
+	 }
+	 
+	 public void write(Parcel dest) {
+		Field[] fields = getClass().getFields();
+
+		try {
+			for (Field field : fields) {
+				if (field.getModifiers() == Modifier.PUBLIC) {
+					
+					Object value = field.get(this);
+
+					if(field.getType() == String.class)
+					{
+						dest.writeString((String) value);
+					}else if(field.getName().equals("files"))
+					{
+						dest.writeTypedList(filesList);
+					}
+					
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
+	 
+	 
+	
+	 
+	 public void read(Parcel in) {
+		 
+		Field[] fields = getClass().getFields();
+		try {
+			for (Field field : fields) {
+				if (field.getModifiers() == Modifier.PUBLIC) {
+					if(field.getType() == String.class)
+					{
+						field.set(this,in.readString());
+					}else if(field.getName().equals("files"))
+					{
+						in.readTypedList(filesList,Files.CREATOR);
+					}
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 }

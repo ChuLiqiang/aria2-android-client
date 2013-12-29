@@ -1,11 +1,20 @@
 package tk.igeek.aria2;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class Files extends CommonItem {
+import android.os.Parcel;
+import android.os.Parcelable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
+
+public class Files extends CommonItem implements Parcelable{
 
 	public Files(HashMap<String, Object> data) {
 		init(data);
+		getUris();
 	}
 	
 	/**
@@ -46,5 +55,90 @@ public class Files extends CommonItem {
 	 * struct used in aria2.getUris method.
 	 */
 	public Object[] uris = null;
+	List<Uri> urisList = new ArrayList<Uri>();
+	public void getUris()
+	{
+		for (Object uri: uris)
+		{
+			Uri uriTemp = new Uri((HashMap<String, Object>)uri);
+			urisList.add(uriTemp);
+		}
+	}
+	
+	
+	public static final Parcelable.Creator<Files> CREATOR =
+			new Parcelable.Creator<Files>(){
+
+	    @Override
+	    public Files createFromParcel(Parcel source) {
+	     return new Files(source);
+	    }
+	
+	    @Override
+	    public Files[] newArray(int size) {
+	     return new Files[size];
+	    }
+	};
+	
+	@Override
+	public int describeContents()
+	{
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags)
+	{
+		write(dest); 
+		
+	}
+	
+	 private void readFromParcel(Parcel in) 
+	 {    
+		read(in); 
+     }  
+	 
+	 public Files(Parcel source) {
+		 readFromParcel(source);
+	 }
+	 
+	 public void write(Parcel dest) {
+		Field[] fields = getClass().getFields();
+		try {
+			for (Field field : fields) {
+				if (field.getModifiers() == Modifier.PUBLIC) {
+					
+					Object value = field.get(this);
+					if(field.getType() == String.class)
+					{
+						dest.writeString((String) value);
+					}
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
+	 
+	 public void read(Parcel in) {
+		Field[] fields = getClass().getFields();
+
+		try {
+			for (Field field : fields) {
+				if (field.getModifiers() == Modifier.PUBLIC) {
+					if(field.getType() == String.class)
+					{
+						field.set(this,in.readString());
+					}
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

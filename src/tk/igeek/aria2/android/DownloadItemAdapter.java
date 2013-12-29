@@ -60,15 +60,15 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
         }
        
         DownloadItem downloadItem = data.get(position);
-        holder.name.setText(downloadItem.name);
-        holder.status.setText("Status:" + downloadItem.status);
+        holder.name.setText(downloadItem.getName());
+        holder.status.setText("Status:" + downloadItem.getStatus());
         
-        if(downloadItem.status.equals("active"))
+        if(downloadItem.getStatus().equals("active"))
         {
 	        holder.speed.setVisibility(View.VISIBLE);
 			String speedInfo = context.getString(R.string.item_speed_format,
-					CommonUtils.formatSpeedString(downloadItem.downloadSpeed),
-					CommonUtils.formatSpeedString(downloadItem.uploadSpeed));
+					CommonUtils.formatSpeedString(downloadItem.getDownloadSpeed()),
+					CommonUtils.formatSpeedString(downloadItem.getUploadSpeed()));
 			holder.speed.setText("Speed:"+speedInfo);
 		}
         else
@@ -78,8 +78,8 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem>
 		
 		
 		
-        holder.size.setText("Size:" + downloadItem.size); 
-        holder.progressBar.setProgress(downloadItem.progress);
+        holder.size.setText("Size:" + downloadItem.getSize()); 
+        holder.progressBar.setProgress(downloadItem.getProgress());
         return row;
 		
 	}

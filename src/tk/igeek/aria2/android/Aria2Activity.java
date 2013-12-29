@@ -27,6 +27,7 @@ import tk.igeek.aria2.android.R.drawable;
 import tk.igeek.aria2.android.utils.CommonUtils;
 
 
+import android.R.bool;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -88,7 +89,8 @@ public class Aria2Activity extends ActionBarActivity
 		adapter = new DownloadItemAdapter(Aria2Activity.this,R.layout.download_item,downloadItems);
 		downloadListView = (ListView)findViewById(R.id.download_list_view);
 		downloadListView.setAdapter(adapter);
-		downloadListView.setOnItemLongClickListener(mMessageLongClickedHandler);
+		downloadListView.setOnItemClickListener(mMessageClickedHandler);
+		downloadListView.setOnItemLongClickListener(mMessageLongClickedHandler);	
 	
 		handleDownloadIntent();
 		
@@ -139,8 +141,21 @@ public class Aria2Activity extends ActionBarActivity
 		}
 	}
 
-	private OnItemLongClickListener mMessageLongClickedHandler = new OnItemLongClickListener() {
+	private OnItemClickListener mMessageClickedHandler = new OnItemClickListener() {
 
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			
+			Intent downloadItemInfo = new Intent(getApplicationContext(), DownloadItemInfoActivity.class);
+			downloadItemInfo.putExtra("downloadItemInfo", downloadItems.get(position).getBaseStatusInfo());
+			startActivity(downloadItemInfo);
+			
+		}
+		
+	};
+	
+	private OnItemLongClickListener mMessageLongClickedHandler = new OnItemLongClickListener() {
 		@Override
 		public boolean onItemLongClick(AdapterView<?> parent, View view,
 				int position, long id)
@@ -149,9 +164,9 @@ public class Aria2Activity extends ActionBarActivity
 			
 			Bundle args = new Bundle();
 			
-			args.putString("itemStatus",downloadItems.get(position).status);
-			args.putString("itemGid",downloadItems.get(position).gid);
-			args.putBoolean("havaBittorrent", downloadItems.get(position).havaBittorrent);
+			args.putString("itemStatus",downloadItems.get(position).getStatus());
+			args.putString("itemGid",downloadItems.get(position).getGid());
+			args.putBoolean("havaBittorrent", downloadItems.get(position).isHaveBittorrent());
 			
 			downloadItemDialogFragment.setArguments(args);
 			downloadItemDialogFragment.show(getSupportFragmentManager(), "DownloadItemDialogFragment");

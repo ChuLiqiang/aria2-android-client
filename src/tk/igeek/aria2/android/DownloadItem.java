@@ -9,29 +9,27 @@ import tk.igeek.aria2.android.utils.CommonUtils;
 
 public class DownloadItem
 {
-	public String gid;
-	public String name;
-	public String status;
-	public String size;
-	public int progress;
-	public String downloadSpeed;
-	public String uploadSpeed;
-	public boolean havaBittorrent = false;
+	private String gid;
+	private String name;
+	private String status;
+	private String size;
+	private int progress;
+	private String downloadSpeed;
+	private String uploadSpeed;
+	private boolean haveBittorrent = false;
 	
+	private Status baseStatusInfo = null;
+	
+	
+
 	public DownloadItem(){
         super();
     }
 
 	public DownloadItem(Status statusTemp)
 	{
-		if(statusTemp.files == null)
-		{
-			this.name = "unknown";
-		}
-		else
-		{
-			this.name = CommonUtils.getFileNameFromPath(statusTemp.getFiles().get(0).path);
-		}
+		baseStatusInfo = statusTemp;
+		this.name = statusTemp.getName();
 		this.status = statusTemp.status;
 		this.size = CommonUtils.formatSizeString(statusTemp.completedLength) + " of " + CommonUtils.formatSizeString(statusTemp.totalLength);
 		double completedLength = Double.valueOf(statusTemp.completedLength);
@@ -40,10 +38,46 @@ public class DownloadItem
 		this.gid = statusTemp.gid;
 		if(statusTemp.bittorrent != null)
 		{
-			havaBittorrent = true;
+			haveBittorrent = true;
 		}
 		downloadSpeed = statusTemp.downloadSpeed;
 		uploadSpeed = statusTemp.uploadSpeed;
+	}
+
+	public String getGid() {
+		return gid;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public String getSize() {
+		return size;
+	}
+
+	public int getProgress() {
+		return progress;
+	}
+
+	public String getDownloadSpeed() {
+		return downloadSpeed;
+	}
+
+	public String getUploadSpeed() {
+		return uploadSpeed;
+	}
+
+	public boolean isHaveBittorrent() {
+		return haveBittorrent;
+	}
+	
+	public Status getBaseStatusInfo() {
+		return baseStatusInfo;
 	}
 	
 	

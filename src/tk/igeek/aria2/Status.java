@@ -16,10 +16,10 @@ public class Status extends CommonItem implements Parcelable{
 
 	public Status(HashMap<String, Object> data) {
 		init(data);
-		getFiles();
+		initFiles();
 		if(bittorrent != null)
 		{
-			bittorrentInfo = new BitTorrent(bittorrent);
+			bittorrentInfo.setData(bittorrent); 
 		}
 	}
 	
@@ -148,7 +148,7 @@ public class Status extends CommonItem implements Parcelable{
 	 * .torrent file. BitTorrent only. It contains following keys.
 	 */
 	public HashMap<String, Object> bittorrent = null;
-	public BitTorrent bittorrentInfo = null;
+	private BitTorrent bittorrentInfo = new BitTorrent();
 	
 	
 	enum DOWNLOAD_TYPE{UNKNOWN,HTTP_FTP,TORRENT,METALINK};
@@ -179,11 +179,11 @@ public class Status extends CommonItem implements Parcelable{
 			break;
 		case TORRENT:
 		case METALINK:
-			if(bittorrentInfo != null)
+			if(bittorrentInfo.isHaveSetData() == true)
 			{
 				if(bittorrentInfo.mode.equals("multi"))
 				{
-					name = (String)bittorrentInfo.info.get("name");
+					name = (String)bittorrentInfo.getInfoData().name;
 				}else
 				{
 					name = filesList.get(0).path;
@@ -204,7 +204,7 @@ public class Status extends CommonItem implements Parcelable{
 	
 	
 	
-	public void getFiles()
+	private void initFiles()
 	{
 		if(files == null)
 		{
@@ -240,7 +240,7 @@ public class Status extends CommonItem implements Parcelable{
 	@Override
 	public void writeToParcel(Parcel dest, int flags)
 	{
-		write(dest); 
+		write(dest,flags); 
 		
 	}
 	
@@ -253,7 +253,7 @@ public class Status extends CommonItem implements Parcelable{
 		 readFromParcel(source);
 	 }
 	 
-	 public void write(Parcel dest) {
+	 public void write(Parcel dest, int flags) {
 		Field[] fields = getClass().getFields();
 
 		try {
@@ -268,7 +268,11 @@ public class Status extends CommonItem implements Parcelable{
 					}else if(field.getName().equals("files"))
 					{
 						dest.writeTypedList(filesList);
+					}else if(field.getName().equals("bittorrent"))
+					{
+						dest.writeParcelable(bittorrentInfo, flags);
 					}
+					
 					
 				}
 			}
@@ -294,6 +298,9 @@ public class Status extends CommonItem implements Parcelable{
 					}else if(field.getName().equals("files"))
 					{
 						in.readTypedList(filesList,Files.CREATOR);
+					}else if(field.getName().equals("bittorrent"))
+					{
+						bittorrentInfo = in.readParcelable(BitTorrent.class.getClassLoader());
 					}
 				}
 			}

@@ -1,71 +1,80 @@
 package tk.igeek.aria2.android;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import tk.igeek.aria2.Status;
-import android.app.Activity;
-import android.content.Context;
+import tk.igeek.aria2.adapter.TabsPagerAdapter;
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 
-public class DownloadItemInfoActivity extends Activity {
+public class DownloadItemInfoActivity extends FragmentActivity implements
+		ActionBar.TabListener {
 
+	
+	
+	private ViewPager viewPager;
+	private TabsPagerAdapter mAdapter;
+	private ActionBar actionBar;
+	
+	// Tab titles
+	private String[] tabs = { "General", "Trackers","Servers","Files" };
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.download_item_info);
 		
+		// Initilization
+		viewPager = (ViewPager) findViewById(R.id.pager);
+		actionBar = getActionBar();
+		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
+
+		viewPager.setAdapter(mAdapter);
+		actionBar.setHomeButtonEnabled(false);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);		
+
+		
 		Bundle extras = getIntent().getExtras();
-		Status status = null;
+		
 		if (extras != null) {
-		    status = extras.getParcelable("downloadItemInfo");
-		}
-		if(status != null)
-		{
-			TextView downloadItemInfoName = (TextView)findViewById(R.id.download_item_info_name_values);
-			downloadItemInfoName.setText(status.getName());
-			
-			ListView listview = (ListView) findViewById(R.id.download_item_info_file_list_view);
-			
-			
-			
-			final ArrayList<String> list = new ArrayList<String>();
-			for (int i = 0; i < status.filesList.size(); ++i) {
-				list.add(status.filesList.get(i).path);
-			}	
-			
-			final StableArrayAdapter adapter = new StableArrayAdapter(this,android.R.layout.simple_list_item_1, list);
-			listview.setAdapter(adapter);
-				
-			listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> parent, final View view,
-						int position, long id) {
-					final String item = (String) parent.getItemAtPosition(position);
-					view.animate().setDuration(2000).alpha(0)
-					.withEndAction(new Runnable() {
-						@Override
-						public void run() {
-							list.remove(item);
-							adapter.notifyDataSetChanged();
-							view.setAlpha(1);
-						}
-					});
+			Status status = extras.getParcelable("downloadItemInfo");
+			if(status != null)
+			{
+				if(status.isTorrent())
+				{
+					tabs[2] = "Peers";
 				}
-
-    });
-			
+			}
 		}
 		
-		
-		
+		// Adding Tabs
+		for (String tab_name : tabs) {
+			actionBar.addTab(actionBar.newTab().setText(tab_name)
+					.setTabListener(this));
+		}
+
+		/**
+		 * on swiping the viewpager make respective tab selected
+		 * */
+		viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+			@Override
+			public void onPageSelected(int position) {
+				// on changing the page
+				// make respected tab selected
+				actionBar.setSelectedNavigationItem(position);
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+			}
+		});
 		
 	}
 
@@ -73,7 +82,7 @@ public class DownloadItemInfoActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -88,30 +97,25 @@ public class DownloadItemInfoActivity extends Activity {
 	protected void onStop() {
 		super.onStop();
 	}
-	
-	private class StableArrayAdapter extends ArrayAdapter<String> {
 
-    HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		// on tab selected
+		// show respected fragment view
+		viewPager.setCurrentItem(tab.getPosition());
+		
+	}
 
-    public StableArrayAdapter(Context context, int textViewResourceId,
-        List<String> objects) {
-      super(context, textViewResourceId, objects);
-      for (int i = 0; i < objects.size(); ++i) {
-        mIdMap.put(objects.get(i), i);
-      }
-    }
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}
 
-    @Override
-    public long getItemId(int position) {
-      String item = getItem(position);
-      return mIdMap.get(item);
-    }
-
-    @Override
-    public boolean hasStableIds() {
-      return true;
-    }
-
-  }
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

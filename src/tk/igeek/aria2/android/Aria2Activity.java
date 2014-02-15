@@ -170,7 +170,7 @@ public class Aria2Activity extends ActionBarActivity
 			
 			downloadItemDialogFragment.setArguments(args);
 			downloadItemDialogFragment.show(getSupportFragmentManager(), "DownloadItemDialogFragment");
-			return false;
+			return true;
 		}
 
 		

@@ -1,35 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_width="match_parent"
-      	android:layout_height="match_parent"
-      	android:orientation="vertical" >
-      	<TextView
-      	    android:id="@+id/download_item_info_name"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:textStyle="bold"
-			android:textSize="14sp"
-			android:text="Name:"
-			/>
-      	<TextView
-      	    android:id="@+id/download_item_info_name_values"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:textStyle="bold"
-			android:textSize="14sp"
-			/>
-      	<View style="@style/Divider"/>
-		<TextView
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:textStyle="bold"
-			android:textSize="14sp"
-			android:text="File:"
-			/>
-		<ListView
-	        android:id="@+id/download_item_info_file_list_view"
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent" 
-        />         
-</LinearLayout>
+<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pager"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+</android.support.v4.view.ViewPager>
+
+
 

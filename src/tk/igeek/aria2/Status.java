@@ -1,5 +1,6 @@
 package tk.igeek.aria2;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,17 +13,16 @@ import android.util.Log;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public class Status extends CommonItem implements Parcelable{
+public class Status extends CommonItem implements Parcelable {
 
 	public Status(HashMap<String, Object> data) {
 		init(data);
 		initFiles();
-		if(bittorrent != null)
-		{
-			bittorrentInfo.setData(bittorrent); 
+		if (bittorrent != null) {
+			bittorrentInfo.setData(bittorrent);
 		}
 	}
-	
+
 	/**
 	 * GID of this download.
 	 */
@@ -47,13 +47,13 @@ public class Status extends CommonItem implements Parcelable{
 	 * 
 	 Completed length of this download in bytes.
 	 */
-	public String completedLength = "";
+	public String completedLength = "0";
 
 	/**
 	 * 
 	 Uploaded length of this download in bytes.
 	 */
-	public String uploadLength = "";
+	public String uploadLength = "0";
 
 	/**
 	 * Hexadecimal representation of the download progress. The highest bit
@@ -69,7 +69,7 @@ public class Status extends CommonItem implements Parcelable{
 	 * 
 	 Download speed of this download measured in bytes/sec.
 	 */
-	public String downloadSpeed = "";
+	public String downloadSpeed = "0";
 
 	/**
 	 * 
@@ -99,7 +99,7 @@ public class Status extends CommonItem implements Parcelable{
 	 * 
 	 The number of pieces.
 	 */
-	public String numPieces = "";
+	public String numPieces = "0";
 
 	/**
 	 * 
@@ -141,139 +141,153 @@ public class Status extends CommonItem implements Parcelable{
 	 * aria2.getFiles method.
 	 */
 	public Object[] files = null;
-    public ArrayList<Files> filesList = new ArrayList<Files>();
-	
+	public ArrayList<Files> filesList = new ArrayList<Files>();
+
 	/**
-	 * Struct which contains information retrieved from 
-	 * .torrent file. BitTorrent only. It contains following keys.
+	 * Struct which contains information retrieved from .torrent file.
+	 * BitTorrent only. It contains following keys.
 	 */
 	public HashMap<String, Object> bittorrent = null;
 	private BitTorrent bittorrentInfo = new BitTorrent();
+
 	
-	
-	enum DOWNLOAD_TYPE{UNKNOWN,HTTP_FTP,TORRENT,METALINK};
-	
-	public String getName()
+	public BitTorrent getBittorrent()
 	{
+		return bittorrentInfo;
+	}
+	
+	enum DOWNLOAD_TYPE {
+		UNKNOWN, HTTP_FTP, TORRENT, METALINK
+	};
+
+	long getTotalLength() {
+		long uiRet = Long.parseLong(totalLength);
+		if ((uiRet == 0) && (filesList.size() > 0)) {
+			uiRet = Long.parseLong(filesList.get(0).length);
+		}
+		return uiRet;
+	}
+
+	public String getETA() {
+		String sRet = "n/a";
+
+		try {
+			long ldownloadSpeed = Long.parseLong(downloadSpeed);
+			if (ldownloadSpeed != 0) {
+				long lcompletedLength = Long.parseLong(completedLength);
+				long remsec = (getTotalLength() - lcompletedLength)
+						/ ldownloadSpeed;
+				long hr = remsec / 3600;
+				remsec %= 3600;
+				long min = remsec / 60;
+				remsec %= 60;
+
+				sRet = "";
+				sRet += ((hr > 0) ? (hr + "h") : (""));
+				sRet += ((min > 0) ? (min + "m") : (""));
+				sRet += ((remsec > 0) ? (remsec + "s") : (""));
+			}
+		} catch (NumberFormatException e) {
+			return "n/a";
+		}
+		return sRet;
+	}
+
+	public String getName() {
 		String name = "unknow";
 		DOWNLOAD_TYPE downloadType = DOWNLOAD_TYPE.HTTP_FTP;
-		
-		Log.i("getName", "numSeeders:" + numSeeders);
-		
-		if(!numSeeders.equals(""))
-		{
+
+		if (!numSeeders.equals("")) {
 			downloadType = DOWNLOAD_TYPE.TORRENT;
 		}
-		
-		switch(downloadType)
-		{
+
+		switch (downloadType) {
 		case HTTP_FTP:
-			if(filesList.size() > 0)
-			{
+			if (filesList.size() > 0) {
 				name = filesList.get(0).path;
-				if(name.equals("") && filesList.get(0).urisList.size() > 0)
-				{
+				if (name.equals("") && filesList.get(0).urisList.size() > 0) {
 					name = filesList.get(0).urisList.get(0).uri;
 				}
 			}
 			break;
 		case TORRENT:
 		case METALINK:
-			if(bittorrentInfo.isHaveSetData() == true)
-			{
-				if(bittorrentInfo.mode.equals("multi"))
-				{
-					name = (String)bittorrentInfo.getInfoData().name;
-				}else
-				{
+			if (bittorrentInfo.isHaveSetData() == true) {
+				if (bittorrentInfo.mode.equals("multi")) {
+					name = (String) bittorrentInfo.getInfoData().name;
+				} else {
 					name = filesList.get(0).path;
 				}
-				
-			}else {
+
+			} else {
 				name = filesList.get(0).path;
 			}
 			break;
-			
+
 		}
-		
+
 		return name;
 	}
-	
-	
-	
-	
-	
-	
-	private void initFiles()
-	{
-		if(files == null)
-		{
+
+	private void initFiles() {
+		if (files == null) {
 			return;
 		}
-		for (Object file: files)
-		{
-			Files fileItem =new Files((HashMap<String, Object>)file);
+		for (Object file : files) {
+			Files fileItem = new Files((HashMap<String, Object>) file);
 			filesList.add(fileItem);
 		}
 	}
-	
-	public static final Parcelable.Creator<Status> CREATOR =
-			new Parcelable.Creator<Status>(){
 
-	    @Override
-	    public Status createFromParcel(Parcel source) {
-	     return new Status(source);
-	    }
-	
-	    @Override
-	    public Status[] newArray(int size) {
-	     return new Status[size];
-	    }
+	public static final Parcelable.Creator<Status> CREATOR = new Parcelable.Creator<Status>() {
+
+		@Override
+		public Status createFromParcel(Parcel source) {
+			return new Status(source);
+		}
+
+		@Override
+		public Status[] newArray(int size) {
+			return new Status[size];
+		}
 	};
-	
+
 	@Override
-	public int describeContents()
-	{
+	public int describeContents() {
 		return 0;
 	}
 
 	@Override
-	public void writeToParcel(Parcel dest, int flags)
-	{
-		write(dest,flags); 
-		
+	public void writeToParcel(Parcel dest, int flags) {
+		write(dest, flags);
+
 	}
-	
-	 private void readFromParcel(Parcel in) 
-	 {    
-		read(in); 
-     }  
-	 
-	 public Status(Parcel source) {
-		 readFromParcel(source);
-	 }
-	 
-	 public void write(Parcel dest, int flags) {
+
+	private void readFromParcel(Parcel in) {
+		read(in);
+	}
+
+	public Status(Parcel source) {
+		readFromParcel(source);
+	}
+
+	public void write(Parcel dest, int flags) {
 		Field[] fields = getClass().getFields();
 
 		try {
 			for (Field field : fields) {
 				if (field.getModifiers() == Modifier.PUBLIC) {
-					
+
 					Object value = field.get(this);
 
-					if(field.getType() == String.class)
-					{
+					if (field.getType() == String.class) {
 						dest.writeString((String) value);
-					}else if(field.getName().equals("files"))
-					{
+					} else if (field.getName().equals("files")) {
 						dest.writeTypedList(filesList);
-					}else if(field.getName().equals("bittorrent"))
-					{
+					} else if (field.getName().equals("bittorrent")) {
 						dest.writeParcelable(bittorrentInfo, flags);
 					}
-					
-					
+
 				}
 			}
 		} catch (IllegalArgumentException e) {
@@ -282,25 +296,20 @@ public class Status extends CommonItem implements Parcelable{
 			e.printStackTrace();
 		}
 	}
-	 
-	 
-	
-	 
-	 public void read(Parcel in) {
-		 
+
+	public void read(Parcel in) {
+
 		Field[] fields = getClass().getFields();
 		try {
 			for (Field field : fields) {
 				if (field.getModifiers() == Modifier.PUBLIC) {
-					if(field.getType() == String.class)
-					{
-						field.set(this,in.readString());
-					}else if(field.getName().equals("files"))
-					{
-						in.readTypedList(filesList,Files.CREATOR);
-					}else if(field.getName().equals("bittorrent"))
-					{
-						bittorrentInfo = in.readParcelable(BitTorrent.class.getClassLoader());
+					if (field.getType() == String.class) {
+						field.set(this, in.readString());
+					} else if (field.getName().equals("files")) {
+						in.readTypedList(filesList, Files.CREATOR);
+					} else if (field.getName().equals("bittorrent")) {
+						bittorrentInfo = in.readParcelable(BitTorrent.class
+								.getClassLoader());
 					}
 				}
 			}
@@ -310,6 +319,33 @@ public class Status extends CommonItem implements Parcelable{
 			e.printStackTrace();
 		}
 	}
+
+	public boolean isTorrent()
+	{
+		if(!numSeeders.equals(""))
+		{
+			return true;
+		}
+		return false;
+	}
 	
-	
+	public CharSequence getRatio() {
+		String sRet = "";
+		if (isTorrent())
+		{
+			long lcompletedLength = Long.parseLong(completedLength);
+			if (lcompletedLength > 0)
+			{
+				long luploadLength = Long.parseLong(uploadLength);
+				DecimalFormat df = new DecimalFormat("#.##");
+				sRet =  df.format((double)luploadLength / (double)lcompletedLength) + "%";
+			}
+			else
+			{
+				sRet = "0.000%";
+			}
+		}
+		return sRet;
+	}
+
 }

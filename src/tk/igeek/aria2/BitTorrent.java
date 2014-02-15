@@ -28,6 +28,33 @@ public class BitTorrent extends CommonItem implements Parcelable {
 		haveSetData = true;
 		init(data);
 		infoData.setData(info);
+		initAnnounceList(); 
+		
+	}
+
+	
+	public ArrayList<String> getAnnounceList()
+	{
+		return announceStringList;
+	}
+	
+	
+	private void initAnnounceList() {
+		if(announceList == null)
+		{
+			return;
+		}
+		int announceListSize = announceList.length;
+		for(int announceListIndex = 0; announceListIndex  < announceListSize ; announceListIndex++)
+		{
+			Object[] announceListItem = (Object[]) announceList[announceListIndex];
+			int announceListItemSize = announceListItem.length;
+			for(int announceListItemIndex = 0; announceListItemIndex  < announceListItemSize ; announceListItemIndex++)
+			{
+				announceStringList.add((String)(announceListItem[announceListItemIndex]));
+			}
+		}
+		
 	}
 
 	/**
@@ -35,6 +62,8 @@ public class BitTorrent extends CommonItem implements Parcelable {
 	 * announce-list, announce is converted to announce-list format.
 	 */
 	public Object[] announceList = null;
+	private ArrayList<String> announceStringList = new ArrayList<String>();
+	
 
 	/**
 	 * The comment for the torrent. comment.utf-8 is used if available.
@@ -108,7 +137,11 @@ public class BitTorrent extends CommonItem implements Parcelable {
 					}else if(field.getName().equals("info"))
 					{
 						dest.writeParcelable(infoData, flags);
+					}else if(field.getName().equals("announceList"))
+					{
+						dest.writeStringList(announceStringList);
 					}
+					
 				}
 			}
 		} catch (IllegalArgumentException e) {
@@ -131,7 +164,11 @@ public class BitTorrent extends CommonItem implements Parcelable {
 					}else if(field.getName().equals("info"))
 					{
 						infoData = in.readParcelable(Info.class.getClassLoader());
+					}else if(field.getName().equals("announceList"))
+					{
+						in.readStringList(announceStringList);
 					}
+					
 				}
 			}
 		} catch (IllegalArgumentException e) {

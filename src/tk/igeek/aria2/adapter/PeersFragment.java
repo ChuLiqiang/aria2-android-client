@@ -24,7 +24,10 @@ public class PeersFragment extends Fragment {
 		}
 		
 		if (status != null) {
-			
+			if(status.isTorrent())
+			{
+				
+			}
 		}
 		
 		return rootView;

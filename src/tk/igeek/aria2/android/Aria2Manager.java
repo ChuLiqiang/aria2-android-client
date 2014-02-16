@@ -18,6 +18,7 @@ import tk.igeek.aria2.GlobalStat;
 import tk.igeek.aria2.GlobalOptions;
 import tk.igeek.aria2.Status;
 import tk.igeek.aria2.Version;
+import tk.igeek.aria2.android.manager.Aria2ConnectionInfo;
 import tk.igeek.aria2.android.utils.Base64;
 
 import android.content.Context;
@@ -26,43 +27,31 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.os.Process;
 
-public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage,IIncomingHandler
+public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 {
 	private Aria2API _aria2 = null;
-	private String _host = null;
-	private int _port = 6800;
-	private String _username = null;
-	private String _password = null;
-	private Context _context = null;
 	
-	private Timer mGlobalStatRefreshTimer = null;
-	private Handler _mRefreshHandler = null;
+	Aria2ConnectionInfo _aria2ConnectionInfo = new Aria2ConnectionInfo(); 
 	
-	public Handler _mHandler = null;
-	HandlerThread _aria2APIHandlerThread = null;
+	Messenger _mRefreshHandler = null;
+	
 	private boolean  _updating_status = false;
 	
-	public Aria2Manager(Context context,Handler mRefreshHandler)
+	public void setCurretnRefreshHandler(Messenger refreshHandler)
+	{
+		_mRefreshHandler = refreshHandler;
+	}
+	
+	public Aria2Manager()
 	{
 		Log.i("aria2", "init Aria2Manager!");
-		_context = context;
-		_mRefreshHandler = mRefreshHandler;
 	}
-	
-	public void StartAria2Handler()
-	{
-		_aria2APIHandlerThread = new HandlerThread("Aria2 API Handler Thread"); 
-		_aria2APIHandlerThread.start();
-		
-		Looper mLooper = _aria2APIHandlerThread.getLooper(); 
-		_mHandler = new IncomingHandler(mLooper,this);
-		Process.setThreadPriority(_aria2APIHandlerThread.getThreadId(),Process.THREAD_PRIORITY_BACKGROUND);
-	}
-	
 	
 	protected void addMetalink(File file) throws IOException
 	{
@@ -94,29 +83,24 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage,IIncomingHan
 		return bytes;
 	}
 
-	public void InitHost() {
+	public void InitHost(Aria2ConnectionInfo newAria2ConnectionInfo) {
 		Log.i("aria2", "init config!");
-		String nowHost = getHost();
-		int nowPort = getPort();
-		String nowUsername = getPreferences(SettingsActivity.PREF_KEY_USERNAME);
-		String nowPassword = getPreferences(SettingsActivity.PREF_KEY_PASSWORD);
-		if(configIsChange(nowHost,nowPort,nowUsername,nowPassword))
+		
+		if(_aria2ConnectionInfo.configIsChange(newAria2ConnectionInfo))
 		{
 			Log.i("aria2", "config is changed!");
-			_host = nowHost;
-			_port = nowPort;
-			_username = nowUsername;
-			_password = nowPassword;
 			
+			_aria2ConnectionInfo = newAria2ConnectionInfo;
 			try
 			{
-				if(canUseAuthentication(nowUsername,nowPassword))
+				if(_aria2ConnectionInfo.canUseAuthentication())
 				{
-					_aria2 = new Aria2API(_host,_port,_username,_password);
+					_aria2 = new Aria2API(_aria2ConnectionInfo._host,_aria2ConnectionInfo._port,_aria2ConnectionInfo._username,_aria2ConnectionInfo._password);
 				}
 				else
 				{
-					_aria2 = new Aria2API(_host,_port);
+					Log.i("aria2", "host:" + _aria2ConnectionInfo._host + " port:" + _aria2ConnectionInfo._port);
+					_aria2 = new Aria2API(_aria2ConnectionInfo._host,_aria2ConnectionInfo._port);
 				}
 				
 			}catch(Exception e)
@@ -129,96 +113,13 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage,IIncomingHan
 		}
 	}
 	
-	private int getPort() {
-		String prefKeyPort = getPreferences(SettingsActivity.PREF_KEY_PORT);
-		
-		if(prefKeyPort.equals(""))
-		{
-			throw new IllegalArgumentException("pealse initial host port!");
-		}
-		int port = -1;
-		
-		try
-		{
-			port = Integer.valueOf(prefKeyPort);
-		}catch (Exception e) {
-			throw new IllegalArgumentException("initial host port error!");
-		}
-		
-		return port;
-	}
-
-	private boolean canUseAuthentication(String nowUsername,String nowPassword)
-	{
-		if(nowUsername.equals("") || nowPassword.equals(""))
-		{
-			return false;
-		}
-		return true;
-	}
-	
-	private boolean configIsChange(String nowHost,int nowPort,String nowUsername,String nowPassword)
-	{
-		if(!nowHost.equals(_host))
-		{
-			return true;
-		}
-		
-		if(nowPort != _port)
-		{
-			return true;
-		}
-			
-		if(!nowUsername.equals(_username))
-		{
-			return true;
-		}
-		
-		if(!nowUsername.equals(_password))
-		{
-			return false;
-		}
-		
-		return false;
-	}
-	
-	public void StartUpdateGlobalStat()
-	{
-		Log.i("aria2", "start update global stat!");
-		checkAria2();
-		
-		int interval = Integer.valueOf(getPreferences(SettingsActivity.PREF_KEY_REFRESH_INTERVAL))*1000;
-		if (interval <2000 || interval > 60000) {
-			interval = 3000;
-		}
-		mGlobalStatRefreshTimer = new Timer();
-		mGlobalStatRefreshTimer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				Log.i("aria2 Timer", "start get all global and task status!");
-				CountDownLatch finishSignal = new CountDownLatch(1);
-				
-				sendToAria2APIHandlerMsg(GET_ALL_GLOBAL_AND_TASK_STATUS,finishSignal);
-				try
-				{
-					finishSignal.await();
-				} catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
-				Log.i("aria2 Timer", "end get all global and task status!");
-				
-			}
-		}, 0, interval);
-	}
-	
-	private void getAllGlobalAndTaskStatus()
+	private void getAllGlobalAndTaskStatus() throws RemoteException
 	{
 		_updating_status = true;
 		/* Notify main UI that we are about to update all status */
 		Message sendToUIThreadMsg = new Message();
 		sendToUIThreadMsg.what = START_REFRESHING_ALL_STATUS;
-		_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+		_mRefreshHandler.send(sendToUIThreadMsg);
 		
 		GlobalStat stat = null;		
 		try
@@ -241,21 +142,21 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage,IIncomingHan
 		/* Notify main UI finish of updating all status */
 		sendToUIThreadMsg = new Message();
 		sendToUIThreadMsg.what = FINISH_REFRESHING_ALL_STATUS;
-		_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+		_mRefreshHandler.send(sendToUIThreadMsg);
 		_updating_status = false;
 	}
 	
-	public GlobalStat getGlobalStatMessage()
+	public GlobalStat getGlobalStatMessage() throws RemoteException
 	{
 		Message sendToUIThreadMsg = new Message();
 		sendToUIThreadMsg.what = GLOBAL_STAT_REFRESHED;
 		GlobalStat stat = _aria2.getGlobalStat();
 		sendToUIThreadMsg.obj = stat;
-		_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+		_mRefreshHandler.send(sendToUIThreadMsg);
 		return stat;
 	}
 	
-	private void getAllStatusMessage(GlobalStat statNew)
+	private void getAllStatusMessage(GlobalStat statNew) throws RemoteException
 	{												
 		Message sendToUIThreadMsg = new Message();
 		sendToUIThreadMsg.what = ALL_STATUS_REFRESHED;
@@ -274,32 +175,14 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage,IIncomingHan
 			list.add(stopList);
 		}
 		sendToUIThreadMsg.obj = list;
-		_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+		_mRefreshHandler.send(sendToUIThreadMsg);
 	}
 	
-	public void sendToAria2APIHandlerMsg(int msgType)
-	{
-		Message sendToAria2APIHandlerMsg = new Message();
-		sendToAria2APIHandlerMsg.what = msgType;
-		_mHandler.sendMessage(sendToAria2APIHandlerMsg);
-	} 
-	
-	public void removeMessages(int msgType)
-	{
-		_mHandler.removeMessages(msgType);
-	}
+	 
 	
 	
 	
-	public void sendToAria2APIHandlerMsg(int msgType,Object msgObj)
-	{
-		Message sendToAria2APIHandlerMsg = new Message();
-		sendToAria2APIHandlerMsg.what = msgType;
-		sendToAria2APIHandlerMsg.obj = msgObj;
-		_mHandler.sendMessage(sendToAria2APIHandlerMsg);
-	}
-	
-	private void handlerError(int comeMessage,Message sendToUIThreadMsg)
+	private void handlerError(int comeMessage,Message sendToUIThreadMsg) throws RemoteException
 	{
 		String errorInfo = "aria2 network errors!";
 		switch (comeMessage)
@@ -325,30 +208,21 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage,IIncomingHan
 	}
 
 	private void sendErrorInfoToUiThreadAndStopUpdateGlobalStat(Message sendToUIThreadMsg,
-			String errorInfo)
+			String errorInfo) throws RemoteException
 	{
 		sendToUIThreadMsg.what = SHOW_ERROR_INFO_STOP_UPDATE_GLOBAL_STAT;
 		sendToUIThreadMsg.obj = errorInfo;
-		_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+		_mRefreshHandler.send(sendToUIThreadMsg);
 	}	
 	
 	private void sendErrorInfoToUiThread(Message sendToUIThreadMsg,
-			String errorInfo)
+			String errorInfo) throws RemoteException
 	{
 		sendToUIThreadMsg.what = SHOW_ERROR_INFO;
 		sendToUIThreadMsg.obj = errorInfo;
-		_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+		_mRefreshHandler.send(sendToUIThreadMsg);
 	}
 	
-	public void StopUpdateGlobalStat()
-	{
-		if(mGlobalStatRefreshTimer != null)
-		{
-			mGlobalStatRefreshTimer.cancel();
-			mGlobalStatRefreshTimer = null;
-			Log.i("aria2", "aria2 stop update GlobalStat timer!");
-		}
-	}
 	
 	private String GetVersionInfo()
 	{
@@ -377,23 +251,6 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage,IIncomingHan
 		return session_info.toString();
 	}
 
-	
-	
-	private String GetStatus()
-	{
-		checkAria2();
-		return String.valueOf(_aria2.tellStatus("7", "gid").gid);
-	}
-	
-	private String AddUri()
-	{
-		checkAria2();
-		String returnValue = _aria2.addUri(
-							new DownloadUris(
-									"http://releases.ubuntu.com/11.10/ubuntu-11.10-desktop-i386.iso.torrent"));	
-		return "Return value : " + returnValue;
-	}
-	
 	private String AddUri(String uri)
 	{
 		checkAria2();
@@ -403,22 +260,9 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage,IIncomingHan
 		return "Return value : " + returnValue;
 	}
 	
-	private String getHost() {
-		String prefKeyHost = getPreferences(SettingsActivity.PREF_KEY_HOST);
-		
-		if(prefKeyHost.equals(""))
-		{
-			throw new IllegalArgumentException("Please config host address first!");
-		}
-		
-		return prefKeyHost;
-	}
+	
 
-	private String getPreferences(String key) {
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(_context);
-		String prefKey= sharedPref.getString(key,"");
-		return prefKey;
-	}	
+		
 	
 	private void checkAria2()
 	{
@@ -428,17 +272,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage,IIncomingHan
 		}
 	}
 	
-	public void StopAria2Handler()
-	{
-	
-		if(_aria2APIHandlerThread != null)
-		{
-			_aria2APIHandlerThread.quit();
-		}
-	}
-
-	@Override
-	public void handleMessage(Message msg, Handler handler)
+	public void handleMessage(Message msg, Handler handler) throws RemoteException
 	{
 		Message sendToUIThreadMsg = new Message();
 		Log.i("aria2", "aria2 manager handler get msg:" + msg.what);
@@ -446,27 +280,27 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage,IIncomingHan
 		{
 			switch (msg.what)
 			{
+			case INIT_HOST:
+				Aria2ConnectionInfo aria2ConnectionInfo = (Aria2ConnectionInfo)msg.obj;
+				InitHost(aria2ConnectionInfo);
+				break;
 			case GET_VERSION_INFO:
 				sendToUIThreadMsg.what = VERSION_INFO_REFRESHED;
 				sendToUIThreadMsg.obj = GetVersionInfo();
-				_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+				_mRefreshHandler.send(sendToUIThreadMsg);
 				break;
 			case GET_SESSION_INFO:
 				sendToUIThreadMsg.what = SESSION_INFO_REFRESHED;
 				sendToUIThreadMsg.obj = GetSessionInfo();
-				_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+				_mRefreshHandler.send(sendToUIThreadMsg);
 				break;
 			case ADD_URI:
-				sendToUIThreadMsg.what = DOWNLOAD_INFO_REFRESHED;
-				if(msg.obj == null)
+				if(msg.obj != null)
 				{
-					sendToUIThreadMsg.obj = AddUri();
-				}
-				else
-				{
+					sendToUIThreadMsg.what = DOWNLOAD_INFO_REFRESHED;
 					sendToUIThreadMsg.obj = AddUri((String)msg.obj);
+					_mRefreshHandler.send(sendToUIThreadMsg);
 				}
-				_mRefreshHandler.sendMessage(sendToUIThreadMsg);
 				break;
 			case PAUSE_ALL_DOWNLOAD:
 				_aria2.pauseAll();
@@ -559,7 +393,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage,IIncomingHan
 					GlobalOptions globalOptions = _aria2.getGlobalOption();
 					sendToUIThreadMsg.what =  MSG_GET_GLOBAL_OPTION_SUCCESS;
 					sendToUIThreadMsg.obj = globalOptions;
-					_mRefreshHandler.sendMessage(sendToUIThreadMsg);
+					_mRefreshHandler.send(sendToUIThreadMsg);
 				}
 				break;
 			case CHANGE_GLOBAL_OPTION:
@@ -572,7 +406,12 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage,IIncomingHan
 					_aria2.changeGlobalOption(globalOptions);
 				}
 				break;
-				
+			
+			case REMOVE_GET_GLOBAL_OPTION:
+				{
+					handler.removeMessages(GET_GLOBAL_OPTION);
+				}
+				break;
 			}
 		}
 		catch (Exception e)

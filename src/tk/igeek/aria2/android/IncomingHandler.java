@@ -6,14 +6,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-class IncomingHandler extends Handler {
+public class IncomingHandler extends Handler {
     private final WeakReference<IIncomingHandler> _InCome; 
 
-    IncomingHandler(IIncomingHandler inCome) {
+    public IncomingHandler(IIncomingHandler inCome) {
         _InCome = new WeakReference<IIncomingHandler>(inCome);
     }
     
-    IncomingHandler(Looper looper,IIncomingHandler inCome) {
+    public IncomingHandler(Looper looper,IIncomingHandler inCome) {
     	super(looper);
     	_InCome = new WeakReference<IIncomingHandler>(inCome);
     	

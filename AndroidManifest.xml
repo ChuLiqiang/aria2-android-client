@@ -92,6 +92,7 @@
 		
 		<activity android:name="ar.com.daidalos.afiledialog.FileChooserActivity" />
 		
+		<service android:name="tk.igeek.aria2.android.service.Aria2Service"/>
 	</application>
 
 </manifest>

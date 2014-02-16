@@ -17,6 +17,10 @@ public interface Aria2APIMessage
 	final static int GET_GLOBAL_OPTION = 15;
 	
 	final static int CHANGE_GLOBAL_OPTION = 16;
+	final static int INIT_HOST = 17;
+	final static int REMOVE_GET_GLOBAL_OPTION = 18;
+	
+	
 	
 	final static int PAUSE_DOWNLOAD = 8;
 	final static int RESUME_DOWNLOAD = 9;

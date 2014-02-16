@@ -24,6 +24,9 @@ import tk.igeek.aria2.Version;
 import tk.igeek.aria2.android.DownloadItemDialogFragment.DownloadItemDialogListener;
 import tk.igeek.aria2.android.NewDownloadDialogFragment.NewDownloadDialogListener;
 import tk.igeek.aria2.android.R.drawable;
+import tk.igeek.aria2.android.manager.Aria2ConnectionInfo;
+import tk.igeek.aria2.android.manager.PreferencesManager;
+import tk.igeek.aria2.android.service.Aria2Service;
 import tk.igeek.aria2.android.utils.CommonUtils;
 
 
@@ -32,15 +35,20 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
@@ -60,9 +68,7 @@ import ar.com.daidalos.afiledialog.FileChooserDialog;
 public class Aria2Activity extends ActionBarActivity 
 						   implements OnClickListener,Aria2UIMessage,Aria2APIMessage,IIncomingHandler,
 						   NewDownloadDialogListener,DownloadItemDialogListener{
-
-	
-	private Aria2Manager _aria2Manager = null;
+	//private Aria2Manager _aria2Manager = null;
 	
 	private ListView downloadListView = null;
 	
@@ -72,8 +78,122 @@ public class Aria2Activity extends ActionBarActivity
 	
 	private Menu optionsMenu = null;
 	
-	
 	private Handler mRefreshHandler = null; 
+	
+	private PreferencesManager _preferencesManager = null; 
+	
+	 /** Flag indicating whether we have called bind on the service. */
+    boolean mIsBound;
+    
+    /** Messenger for communicating with service. */
+    Messenger mService = null;
+    private Messenger mMessenger = null;
+        
+
+    void doBindService() {
+    	// Establish a connection with the service.  We use an explicit
+    	// class name because there is no reason to be able to let other
+    	// applications replace our component.
+    	bindService(new Intent(this, 
+    			Aria2Service.class), mConnection, Context.BIND_AUTO_CREATE);
+    	mIsBound = true;
+    }
+    
+    void doUnbindService() {
+    	if (mIsBound) {
+    		// If we have received the service, and hence registered with
+    		// it, then now is the time to unregister.
+    		if (mService != null) {
+    			try {
+    				Message msg = Message.obtain(null,Aria2Service.MSG_UNREGISTER_CLIENT);
+    				msg.replyTo = mMessenger;
+    				mService.send(msg);
+    			} catch (RemoteException e) {
+    				// There is nothing special we need to do if the service
+    				// has crashed.
+    			}
+    		}
+
+    		// Detach our existing connection.
+    		unbindService(mConnection);
+    		mIsBound = false;
+    	}
+    }
+    
+    public void sendToAria2APIHandlerMsg(int msgType)
+	{
+		Message sendToAria2APIHandlerMsg = new Message();
+		sendToAria2APIHandlerMsg.what = msgType;
+		try {
+			if(mService != null)
+			{
+				mService.send(sendToAria2APIHandlerMsg);
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+    
+    public void sendToAria2APIHandlerMsg(int msgType,Object msgObj)
+	{
+		Message sendToAria2APIHandlerMsg = new Message();
+		sendToAria2APIHandlerMsg.what = msgType;
+		sendToAria2APIHandlerMsg.obj = msgObj;
+		try {
+			if(mService != null)
+			{
+				mService.send(sendToAria2APIHandlerMsg);
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+    
+    public void removeMessages(int msgType)
+	{
+    	sendToAria2APIHandlerMsg(msgType);
+	}
+    
+    /**
+     * Class for interacting with the main interface of the service.
+     */
+    private ServiceConnection mConnection = new ServiceConnection() {
+    	public void onServiceConnected(ComponentName className,
+    			IBinder service) {
+    		// This is called when the connection with the service has been
+    		// established, giving us the service object we can use to
+    		// interact with the service.  We are communicating with our
+    		// service through an IDL interface, so get a client-side
+    		// representation of that from the raw service object.
+    		mService = new Messenger(service);
+
+    		// We want to monitor the service for as long as we are
+    		// connected to it.
+    		try {
+    			Message msg = Message.obtain(null,
+    					Aria2Service.MSG_REGISTER_CLIENT);
+    			msg.replyTo = mMessenger;
+    			mService.send(msg);
+    			Aria2ConnectionInfo aria2ConnectionInfo = new Aria2ConnectionInfo(_preferencesManager);
+    			sendToAria2APIHandlerMsg(INIT_HOST,aria2ConnectionInfo);
+    			
+    		} catch (RemoteException e) {
+    			// In this case the service has crashed before we could even
+    			// do anything with it; we can count on soon being
+    			// disconnected (and then reconnected if it can be restarted)
+    			// so there is no need to do anything here.
+    		}
+    	}
+
+    	public void onServiceDisconnected(ComponentName className) {
+    		// This is called when the connection with the service has been
+    		// unexpectedly disconnected -- that is, its process crashed.
+    		mService = null;
+    		
+    	}
+    };
+    
+    
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -81,9 +201,9 @@ public class Aria2Activity extends ActionBarActivity
 		setContentView(R.layout.main);
 		
 		mRefreshHandler = new IncomingHandler(this);
-		
-		_aria2Manager = new Aria2Manager(this,mRefreshHandler);
-		_aria2Manager.StartAria2Handler();
+		mMessenger = new Messenger(mRefreshHandler);
+		_preferencesManager = new PreferencesManager(this);
+		doBindService();
 		
 		downloadItems = new ArrayList<DownloadItem>();
 		adapter = new DownloadItemAdapter(Aria2Activity.this,R.layout.download_item,downloadItems);
@@ -92,7 +212,7 @@ public class Aria2Activity extends ActionBarActivity
 		downloadListView.setOnItemClickListener(mMessageClickedHandler);
 		downloadListView.setOnItemLongClickListener(mMessageLongClickedHandler);	
 	
-		handleDownloadIntent();
+		//handleDownloadIntent();
 		
 		_context = this;
 		
@@ -102,8 +222,6 @@ public class Aria2Activity extends ActionBarActivity
 	{
 		try
 		{
-			_aria2Manager.InitHost();
-
 			Intent intent = getIntent();
 			if (intent != null && !isLaunchedFromHistory(intent)) {
 				String data = intent.getDataString();
@@ -121,16 +239,16 @@ public class Aria2Activity extends ActionBarActivity
 						if (intent.hasExtra("TORRENT_TITLE")) {
 							title = intent.getStringExtra("TORRENT_TITLE");
 						}
-						_aria2Manager.sendToAria2APIHandlerMsg(ADD_URI, data);
+						sendToAria2APIHandlerMsg(ADD_URI, data);
 					} 
 					else if (scheme.equals("magnet")) {
 						// From a global intent to add a magnet link via URL (usually from the browser)
-						_aria2Manager.sendToAria2APIHandlerMsg(ADD_URI, data);
+						sendToAria2APIHandlerMsg(ADD_URI, data);
 					} 
 					else if (scheme.equals("file")) {
 						// From a global intent to add via the contents of a local .torrent file (maybe form a file manager)
 						File file = new File(uri.getPath());
-						_aria2Manager.sendToAria2APIHandlerMsg(ADD_TORRENT, file);
+						sendToAria2APIHandlerMsg(ADD_TORRENT, file);
 					}
 				}
 			}			
@@ -178,21 +296,73 @@ public class Aria2Activity extends ActionBarActivity
 	
 	@Override
 	public void onStart() {
+		Log.i("aria2", "Aria2Activity Start!");
 		super.onStart();
 		try
 		{
-			_aria2Manager.InitHost();
-			_aria2Manager.StartUpdateGlobalStat();
+			Aria2ConnectionInfo aria2ConnectionInfo = new Aria2ConnectionInfo(_preferencesManager);
+			sendToAria2APIHandlerMsg(INIT_HOST,aria2ConnectionInfo);
+			StartUpdateGlobalStat();
 		}
 		catch(Exception e)
 		{
 			Toast.makeText(Aria2Activity.this,e.getMessage(),Toast.LENGTH_LONG).show();
 		}
+		
+		
+	}
+	
+	private Timer mGlobalStatRefreshTimer = null;
+	
+	public void StartUpdateGlobalStat()
+	{
+		Log.i("aria2", "start update global stat!");
+		
+		int interval = _preferencesManager.GetInterval();
+		
+		mGlobalStatRefreshTimer = new Timer();
+		mGlobalStatRefreshTimer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				if(mService == null)
+				{
+					Log.i("aria2 Timer", "mService is null not should start get all global and task status!");
+					return;
+				}
+					
+				Log.i("aria2 Timer", "start get all global and task status!");
+				CountDownLatch finishSignal = new CountDownLatch(1);
+				
+				sendToAria2APIHandlerMsg(GET_ALL_GLOBAL_AND_TASK_STATUS,finishSignal);
+				
+				try
+				{
+					finishSignal.await();
+				} catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+				Log.i("aria2 Timer", "end get all global and task status!");
+				
+			}
+		}, 0, interval);
+		
 	}
 
+	
+	public void StopUpdateGlobalStat()
+	{
+		if(mGlobalStatRefreshTimer != null)
+		{
+			mGlobalStatRefreshTimer.cancel();
+			mGlobalStatRefreshTimer = null;
+			Log.i("aria2", "aria2 stop update GlobalStat timer!");
+		}
+	}
+	
 	@Override
 	public void onStop() {
-		_aria2Manager.StopUpdateGlobalStat();
+		StopUpdateGlobalStat();
 		super.onStop();
 	}
 	
@@ -203,11 +373,7 @@ public class Aria2Activity extends ActionBarActivity
 		{
 			pd.dismiss();
 		}
-		
-		if(_aria2Manager != null)
-		{
-			_aria2Manager.StopAria2Handler();
-		}
+		doUnbindService();
 		super.onDestroy();
 	}
 
@@ -231,13 +397,13 @@ public class Aria2Activity extends ActionBarActivity
 				showDownloadDialog();
 				break;
 			case R.id.pause_download:
-				_aria2Manager.sendToAria2APIHandlerMsg(PAUSE_ALL_DOWNLOAD);
+				sendToAria2APIHandlerMsg(PAUSE_ALL_DOWNLOAD);
 				break;
 			case R.id.resume_download:
-				_aria2Manager.sendToAria2APIHandlerMsg(RESUME_ALL_DOWNLOAD);
+				sendToAria2APIHandlerMsg(RESUME_ALL_DOWNLOAD);
 				break;
 			case R.id.remove_download:
-				_aria2Manager.sendToAria2APIHandlerMsg(PURGE_DOWNLOAD);
+				sendToAria2APIHandlerMsg(PURGE_DOWNLOAD);
 				break;
 			case R.id.action_exit:
 				finish();
@@ -258,7 +424,7 @@ public class Aria2Activity extends ActionBarActivity
 
 	private void onRefresh() {
 		/* Do manual refresh */
-		_aria2Manager.sendToAria2APIHandlerMsg(GET_ALL_GLOBAL_AND_TASK_STATUS);
+		sendToAria2APIHandlerMsg(GET_ALL_GLOBAL_AND_TASK_STATUS);
 	}
 	
 	private void addFile(String type,final int action)
@@ -270,7 +436,7 @@ public class Aria2Activity extends ActionBarActivity
 				source.hide();
 				Toast toast = Toast.makeText(source.getContext(), "File selected: " + file.getName(), Toast.LENGTH_LONG);
 				toast.show();
-				_aria2Manager.sendToAria2APIHandlerMsg(action,file);
+				sendToAria2APIHandlerMsg(action,file);
 			}
 			public void onFileSelected(Dialog source, File folder, String name) {
 				source.hide();
@@ -299,7 +465,7 @@ public class Aria2Activity extends ActionBarActivity
 			if(data.hasExtra("changeGlobalOptions"))
 			{
 				GlobalOptions globalOptions = data.getParcelableExtra("changeGlobalOptions");
-				_aria2Manager.sendToAria2APIHandlerMsg(CHANGE_GLOBAL_OPTION,globalOptions);
+				sendToAria2APIHandlerMsg(CHANGE_GLOBAL_OPTION,globalOptions);
 				Toast.makeText(this, "begin change global options",Toast.LENGTH_SHORT).show();
 			}
 		}
@@ -390,7 +556,7 @@ public class Aria2Activity extends ActionBarActivity
 						break;
 						
 					case MSG_GET_GLOBAL_OPTION_FAILED:
-						_aria2Manager.removeMessages(GET_GLOBAL_OPTION);
+						removeMessages(REMOVE_GET_GLOBAL_OPTION);
 						handler.removeMessages(MSG_GET_GLOBAL_OPTION_FAILED);
 						pd.dismiss();
 						new AlertDialog.Builder(Aria2Activity.this).setTitle("Waring")
@@ -420,7 +586,7 @@ public class Aria2Activity extends ActionBarActivity
 		try 
 		{
 			String uri = ((NewDownloadDialogFragment)dialog).getDownloadUri(); 
-			_aria2Manager.sendToAria2APIHandlerMsg(ADD_URI,uri);
+			sendToAria2APIHandlerMsg(ADD_URI,uri);
 			
 		}catch (Exception e) {
 			Toast.makeText(Aria2Activity.this,e.getMessage(), Toast.LENGTH_LONG).show();
@@ -434,7 +600,7 @@ public class Aria2Activity extends ActionBarActivity
 		{
 			int action = ((DownloadItemDialogFragment)dialog).getAction();
 			String gid = ((DownloadItemDialogFragment)dialog).getGid();
-			_aria2Manager.sendToAria2APIHandlerMsg(action,gid);
+			sendToAria2APIHandlerMsg(action,gid);
 			
 		}catch (Exception e) {
 			Toast.makeText(Aria2Activity.this,e.getMessage(), Toast.LENGTH_LONG).show();
@@ -462,7 +628,7 @@ public class Aria2Activity extends ActionBarActivity
 				while ((read = input.read(buffer)) != -1)
 					output.write(buffer, 0, read);
 				output.flush();
-				_aria2Manager.sendToAria2APIHandlerMsg(ADD_TORRENT, tempFile);
+				sendToAria2APIHandlerMsg(ADD_TORRENT, tempFile);
 			} finally {
 				output.close();
 			}
@@ -515,7 +681,7 @@ public class Aria2Activity extends ActionBarActivity
 
 			@Override
 			protected Void doInBackground( Void... params ){
-				_aria2Manager.sendToAria2APIHandlerMsg(GET_GLOBAL_OPTION);
+				sendToAria2APIHandlerMsg(GET_GLOBAL_OPTION);
 				return null;
 			}
 

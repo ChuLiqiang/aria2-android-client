@@ -101,19 +101,6 @@ public class Aria2Activity extends ActionBarActivity
     
     void doUnbindService() {
     	if (mIsBound) {
-    		// If we have received the service, and hence registered with
-    		// it, then now is the time to unregister.
-    		if (mService != null) {
-    			try {
-    				Message msg = Message.obtain(null,Aria2Service.MSG_UNREGISTER_CLIENT);
-    				msg.replyTo = mMessenger;
-    				mService.send(msg);
-    			} catch (RemoteException e) {
-    				// There is nothing special we need to do if the service
-    				// has crashed.
-    			}
-    		}
-
     		// Detach our existing connection.
     		unbindService(mConnection);
     		mIsBound = false;
@@ -124,6 +111,7 @@ public class Aria2Activity extends ActionBarActivity
 	{
 		Message sendToAria2APIHandlerMsg = new Message();
 		sendToAria2APIHandlerMsg.what = msgType;
+		sendToAria2APIHandlerMsg.replyTo = mMessenger;
 		try {
 			if(mService != null)
 			{
@@ -139,6 +127,7 @@ public class Aria2Activity extends ActionBarActivity
 		Message sendToAria2APIHandlerMsg = new Message();
 		sendToAria2APIHandlerMsg.what = msgType;
 		sendToAria2APIHandlerMsg.obj = msgObj;
+		sendToAria2APIHandlerMsg.replyTo = mMessenger;
 		try {
 			if(mService != null)
 			{
@@ -166,23 +155,8 @@ public class Aria2Activity extends ActionBarActivity
     		// service through an IDL interface, so get a client-side
     		// representation of that from the raw service object.
     		mService = new Messenger(service);
-
-    		// We want to monitor the service for as long as we are
-    		// connected to it.
-    		try {
-    			Message msg = Message.obtain(null,
-    					Aria2Service.MSG_REGISTER_CLIENT);
-    			msg.replyTo = mMessenger;
-    			mService.send(msg);
-    			Aria2ConnectionInfo aria2ConnectionInfo = new Aria2ConnectionInfo(_preferencesManager);
-    			sendToAria2APIHandlerMsg(INIT_HOST,aria2ConnectionInfo);
-    			
-    		} catch (RemoteException e) {
-    			// In this case the service has crashed before we could even
-    			// do anything with it; we can count on soon being
-    			// disconnected (and then reconnected if it can be restarted)
-    			// so there is no need to do anything here.
-    		}
+    		Aria2ConnectionInfo aria2ConnectionInfo = new Aria2ConnectionInfo(_preferencesManager);
+    		sendToAria2APIHandlerMsg(INIT_HOST,aria2ConnectionInfo);
     	}
 
     	public void onServiceDisconnected(ComponentName className) {

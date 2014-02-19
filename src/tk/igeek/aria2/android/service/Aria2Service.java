@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import tk.igeek.aria2.android.Aria2Manager;
 import tk.igeek.aria2.android.IIncomingHandler;
 import tk.igeek.aria2.android.IncomingHandler;
+import tk.igeek.aria2.android.manager.Aria2ConnectionInfo;
+import tk.igeek.aria2.android.manager.PreferencesManager;
 
 // Need the following import to get access to the app resources, since this
 // class is in a sub-package.
@@ -59,7 +61,7 @@ public class Aria2Service extends Service implements IIncomingHandler {
     ArrayList<Messenger> mClients = new ArrayList<Messenger>();
     public Handler _mHandler = null;
     HandlerThread _aria2APIHandlerThread = null;
-    
+    private PreferencesManager _preferencesManager = null;
     private Aria2Manager _aria2Manager = null;
     
     /**
@@ -74,8 +76,11 @@ public class Aria2Service extends Service implements IIncomingHandler {
 		Looper mLooper = _aria2APIHandlerThread.getLooper();
     	_mHandler = new IncomingHandler(mLooper,this);
     	mMessenger = new Messenger(_mHandler);
-    	_aria2Manager = new Aria2Manager();
     	
+    	_preferencesManager = new PreferencesManager(this);
+    	_aria2Manager = new Aria2Manager(_preferencesManager);
+    	Aria2ConnectionInfo aria2ConnectionInfo = new Aria2ConnectionInfo(_preferencesManager);
+    	_aria2Manager.InitHost(aria2ConnectionInfo);
     }
 
     @Override

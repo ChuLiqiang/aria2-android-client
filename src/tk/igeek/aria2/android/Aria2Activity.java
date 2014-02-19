@@ -80,94 +80,8 @@ public class Aria2Activity extends ActionBarActivity
 	
 	private Handler mRefreshHandler = null; 
 	
-	private PreferencesManager _preferencesManager = null; 
-	
-	 /** Flag indicating whether we have called bind on the service. */
-    boolean mIsBound;
-    
-    /** Messenger for communicating with service. */
-    Messenger mService = null;
-    private Messenger mMessenger = null;
-        
+	private PreferencesManager _preferencesManager = null;
 
-    void doBindService() {
-    	// Establish a connection with the service.  We use an explicit
-    	// class name because there is no reason to be able to let other
-    	// applications replace our component.
-    	bindService(new Intent(this, 
-    			Aria2Service.class), mConnection, Context.BIND_AUTO_CREATE);
-    	mIsBound = true;
-    }
-    
-    void doUnbindService() {
-    	if (mIsBound) {
-    		// Detach our existing connection.
-    		unbindService(mConnection);
-    		mIsBound = false;
-    	}
-    }
-    
-    public void sendToAria2APIHandlerMsg(int msgType)
-	{
-		Message sendToAria2APIHandlerMsg = new Message();
-		sendToAria2APIHandlerMsg.what = msgType;
-		sendToAria2APIHandlerMsg.replyTo = mMessenger;
-		try {
-			if(mService != null)
-			{
-				mService.send(sendToAria2APIHandlerMsg);
-			}
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
-	}
-    
-    public void sendToAria2APIHandlerMsg(int msgType,Object msgObj)
-	{
-		Message sendToAria2APIHandlerMsg = new Message();
-		sendToAria2APIHandlerMsg.what = msgType;
-		sendToAria2APIHandlerMsg.obj = msgObj;
-		sendToAria2APIHandlerMsg.replyTo = mMessenger;
-		try {
-			if(mService != null)
-			{
-				mService.send(sendToAria2APIHandlerMsg);
-			}
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
-	}
-    
-    public void removeMessages(int msgType)
-	{
-    	sendToAria2APIHandlerMsg(msgType);
-	}
-    
-    /**
-     * Class for interacting with the main interface of the service.
-     */
-    private ServiceConnection mConnection = new ServiceConnection() {
-    	public void onServiceConnected(ComponentName className,
-    			IBinder service) {
-    		// This is called when the connection with the service has been
-    		// established, giving us the service object we can use to
-    		// interact with the service.  We are communicating with our
-    		// service through an IDL interface, so get a client-side
-    		// representation of that from the raw service object.
-    		mService = new Messenger(service);
-    		Aria2ConnectionInfo aria2ConnectionInfo = new Aria2ConnectionInfo(_preferencesManager);
-    		sendToAria2APIHandlerMsg(INIT_HOST,aria2ConnectionInfo);
-    	}
-
-    	public void onServiceDisconnected(ComponentName className) {
-    		// This is called when the connection with the service has been
-    		// unexpectedly disconnected -- that is, its process crashed.
-    		mService = null;
-    		
-    	}
-    };
-    
-    
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -176,7 +90,6 @@ public class Aria2Activity extends ActionBarActivity
 		
 		mRefreshHandler = new IncomingHandler(this);
 		mMessenger = new Messenger(mRefreshHandler);
-		_preferencesManager = new PreferencesManager(this);
 		doBindService();
 		
 		downloadItems = new ArrayList<DownloadItem>();
@@ -185,7 +98,7 @@ public class Aria2Activity extends ActionBarActivity
 		downloadListView.setAdapter(adapter);
 		downloadListView.setOnItemClickListener(mMessageClickedHandler);
 		downloadListView.setOnItemLongClickListener(mMessageLongClickedHandler);	
-	
+		_preferencesManager = new PreferencesManager(this);
 		//handleDownloadIntent();
 		
 		_context = this;
@@ -274,8 +187,6 @@ public class Aria2Activity extends ActionBarActivity
 		super.onStart();
 		try
 		{
-			Aria2ConnectionInfo aria2ConnectionInfo = new Aria2ConnectionInfo(_preferencesManager);
-			sendToAria2APIHandlerMsg(INIT_HOST,aria2ConnectionInfo);
 			StartUpdateGlobalStat();
 		}
 		catch(Exception e)
@@ -624,7 +535,6 @@ public class Aria2Activity extends ActionBarActivity
 
 	public void setRefreshActionButtonState(final boolean refreshing) {
 		// setActionView is not support low version of android
-		/*
 	     if (optionsMenu != null) {
 	         final MenuItem refreshItem = optionsMenu.findItem(R.id.action_refresh);
 	         if (refreshItem != null) {
@@ -635,7 +545,6 @@ public class Aria2Activity extends ActionBarActivity
 	             }
 	         }
 	     }
-	     */
 	 }
 	
 	private AsyncTask<Void, Void, Void> mAsyncTask;
@@ -676,5 +585,88 @@ public class Aria2Activity extends ActionBarActivity
 		pd.setIndeterminate(true);
 		pd.show();
 	}
+	
+	public void removeMessages(int msgType)
+	{
+    	sendToAria2APIHandlerMsg(msgType);
+	}
+    
+	public void sendToAria2APIHandlerMsg(int msgType)
+	{
+		Message sendToAria2APIHandlerMsg = new Message();
+		sendToAria2APIHandlerMsg.what = msgType;
+		sendToAria2APIHandlerMsg.replyTo = mMessenger;
+		try {
+			if(mService != null)
+			{
+				mService.send(sendToAria2APIHandlerMsg);
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+    
+    public void sendToAria2APIHandlerMsg(int msgType,Object msgObj)
+	{
+		Message sendToAria2APIHandlerMsg = new Message();
+		sendToAria2APIHandlerMsg.what = msgType;
+		sendToAria2APIHandlerMsg.obj = msgObj;
+		sendToAria2APIHandlerMsg.replyTo = mMessenger;
+		try {
+			if(mService != null)
+			{
+				mService.send(sendToAria2APIHandlerMsg);
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/** Flag indicating whether we have called bind on the service. */
+    boolean mIsBound;
+    
+    /** Messenger for communicating with service. */
+    Messenger mService = null;
+    private Messenger mMessenger = null;
+        
+
+    void doBindService() {
+    	// Establish a connection with the service.  We use an explicit
+    	// class name because there is no reason to be able to let other
+    	// applications replace our component.
+    	bindService(new Intent(this, 
+    			Aria2Service.class), mConnection, Context.BIND_AUTO_CREATE);
+    	mIsBound = true;
+    }
+    
+    void doUnbindService() {
+    	if (mIsBound) {
+    		// Detach our existing connection.
+    		unbindService(mConnection);
+    		mIsBound = false;
+    	}
+    }
+    
+    /**
+     * Class for interacting with the main interface of the service.
+     */
+    private ServiceConnection mConnection = new ServiceConnection() {
+    	public void onServiceConnected(ComponentName className,
+    			IBinder service) {
+    		// This is called when the connection with the service has been
+    		// established, giving us the service object we can use to
+    		// interact with the service.  We are communicating with our
+    		// service through an IDL interface, so get a client-side
+    		// representation of that from the raw service object.
+    		mService = new Messenger(service);
+    	}
+
+    	public void onServiceDisconnected(ComponentName className) {
+    		// This is called when the connection with the service has been
+    		// unexpectedly disconnected -- that is, its process crashed.
+    		mService = null;
+    		
+    	}
+    };
 	
 }

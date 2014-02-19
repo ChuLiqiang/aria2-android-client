@@ -19,6 +19,7 @@ import tk.igeek.aria2.GlobalOptions;
 import tk.igeek.aria2.Status;
 import tk.igeek.aria2.Version;
 import tk.igeek.aria2.android.manager.Aria2ConnectionInfo;
+import tk.igeek.aria2.android.manager.PreferencesManager;
 import tk.igeek.aria2.android.utils.Base64;
 
 import android.content.Context;
@@ -47,10 +48,11 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 	{
 		_mRefreshHandler = refreshHandler;
 	}
-	
-	public Aria2Manager()
+	private PreferencesManager _preferencesManager = null;
+	public Aria2Manager(PreferencesManager preferencesManager)
 	{
 		Log.i("aria2", "init Aria2Manager!");
+		_preferencesManager = preferencesManager;
 	}
 	
 	protected void addMetalink(File file) throws IOException
@@ -281,7 +283,7 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 			switch (msg.what)
 			{
 			case INIT_HOST:
-				Aria2ConnectionInfo aria2ConnectionInfo = (Aria2ConnectionInfo)msg.obj;
+				Aria2ConnectionInfo aria2ConnectionInfo = new Aria2ConnectionInfo(_preferencesManager);
 				InitHost(aria2ConnectionInfo);
 				break;
 			case GET_VERSION_INFO:

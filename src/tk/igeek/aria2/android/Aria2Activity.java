@@ -383,86 +383,83 @@ public class Aria2Activity extends ActionBarActivity
 	public void handleMessage(Message msg,Handler handler)
 	{
 		Log.i("aria2", "aria2 ui handler get msg:" + msg.what);
-			try
+		try
+		{
+			switch (msg.what) 
 			{
-				switch (msg.what) 
+			case START_REFRESHING_ALL_STATUS:
+				setRefreshActionButtonState(true);
+				break;
+			case FINISH_REFRESHING_ALL_STATUS:
+				setRefreshActionButtonState(false);
+				break;
+			case GLOBAL_STAT_REFRESHED:
+				if (msg.obj == null) return;
+				GlobalStat stat = (GlobalStat) msg.obj;
+				String subtitle = getString(R.string.global_speed_format,
+						CommonUtils.formatSpeedString(stat.downloadSpeed),
+						CommonUtils.formatSpeedString(stat.uploadSpeed));
+				getSupportActionBar().setSubtitle(subtitle);
+				break;
+			case ALL_STATUS_REFRESHED:
+				if (msg.obj == null) return;
+
+				List<DownloadItem> downloadItemsNew = new ArrayList<DownloadItem>();
+
+				ArrayList<ArrayList<Status>> statusList = (ArrayList<ArrayList<Status>>)msg.obj;
+				Iterator<ArrayList<Status>> itStatusList = statusList.iterator();
+				while (itStatusList.hasNext())
 				{
-					case START_REFRESHING_ALL_STATUS:
-						setRefreshActionButtonState(true);
-						break;
-					case FINISH_REFRESHING_ALL_STATUS:
-						setRefreshActionButtonState(false);
-						break;
-					case GLOBAL_STAT_REFRESHED:
-						if (msg.obj == null) return;
-						GlobalStat stat = (GlobalStat) msg.obj;
-						String subtitle = getString(R.string.global_speed_format,
-								CommonUtils.formatSpeedString(stat.downloadSpeed),
-								CommonUtils.formatSpeedString(stat.uploadSpeed));
-						getSupportActionBar().setSubtitle(subtitle);
-						break;
-					case ALL_STATUS_REFRESHED:
-						if (msg.obj == null) return;
-						
-						List<DownloadItem> downloadItemsNew = new ArrayList<DownloadItem>();
-						
-						ArrayList<ArrayList<Status>> statusList = (ArrayList<ArrayList<Status>>)msg.obj;
-						Iterator<ArrayList<Status>> itStatusList = statusList.iterator();
-						while (itStatusList.hasNext())
-						{
-							List<Status> status = itStatusList.next();
-							Iterator<Status> it = status.iterator();
-							while (it.hasNext())
-							{
-								Status statusTemp = it.next();
-								DownloadItem downloadItem = new DownloadItem(statusTemp);
-								downloadItemsNew.add(downloadItem);
-							}
-						}
-						
-						adapter.updateItems(downloadItemsNew);
-						adapter.notifyDataSetChanged(); 
-						break;
-					case SHOW_ERROR_INFO_STOP_UPDATE_GLOBAL_STAT:
-						{
-							String errorInfo = (String)msg.obj; 
-							Toast.makeText(Aria2Activity.this,errorInfo,Toast.LENGTH_LONG).show();
-						}
-						break;
-					case SHOW_ERROR_INFO:
-						{
-							if (msg.obj == null) 
-							{
-								Toast.makeText(Aria2Activity.this,"error happend!", Toast.LENGTH_LONG).show();
-							}
-							String errorInfo = (String)msg.obj; 
-							Toast.makeText(Aria2Activity.this,errorInfo,Toast.LENGTH_LONG).show();
-						}
-						break;
-						
-					case MSG_GET_GLOBAL_OPTION_FAILED:
-						removeMessages(REMOVE_GET_GLOBAL_OPTION);
-						handler.removeMessages(MSG_GET_GLOBAL_OPTION_FAILED);
-						pd.dismiss();
-						new AlertDialog.Builder(Aria2Activity.this).setTitle("Waring")
-						.setMessage("get global option error, please check network!").setPositiveButton("OK", null).show();
-						break;
-					case MSG_GET_GLOBAL_OPTION_SUCCESS:
-						handler.removeMessages(MSG_GET_GLOBAL_OPTION_FAILED);
-						GlobalOptions globalOptions = (GlobalOptions )msg.obj;
-						globalOptions.SetGlobalOptionsActivity(_context);
-						pd.dismiss();
-						Intent globalOption = new Intent(getApplicationContext(), GlobalOptionActivity.class);
-						startActivityForResult(globalOption,GET_GLOBAL_OPTIONS);
-						//startActivity(globalOption);
-						break;
-						
-						
-					 
+					List<Status> status = itStatusList.next();
+					Iterator<Status> it = status.iterator();
+					while (it.hasNext())
+					{
+						Status statusTemp = it.next();
+						DownloadItem downloadItem = new DownloadItem(statusTemp);
+						downloadItemsNew.add(downloadItem);
+					}
 				}
-			}catch (Exception e) {
-				Log.e("aria2", "aria2 ui handler is error!",e);
+
+				adapter.updateItems(downloadItemsNew);
+				adapter.notifyDataSetChanged(); 
+				break;
+			case SHOW_ERROR_INFO_STOP_UPDATE_GLOBAL_STAT:
+			{
+				String errorInfo = (String)msg.obj; 
+				Toast.makeText(Aria2Activity.this,errorInfo,Toast.LENGTH_LONG).show();
 			}
+			break;
+			case SHOW_ERROR_INFO:
+			{
+				if (msg.obj == null) 
+				{
+					Toast.makeText(Aria2Activity.this,"error happend!", Toast.LENGTH_LONG).show();
+				}
+				String errorInfo = (String)msg.obj; 
+				Toast.makeText(Aria2Activity.this,errorInfo,Toast.LENGTH_LONG).show();
+			}
+			break;
+
+			case MSG_GET_GLOBAL_OPTION_FAILED:
+				removeMessages(REMOVE_GET_GLOBAL_OPTION);
+				handler.removeMessages(MSG_GET_GLOBAL_OPTION_FAILED);
+				pd.dismiss();
+				new AlertDialog.Builder(Aria2Activity.this).setTitle("Waring")
+				.setMessage("get global option error, please check network!").setPositiveButton("OK", null).show();
+				break;
+			case MSG_GET_GLOBAL_OPTION_SUCCESS:
+				handler.removeMessages(MSG_GET_GLOBAL_OPTION_FAILED);
+				GlobalOptions globalOptions = (GlobalOptions )msg.obj;
+				globalOptions.SetGlobalOptionsActivity(_context);
+				pd.dismiss();
+				Intent globalOption = new Intent(getApplicationContext(), GlobalOptionActivity.class);
+				startActivityForResult(globalOption,GET_GLOBAL_OPTIONS);
+				//startActivity(globalOption);
+				break;
+			}
+		}catch (Exception e) {
+			Log.e("aria2", "aria2 ui handler is error!",e);
+		}
 	}
 
 	@Override

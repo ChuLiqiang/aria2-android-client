@@ -82,11 +82,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 		    
 		    // Set summary to be the user-description for the selected value
 		    connectionPref.setSummary(sharedPreferences.getString(key, ""));
-		    if(!sendToAria2APIHandlerMsg(Aria2APIMessage.INIT_HOST))
-		    {
-		    	connectionChange = true;
-		    }
-		    
+		    connectionChange = true;
 		}
 		if (key.equals(PREF_KEY_REFRESH_INTERVAL)) {
 			updateCurrentSettings();
@@ -113,6 +109,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 		if(connectionChange)
 		{
 			sendToAria2APIHandlerMsg(Aria2APIMessage.INIT_HOST);
+			connectionChange = false;
 		}
 		doUnbindService();
 		super.onDestroy();
@@ -130,7 +127,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 	
 	public boolean sendToAria2APIHandlerMsg(int msgType)
 	{
-		if(mService != null)
+		if(mService == null)
 		{
 			return false;
 		}

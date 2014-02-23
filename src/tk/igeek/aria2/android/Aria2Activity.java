@@ -68,7 +68,6 @@ import ar.com.daidalos.afiledialog.FileChooserDialog;
 public class Aria2Activity extends ActionBarActivity 
 						   implements OnClickListener,Aria2UIMessage,Aria2APIMessage,IIncomingHandler,
 						   NewDownloadDialogListener,DownloadItemDialogListener{
-	//private Aria2Manager _aria2Manager = null;
 	
 	private ListView downloadListView = null;
 	

@@ -16,6 +16,7 @@ import tk.igeek.aria2.Aria2API;
 import tk.igeek.aria2.DownloadUris;
 import tk.igeek.aria2.GlobalStat;
 import tk.igeek.aria2.GlobalOptions;
+import tk.igeek.aria2.Peer;
 import tk.igeek.aria2.Status;
 import tk.igeek.aria2.Version;
 import tk.igeek.aria2.android.manager.Aria2ConnectionInfo;
@@ -412,6 +413,20 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 			case REMOVE_GET_GLOBAL_OPTION:
 				{
 					handler.removeMessages(GET_GLOBAL_OPTION);
+				}
+				break;
+			case GET_PEERS:
+				{
+					if(msg.obj == null)
+					{
+						return;
+					}
+					String gid = (String)msg.obj;
+					ArrayList<Peer> list = _aria2.getPeers(gid);
+					sendToUIThreadMsg.what = PEERS_REFRESHED;
+					sendToUIThreadMsg.obj = list;
+					_mRefreshHandler.send(sendToUIThreadMsg);
+					
 				}
 				break;
 			}

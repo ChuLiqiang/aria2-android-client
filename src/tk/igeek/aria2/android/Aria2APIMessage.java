@@ -25,6 +25,9 @@ public interface Aria2APIMessage
 	final static int GET_SERVERS = 20;
 	
 	
+	final static int ERROR_COMMAND = -1;
+	
+	
 	
 	
 	

@@ -363,7 +363,7 @@ public class Aria2API {
 	 */
 	public GlobalOptions getGlobalOption()
 	{
-		HashMap<String, Object> globalOption= (HashMap<String, Object>)callMethod("aria2.getGlobalOption");
+		HashMap<String, Object> globalOption = (HashMap<String, Object>)callMethod("aria2.getGlobalOption");
 		return new GlobalOptions(globalOption);
 	}
 	
@@ -375,6 +375,21 @@ public class Aria2API {
 	public String changeGlobalOption(GlobalOptions options)
 	{
 		return (String) callMethod("aria2.changeGlobalOption",new Object[] { options.get() });
+	}
+	
+	
+	/**
+	 * This method returns peer list of the download denoted by gid. gid is of type string.
+	 *  This method is for BitTorrent only. The response is of type array and its element 
+	 *  is of type struct and it contains following keys. The value type is string.
+	 * 
+	 * @return GID of unpaused download.
+	 */
+	public ArrayList<Peer> getPeers(String gid) {
+
+		Object[] peers = (Object[])callMethod("aria2.getPeers",gid);
+		ArrayList<Peer> peerList = getPeers(peers);
+		return peerList;
 	}
 	
 	private Object callMethod(String method, Object... args){
@@ -421,6 +436,20 @@ public class Aria2API {
 		}
 		
 		return status;
+	}
+	
+	private ArrayList<Peer> getPeers(Object[] peers)
+	{
+		ArrayList<Peer> peersList = new ArrayList<Peer>();
+		
+		for (Object object : peers)
+		{
+			HashMap<String, Object> peerObject = (HashMap<String, Object>) object;
+			Peer peerStatus = new Peer(peerObject);
+			peersList.add(peerStatus);
+		}
+		
+		return peersList;
 	}
 
 	

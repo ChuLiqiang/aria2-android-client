@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import tk.igeek.aria2.android.service.Aria2APIMessage;
+
 
 import android.app.Activity;
 import android.app.AlertDialog;

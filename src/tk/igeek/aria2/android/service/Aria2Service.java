@@ -34,7 +34,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import tk.igeek.aria2.android.Aria2Manager;
 import tk.igeek.aria2.android.IIncomingHandler;
 import tk.igeek.aria2.android.IncomingHandler;
 import tk.igeek.aria2.android.manager.Aria2ConnectionInfo;

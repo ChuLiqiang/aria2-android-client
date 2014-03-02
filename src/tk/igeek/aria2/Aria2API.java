@@ -383,7 +383,7 @@ public class Aria2API {
 	 *  This method is for BitTorrent only. The response is of type array and its element 
 	 *  is of type struct and it contains following keys. The value type is string.
 	 * 
-	 * @return GID of unpaused download.
+	 * @return GID of get peers.
 	 */
 	public ArrayList<Peer> getPeers(String gid) {
 
@@ -392,6 +392,19 @@ public class Aria2API {
 		return peerList;
 	}
 	
+	/**
+	 * This method returns currently connected HTTP(S)/FTP servers of the download denoted by gid. 
+	 * @return GID of get servers.
+	 */
+	public ArrayList<Server> getServers(String gid) {
+
+		Object[] servers = (Object[])callMethod("aria2.getServers",gid);
+		ArrayList<Server> serverList = getServers(servers);
+		return serverList;
+	}
+	
+	
+
 	private Object callMethod(String method, Object... args){
 		
 		Object response = null;
@@ -450,6 +463,19 @@ public class Aria2API {
 		}
 		
 		return peersList;
+	}
+	
+	private ArrayList<Server> getServers(Object[] servers) {
+		ArrayList<Server> serverList = new ArrayList<Server>();
+		
+		for (Object object : servers)
+		{
+			HashMap<String, Object> serverObject = (HashMap<String, Object>) object;
+			Server server = new Server(serverObject);
+			serverList.add(server);
+		}
+		
+		return serverList;
 	}
 
 	

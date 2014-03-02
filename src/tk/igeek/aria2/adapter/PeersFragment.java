@@ -5,13 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tk.igeek.aria2.Peer;
+import tk.igeek.aria2.Server;
 import tk.igeek.aria2.Status;
-import tk.igeek.aria2.android.Aria2APIMessage;
 import tk.igeek.aria2.android.Aria2UIMessage;
 import tk.igeek.aria2.android.DownloadItemInfoActivity;
 import tk.igeek.aria2.android.IIncomingHandler;
 import tk.igeek.aria2.android.IncomingHandler;
 import tk.igeek.aria2.android.R;
+import tk.igeek.aria2.android.service.Aria2APIMessage;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,8 +32,11 @@ public class PeersFragment extends Fragment implements IIncomingHandler {
 	private String mCurrentGid = null;
 	private int commandType = Aria2APIMessage.ERROR_COMMAND;
 	
-	private PeerItemAdapter adapter = null;
+	private PeerItemAdapter peerAdapter = null;
 	private List<Peer> peerItems = null;
+	
+	private ServerItemAdapter serverAdapter = null;
+	private List<Server> serverItems = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -50,9 +54,10 @@ public class PeersFragment extends Fragment implements IIncomingHandler {
 			}
 			else
 			{
-				commandType = Aria2APIMessage.GET_PEERS;
+				commandType = Aria2APIMessage.GET_SERVERS;
 			}
 		}
+		
 		mRefreshHandler = new IncomingHandler(this);
 		mMessenger = new Messenger(mRefreshHandler);
 		super.onCreate(savedInstanceState);
@@ -64,10 +69,24 @@ public class PeersFragment extends Fragment implements IIncomingHandler {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_peers, container, false);
+		
 		peerItems = new ArrayList<Peer>();
-		adapter = new PeerItemAdapter(getActivity(),R.layout.peer_item,peerItems);
+		peerAdapter = new PeerItemAdapter(getActivity(),R.layout.peer_item,peerItems);
+		
+		
+		serverItems = new ArrayList<Server>();
+		serverAdapter = new ServerItemAdapter(getActivity(), R.layout.server_item, serverItems);
+		
 		ListView listview = (ListView) rootView.findViewById(R.id.download_item_info_peers_list_view);
-		listview.setAdapter(adapter);
+		
+		if(commandType == Aria2APIMessage.GET_PEERS)
+		{
+			listview.setAdapter(peerAdapter);
+		} 
+		else if(commandType == Aria2APIMessage.GET_SERVERS)
+		{
+			listview.setAdapter(serverAdapter);
+		}
 		return rootView;
 	}
 
@@ -92,9 +111,18 @@ public class PeersFragment extends Fragment implements IIncomingHandler {
 			switch (msg.what) 
 			{
 			case Aria2UIMessage.PEERS_REFRESHED:
-				ArrayList<Peer> newPeerList = (ArrayList<Peer>)msg.obj; 
-				adapter.updateItems(newPeerList);
-				adapter.notifyDataSetChanged();
+				{
+					ArrayList<Peer> newPeerList = (ArrayList<Peer>)msg.obj; 
+					peerAdapter.updateItems(newPeerList);
+					peerAdapter.notifyDataSetChanged();
+				}
+				break;
+			case Aria2UIMessage.SERVERS_REFRESHED:
+				{
+					ArrayList<Server> newServerList = (ArrayList<Server>)msg.obj;
+					serverAdapter.updateItems(newServerList);
+					serverAdapter.notifyDataSetChanged();
+				}
 				break;
 			}
 		}catch (Exception e) {

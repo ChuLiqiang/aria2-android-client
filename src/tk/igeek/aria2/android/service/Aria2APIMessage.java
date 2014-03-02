@@ -1,4 +1,4 @@
-package tk.igeek.aria2.android;
+package tk.igeek.aria2.android.service;
 
 public interface Aria2APIMessage
 {

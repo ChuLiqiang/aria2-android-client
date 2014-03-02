@@ -1,4 +1,4 @@
-package tk.igeek.aria2.android;
+package tk.igeek.aria2.android.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -17,8 +17,10 @@ import tk.igeek.aria2.DownloadUris;
 import tk.igeek.aria2.GlobalStat;
 import tk.igeek.aria2.GlobalOptions;
 import tk.igeek.aria2.Peer;
+import tk.igeek.aria2.Server;
 import tk.igeek.aria2.Status;
 import tk.igeek.aria2.Version;
+import tk.igeek.aria2.android.Aria2UIMessage;
 import tk.igeek.aria2.android.manager.Aria2ConnectionInfo;
 import tk.igeek.aria2.android.manager.PreferencesManager;
 import tk.igeek.aria2.android.utils.Base64;
@@ -427,6 +429,19 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 					sendToUIThreadMsg.obj = list;
 					_mRefreshHandler.send(sendToUIThreadMsg);
 					
+				}
+				break;
+			case GET_SERVERS:
+				{
+					if(msg.obj == null)
+					{
+						return;
+					}
+					String gid = (String)msg.obj;
+					ArrayList<Server> list = _aria2.getServers(gid);
+					sendToUIThreadMsg.what = SERVERS_REFRESHED;
+					sendToUIThreadMsg.obj = list;
+					_mRefreshHandler.send(sendToUIThreadMsg);
 				}
 				break;
 			}

@@ -26,6 +26,7 @@ import tk.igeek.aria2.android.NewDownloadDialogFragment.NewDownloadDialogListene
 import tk.igeek.aria2.android.R.drawable;
 import tk.igeek.aria2.android.manager.Aria2ConnectionInfo;
 import tk.igeek.aria2.android.manager.PreferencesManager;
+import tk.igeek.aria2.android.service.Aria2APIMessage;
 import tk.igeek.aria2.android.service.Aria2Service;
 import tk.igeek.aria2.android.utils.CommonUtils;
 

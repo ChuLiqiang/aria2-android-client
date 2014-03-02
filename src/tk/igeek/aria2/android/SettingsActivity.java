@@ -3,6 +3,7 @@
  */
 package tk.igeek.aria2.android;
 
+import tk.igeek.aria2.android.service.Aria2APIMessage;
 import tk.igeek.aria2.android.service.Aria2Service;
 import android.content.ComponentName;
 import android.content.Context;

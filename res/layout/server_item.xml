@@ -5,10 +5,23 @@
 		android:orientation="vertical">
 
 		<TextView
-			android:id="@+id/server_item_file_index"
+			android:id="@+id/server_item_server_uri"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:textSize="12sp"
 			/>
 		
+		<TextView
+			android:id="@+id/server_item_current_uri"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:textSize="12sp"
+			/>
+		
+		<TextView
+			android:id="@+id/server_item_download_speed"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:textSize="12sp"
+			/>
 </LinearLayout>

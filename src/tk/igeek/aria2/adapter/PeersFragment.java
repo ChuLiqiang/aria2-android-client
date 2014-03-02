@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 
 public class PeersFragment extends Fragment implements IIncomingHandler {
@@ -68,24 +69,23 @@ public class PeersFragment extends Fragment implements IIncomingHandler {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_peers, container, false);
-		
-		peerItems = new ArrayList<Peer>();
-		peerAdapter = new PeerItemAdapter(getActivity(),R.layout.peer_item,peerItems);
-		
-		
-		serverItems = new ArrayList<Server>();
-		serverAdapter = new ServerItemAdapter(getActivity(), R.layout.server_item, serverItems);
-		
-		ListView listview = (ListView) rootView.findViewById(R.id.download_item_info_peers_list_view);
+		View rootView = null; 
 		
 		if(commandType == Aria2APIMessage.GET_PEERS)
 		{
+			rootView = inflater.inflate(R.layout.fragment_peers, container, false);
+			peerItems = new ArrayList<Peer>();
+			peerAdapter = new PeerItemAdapter(getActivity(),R.layout.peer_item,peerItems);
+			ListView listview = (ListView) rootView.findViewById(R.id.download_item_info_peers_list_view);
 			listview.setAdapter(peerAdapter);
 		} 
 		else if(commandType == Aria2APIMessage.GET_SERVERS)
 		{
-			listview.setAdapter(serverAdapter);
+			rootView = inflater.inflate(R.layout.fragment_servers, container, false);
+			serverItems = new ArrayList<Server>();
+			serverAdapter = new ServerItemAdapter(getActivity(),serverItems);
+			ExpandableListView expListView = (ExpandableListView) rootView.findViewById(R.id.download_item_info_servers_list_view);;
+			expListView.setAdapter(serverAdapter);
 		}
 		return rootView;
 	}

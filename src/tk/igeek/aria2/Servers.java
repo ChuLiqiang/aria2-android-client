@@ -2,35 +2,22 @@ package tk.igeek.aria2;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Server extends CommonItem implements Parcelable{
+public class Servers extends CommonItem implements Parcelable{
 
-	public String index = "";
-	public Object[] servers = null;
-	public List<Servers> serversList = new ArrayList<Servers>();
-	
-	private void initServers() {
-		if (servers == null) {
-			return;
-		}
-		for (Object server : servers) {
-			Servers servers = new Servers((HashMap<String, Object>)server);
-			serversList.add(servers);
-		}
-	}
-	
-	public Server(HashMap<String, Object> data) {
+	public Servers(HashMap<String, Object> data) {
 		init(data);
-		initServers();
 	}
+
+	public String uri = "";
+	public String currentUri = "";
+	public String downloadSpeed = "";
 	
-	public Server(Parcel source) {
+	public Servers(Parcel source) {
 		 readFromParcel(source);
 	 }
 	
@@ -39,16 +26,16 @@ public class Server extends CommonItem implements Parcelable{
 		read(in); 
 	}
 
-	public static final Parcelable.Creator<Server> CREATOR = new Parcelable.Creator<Server>() {
+	public static final Parcelable.Creator<Servers> CREATOR = new Parcelable.Creator<Servers>() {
 
 		@Override
-		public Server createFromParcel(Parcel source) {
-			return new Server(source);
+		public Servers createFromParcel(Parcel source) {
+			return new Servers(source);
 		}
 
 		@Override
-		public Server[] newArray(int size) {
-			return new Server[size];
+		public Servers[] newArray(int size) {
+			return new Servers[size];
 		}
 	};
 	
@@ -93,14 +80,12 @@ public class Server extends CommonItem implements Parcelable{
 	
 	@Override
 	public int describeContents() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		write(dest);
-		
 	}
 
 }

@@ -10,6 +10,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -225,8 +226,8 @@ public class Status extends CommonItem implements Parcelable {
 			break;
 
 		}
-
-		return name;
+		File f = new File(name);
+		return f.getName();
 	}
 
 	private void initFiles() {

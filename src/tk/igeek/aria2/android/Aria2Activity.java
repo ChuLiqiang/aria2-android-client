@@ -181,22 +181,6 @@ public class Aria2Activity extends ActionBarActivity
 		
 	};
 	
-	@Override
-	public void onStart() {
-		Log.i("aria2", "Aria2Activity Start!");
-		super.onStart();
-		try
-		{
-			StartUpdateGlobalStat();
-		}
-		catch(Exception e)
-		{
-			Toast.makeText(Aria2Activity.this,e.getMessage(),Toast.LENGTH_LONG).show();
-		}
-		
-		
-	}
-	
 	private Timer mGlobalStatRefreshTimer = null;
 	
 	public void StartUpdateGlobalStat()
@@ -245,10 +229,26 @@ public class Aria2Activity extends ActionBarActivity
 		}
 	}
 	
+	
+	
 	@Override
-	public void onStop() {
+	protected void onPause() {
 		StopUpdateGlobalStat();
-		super.onStop();
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		Log.i("aria2", "Aria2Activity Resume!");
+		try
+		{
+			StartUpdateGlobalStat();
+		}
+		catch(Exception e)
+		{
+			Toast.makeText(Aria2Activity.this,e.getMessage(),Toast.LENGTH_LONG).show();
+		}
+		super.onResume();
 	}
 	
 	@Override

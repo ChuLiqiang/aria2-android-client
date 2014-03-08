@@ -117,9 +117,18 @@ public class DownloadItemInfoActivity extends FragmentActivity implements
 		
 	}
 	
-	public boolean sendToAria2APIHandlerMsg(int msgType,Object msgObj,Messenger messenger)
+	public boolean serverIsInit()
 	{
 		if(mService == null)
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean sendToAria2APIHandlerMsg(int msgType,Object msgObj,Messenger messenger)
+	{
+		if(!serverIsInit())
 		{
 			return false;
 		}

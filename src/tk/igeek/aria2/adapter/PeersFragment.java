@@ -3,6 +3,9 @@ package tk.igeek.aria2.adapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.CountDownLatch;
 
 import tk.igeek.aria2.Peer;
 import tk.igeek.aria2.Server;
@@ -12,6 +15,7 @@ import tk.igeek.aria2.android.DownloadItemInfoActivity;
 import tk.igeek.aria2.android.IIncomingHandler;
 import tk.igeek.aria2.android.IncomingHandler;
 import tk.igeek.aria2.android.R;
+import tk.igeek.aria2.android.manager.PreferencesManager;
 import tk.igeek.aria2.android.service.Aria2APIMessage;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +43,7 @@ public class PeersFragment extends Fragment implements IIncomingHandler {
 	private ServerItemAdapter serverAdapter = null;
 	private List<Server> serverItems = null;
 	
+	private PreferencesManager _preferencesManager = null;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		
@@ -61,6 +66,7 @@ public class PeersFragment extends Fragment implements IIncomingHandler {
 		
 		mRefreshHandler = new IncomingHandler(this);
 		mMessenger = new Messenger(mRefreshHandler);
+		_preferencesManager = new PreferencesManager(getActivity());
 		super.onCreate(savedInstanceState);
 	}
 
@@ -90,16 +96,62 @@ public class PeersFragment extends Fragment implements IIncomingHandler {
 		return rootView;
 	}
 
+	private CountDownLatch finishSignal = null;
+	private Timer mGlobalStatRefreshTimer = null;
+	public void StartUpdateStat()
+	{
+		Log.i("aria2", "start update stat!");
+		
+		int interval = _preferencesManager.GetInterval();
+		
+		mGlobalStatRefreshTimer = new Timer();
+		mGlobalStatRefreshTimer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				DownloadItemInfoActivity downloadItemInfoActivity = (DownloadItemInfoActivity)getActivity();
+				boolean canSend = downloadItemInfoActivity.serverIsInit();
+				if(canSend == false)
+				{
+					Log.i("aria2", "server not init!");
+					return;
+				}
+				
+				finishSignal = new CountDownLatch(1);
+				
+				downloadItemInfoActivity.sendToAria2APIHandlerMsg(commandType,mCurrentGid,mMessenger);
+				
+				try
+				{
+					finishSignal.await();
+				} catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+				Log.i("aria2", "have update peer ui send request to server!");
+			}
+		}, 0, interval);
+		
+	}
+	
+	public void StopUpdateStat()
+	{
+		if(mGlobalStatRefreshTimer != null)
+		{
+			mGlobalStatRefreshTimer.cancel();
+			mGlobalStatRefreshTimer = null;
+			Log.i("aria2", "peers stop update stat timer!");
+		}
+	}
+	
 	@Override
 	public void onResume() {
-		DownloadItemInfoActivity downloadItemInfoActivity = (DownloadItemInfoActivity)getActivity();
-		downloadItemInfoActivity.sendToAria2APIHandlerMsg(commandType,mCurrentGid,mMessenger);
+		StartUpdateStat();
 		super.onResume();
 	}
 
 	@Override
 	public void onPause() {
-		// TODO Auto-generated method stub
+		StopUpdateStat();
 		super.onPause();
 	}
 
@@ -115,6 +167,7 @@ public class PeersFragment extends Fragment implements IIncomingHandler {
 					ArrayList<Peer> newPeerList = (ArrayList<Peer>)msg.obj; 
 					peerAdapter.updateItems(newPeerList);
 					peerAdapter.notifyDataSetChanged();
+					finishSignal.countDown();
 				}
 				break;
 			case Aria2UIMessage.SERVERS_REFRESHED:
@@ -122,6 +175,7 @@ public class PeersFragment extends Fragment implements IIncomingHandler {
 					ArrayList<Server> newServerList = (ArrayList<Server>)msg.obj;
 					serverAdapter.updateItems(newServerList);
 					serverAdapter.notifyDataSetChanged();
+					finishSignal.countDown();
 				}
 				break;
 			}

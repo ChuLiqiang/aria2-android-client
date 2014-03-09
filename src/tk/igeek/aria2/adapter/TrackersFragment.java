@@ -45,17 +45,7 @@ public class TrackersFragment extends Fragment {
 					@Override
 					public void onItemClick(AdapterView<?> parent, final View view,
 							int position, long id) {
-						final String item = (String) parent
-								.getItemAtPosition(position);
-						view.animate().setDuration(2000).alpha(0)
-						.withEndAction(new Runnable() {
-							@Override
-							public void run() {
-								list.remove(item);
-								adapter.notifyDataSetChanged();
-								view.setAlpha(1);
-							}
-						});
+						
 					}
 
 				});

@@ -23,6 +23,7 @@ public interface Aria2APIMessage
 	final static int REMOVE_GET_GLOBAL_OPTION = 18;
 	final static int GET_PEERS = 19;
 	final static int GET_SERVERS = 20;
+	final static int TELL_STATUS = 21;
 	
 	
 	final static int ERROR_COMMAND = -1;

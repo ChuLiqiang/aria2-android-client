@@ -11,6 +11,8 @@ public interface Aria2UIMessage
 	final static int FINISH_REFRESHING_ALL_STATUS = 6;
 	final static int PEERS_REFRESHED = 7;
 	final static int SERVERS_REFRESHED = 8;
+	final static int STATUS_REFRESHED = 9;
+	
 	
 	final static int MSG_GET_GLOBAL_OPTION_FAILED = 30;
 	final static int MSG_GET_GLOBAL_OPTION_SUCCESS = 31;

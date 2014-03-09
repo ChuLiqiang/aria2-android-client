@@ -444,6 +444,18 @@ public class Aria2Manager implements Aria2UIMessage,Aria2APIMessage
 					_mRefreshHandler.send(sendToUIThreadMsg);
 				}
 				break;
+			case TELL_STATUS:
+				{
+					if(msg.obj == null)
+					{
+						return;
+					}
+					String gid = (String)msg.obj;
+					Status status = _aria2.tellStatus(gid);
+					sendToUIThreadMsg.what = STATUS_REFRESHED;
+					sendToUIThreadMsg.obj = status;
+					_mRefreshHandler.send(sendToUIThreadMsg);
+				}
 			}
 		}
 		catch (Exception e)

@@ -2,13 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
+		android:padding="8dp"
 		android:orientation="vertical">
 
 		<TextView
 			android:id="@+id/server_item_file_header"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:textSize="12sp"
+			 android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+			android:textSize="17sp"
 			/>
 		
 </LinearLayout>

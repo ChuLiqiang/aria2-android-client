@@ -17,8 +17,9 @@ public class DownloadItem
 	private String downloadSpeed;
 	private String uploadSpeed;
 	private boolean haveBittorrent = false;
-	
+	private String eta;
 	private Status baseStatusInfo = null;
+	
 	
 	
 
@@ -42,6 +43,7 @@ public class DownloadItem
 		}
 		downloadSpeed = statusTemp.downloadSpeed;
 		uploadSpeed = statusTemp.uploadSpeed;
+		eta = statusTemp.getETA();
 	}
 
 	public String getGid() {
@@ -78,6 +80,10 @@ public class DownloadItem
 	
 	public Status getBaseStatusInfo() {
 		return baseStatusInfo;
+	}
+
+	public String getETA() {
+		return eta;
 	}
 	
 	
